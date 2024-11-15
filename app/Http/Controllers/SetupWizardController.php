@@ -12,10 +12,9 @@ class SetupWizardController extends Controller
     public function show()
     {
         // Check if an admin already exists to prevent access to the wizard
-        if (User::where('is_admin', true)->exists()) {
+        if (User::where('role', 'administrator')->exists()) {
             return redirect('/'); // Redirect to home if admin exists
         }
-
         return view('install.setup-wizard'); // Show the setup form
     }
 
@@ -32,12 +31,11 @@ class SetupWizardController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'is_admin' => true,
+            'role' => 'administrator',
         ]);
 
         // Log in the admin user
         Auth::login($admin);
-
         return redirect('/dashboard'); // Redirect to the dashboard after setup
     }
 }

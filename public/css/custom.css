@@ -1,0 +1,163 @@
+/* Root Variables (Light Theme by Default) */
+:root {
+    --background-color: #fff;
+    --header-background: #f8f9fa;
+    --text-color: #333;
+    --row-odd-color: #f9f9f9;
+    --row-hover-color: #f1f1f1;
+    --border-color: #ddd;
+    --btn-bg-color: #007bff;
+    --btn-text-color: #fff;
+    --btn-hover-bg-color: #0056b3;
+    --delete-btn-bg-color: #dc3545;
+    --delete-btn-hover-bg-color: #a71d2a;
+}
+
+/* Dark Mode Variables */
+html.dark {
+    --background-color: #1e1e2d;
+    --header-background: #2a2a3d;
+    --text-color: #ccc;
+    --row-odd-color: #252537;
+    --row-hover-color: #333348;
+    --border-color: #444;
+    --btn-bg-color: #007bff;
+    --btn-text-color: #fff;
+    --btn-hover-bg-color: #0056b3;
+    --delete-btn-bg-color: #dc3545;
+    --delete-btn-hover-bg-color: #a71d2a;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+/* Table Styling with Rounded Corners */
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    /* Separate borders for rounded corners */
+    border-spacing: 0;
+    /* Remove space between borders */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    /* Rounded corners for the whole table */
+    overflow: hidden;
+    /* Ensure that the content inside does not overflow the rounded corners */
+}
+
+/* Table Header */
+.custom-table thead th {
+    background-color: var(--header-background);
+    text-align: left;
+    padding: 10px;
+    border-bottom: 2px solid var(--border-color);
+    border-top-left-radius: 8px;
+    /* Rounded top left corner */
+    border-top-right-radius: 8px;
+    /* Rounded top right corner */
+    color: var(--text-color);
+}
+
+.custom-table thead th.text-center {
+    text-align: center;
+
+}
+
+/* Table Rows */
+.custom-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Alternate Row Highlight */
+.custom-table tbody tr:nth-child(odd) {
+    background-color: var(--row-odd-color);
+}
+
+/* Hover Effect on Rows */
+.custom-table tbody tr:hover {
+    background-color: var(--row-hover-color);
+}
+
+/* Table Cells */
+.custom-table td {
+    padding: 10px;
+    color: var(--text-color);
+}
+
+/* Buttons */
+.custom-table .btn {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+/* Edit Button */
+.custom-table .edit-btn {
+    background-color: var(--btn-bg-color);
+    color: var(--btn-text-color);
+}
+
+.custom-table .edit-btn:hover {
+    background-color: var(--btn-hover-bg-color);
+}
+
+/* Delete Button */
+.custom-table .delete-btn {
+    background-color: var(--delete-btn-bg-color);
+    color: var(--btn-text-color);
+}
+
+.custom-table .delete-btn:hover {
+    background-color: var(--delete-btn-hover-bg-color);
+}
+
+/* Styling for the search box container */
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    padding: 5px 10px;
+    width: 250px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Styling for the search icon */
+  .search-icon {
+    font-size: 18px;
+    color: #888;
+    margin-right: 8px;
+  }
+  
+  /* Styling for the search input */
+ 
+.search-input .flex{
+    display: flex;
+  }
+  
+.search-input .inset-y-0 {
+    bottom: 0;
+    top: 0;
+}
+
+.search-input .ps-10{
+    -webkit-padding-start: 2.5rem;
+    padding-inline-start: 2.5rem;
+    padding-left: 2.5rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem /* 12px */;
+    padding-bottom: 0.5rem /* 12px */;
+}
