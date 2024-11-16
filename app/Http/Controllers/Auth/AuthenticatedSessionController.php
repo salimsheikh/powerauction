@@ -8,19 +8,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
      */
-    public function create()
+    public function create(): view
     {
-        // Check if an admin already exists to prevent access to the wizard
-        if (!User::where('role', 'administrator')->exists()) {
-            return redirect(route('setup.wizard'));
-        }       
         return view('auth.login');
     }
 

@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('backend')->group(function () {
     Route::get('/categories', [CategoryApiController::class, 'index']);
+    Route::post('/categories/store', [CategoryApiController::class, 'store']);
     Route::get('/categories/search', [CategoryApiController::class, 'search']);
     Route::get('/categories/refresh', [CategoryApiController::class, 'refresh']);
     Route::put('/categories/{id}', [CategoryApiController::class, 'update']);

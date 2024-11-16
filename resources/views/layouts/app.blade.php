@@ -18,6 +18,9 @@
 
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
+    
+    
+
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -30,7 +33,7 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-800">
+    <div class="min-h-screen bg-gray-100 dark:bg-slate-900">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
@@ -45,7 +48,7 @@
         <!-- Page Content -->
         <main>
             {{ $slot }}
-        </main>
+        </main>       
     </div>
 
     <script>
@@ -90,7 +93,8 @@
             }
 
         });
-    </script>
+    </script>    
+    <script src="{{ asset('js/custom.js') }}"></script>
 </body>
 
 </html>

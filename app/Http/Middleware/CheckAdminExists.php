@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\User;
 
 class CheckAdminExists
 {
@@ -17,10 +18,14 @@ class CheckAdminExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if an admin user exists
-        if (!User::where('is_admin', true)->exists()) {
-            // Redirect to the setup wizard if no admin is found
-            return redirect('/setup-wizard');
+        $path = $request->path();
+        // Check if the current route is not 'setup-wizard'
+        if (($path == 'login' || $path == 'register') && $path !== 'setup-wizard') {
+            // Check if an admin user exists
+            if (!User::where('role', 'administrator')->exists()) {
+                // Redirect to the setup wizard if no admin is found
+                return redirect('/setup-wizard');
+            }
         }
 
         return $next($request);

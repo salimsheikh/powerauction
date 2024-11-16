@@ -11,14 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('category_name', 150);
-            $table->decimal('base_price', 10, 2);
-            $table->longText('description');
-            $table->string('color_code', 10);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('categories')) {
+            Schema::create('categories', function (Blueprint $table) {
+                $table->id();// Primary key
+                $table->string('category_name', 191)->unique();// Unique 10 digit code
+                $table->decimal('base_price', 10, 2)->default(0); // Base price
+                $table->longText('description')->nullable();
+                $table->string('color_code', 10)->nullable();// Color code (e.g., #FFFFFF)
+                $table->string('status',15)->default('publish');
+                $table->unsignedBigInteger('created_by')->default(0); // Created by user
+                $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
+                $table->timestamps(); // Created at and updated at
+
+                // Foreign keys
+                $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+               
+            });
+        }
     }
 
     /**

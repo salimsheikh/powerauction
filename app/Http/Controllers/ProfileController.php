@@ -57,4 +57,21 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function create_token(Request $request){
+
+        // Get the authenticated user
+        $auth = Auth::user();
+
+        if($auth){
+            // Generate a Sanctum token for the authenticated user
+            $token = $auth->createToken('API-Token')->plainTextToken;
+
+            // Return the token in the response
+            return response()->json(['token' => $token], 200);
+        }
+
+        // If authentication fails
+        return response()->json(['message' => 'Unauthorized'], 401);
+    }
 }
