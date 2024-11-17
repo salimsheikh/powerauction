@@ -35,7 +35,16 @@ if (popupCloseModels) {
 
             popupTargetModel = popupCustomModel;
 
-            hideModal();
+            // Remove the 'show' class and add the 'hide' class for animation
+            const modalContent = popupCustomModel.querySelector(".modal-content");
+            modalContent.classList.remove('show');
+            modalContent.classList.add('hide');
+
+            // After the animation ends, hide the modal
+            setTimeout(() => {
+                modalContent.classList.add('hidden');
+                popupCustomModel.style.display = "none";
+            }, 600); // Match the animation duration
         });
     });
 }
@@ -143,6 +152,7 @@ if (popupAddForm) {
             return false;
         }
 
+        const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const sanctum_token = get_local_storage_token('sanctum_token');
         if (!sanctum_token) {
             alertElement.textContent = "Some thing is wrong.";
@@ -150,7 +160,11 @@ if (popupAddForm) {
             return false;
         }
 
-        const headers = get_ajax_header();
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sanctum_token}`,
+            'X-CSRF-TOKEN': csrf_token,
+        }
 
         alertElement.textContent = "Please Wait!";
         alertElement.classList.add("alert-info");
@@ -162,29 +176,26 @@ if (popupAddForm) {
 
         formProcessing = true;
 
-        fetch(`${BASE_API_URL}/store`, {
+        fetch("/api/backend/categories/store", {
             method: 'POST',
             headers: headers,
             body: JSON.stringify(formValues),
         }).then((response) => {
-            console.log("response 1");
-            //do not delete
-            alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-            formProcessing = false;
-            
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
                 });
-            }            
+            }
+            formProcessing = false;
             return response.json();
         }).then((data) => {
-            console.log("response 2");            
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             alertElement.textContent = data.message;
-            alertElement.classList.add("alert-success");            
+            alertElement.classList.add("alert-success");
+            formProcessing = false;
         }).catch((error) => {
-            console.log("response 3");
-            if (error.errors) {                
+            if (error.errors) {
+                alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 let errorMessage = '';
                 for (const key in error.errors) {
                     errorMessage += `${error.errors[key].join(', ')}\n`;
@@ -193,72 +204,60 @@ if (popupAddForm) {
                 alertElement.textContent = errorMessage;
             } else {
                 console.error('Error:', error);
-                alertElement.classList.add("alert-danger");
-                alertElement.textContent = error;
-            }            
+            }
+            formProcessing = false;
         });
 
         return false;
     });
-}
 
-function get_ajax_header(){
+    // localStorage.setItem('sanctum_token', '');
 
-    const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
-    const sanctum_token = get_local_storage_token('sanctum_token');
-
-    return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sanctum_token}`,
-        'X-CSRF-TOKEN': csrf_token,
+    function get_local_storage_token() {
+        return localStorage.getItem('sanctum_token');
     }
-}
 
-function get_local_storage_token() {
-    return localStorage.getItem('sanctum_token');
-}
+    // Define get_token as an async function
+    const get_token = async function () {
+        const token = get_local_storage_token('sanctum_token');
+        if (!token) {
+            // Make the login request
+            try {
+                const response = await fetch('/create_token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ create_token: 'create_token' }),
+                });
 
-// Define get_token as an async function
-const get_token = async function () {
-    const token = get_local_storage_token('sanctum_token');
-    if (!token) {
-        // Make the login request
-        try {
-            const response = await fetch('/create_token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({ create_token: 'create_token' }),
-            });
-
-            const data = await response.json();
-            if (data.token) {
-                // Store the token in localStorage
-                localStorage.setItem('sanctum_token', data.token);
-                console.log('Token saved to localStorage');
-                return data.token;
-            } else {
-                console.error('No token received');
+                const data = await response.json();
+                if (data.token) {
+                    // Store the token in localStorage
+                    localStorage.setItem('sanctum_token', data.token);
+                    console.log('Token saved to localStorage');
+                    return data.token;
+                } else {
+                    console.error('No token received');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Invalid login: ', error);
                 return false;
             }
-        } catch (error) {
-            console.error('Invalid login: ', error);
-            return false;
+        } else {
+            return token; // If the token is already in localStorage
         }
-    } else {
-        return token; // If the token is already in localStorage
     }
-}
 
-// Calling the function and awaiting the result in an async context
-async function initialize() {
-    const token = await get_token();
-}
+    // Calling the function and awaiting the result in an async context
+    async function initialize() {
+        const token = await get_token();
+    }
 
-initialize(); // Call the async function
+    initialize(); // Call the async function
+}
 
 const tableContainer = document.getElementById('tableContainer');
 const popupDeleteItemModal = document.getElementById('popupDeleteItemModal');
@@ -276,17 +275,19 @@ tableContainer.addEventListener('click', function (e) {
 
         modalContent.classList.remove('hidden', 'hide');
         modalContent.classList.add('show');
-
-        popupTargetModel = popupDeleteItemModal;
     }
 });
 
 const popupDeleteForm = document.getElementById("popupDeleteForm");
-if (popupDeleteForm) { 
+if (popupDeleteForm) {
+
+    console.log(popupDeleteForm);
 
     popupDeleteForm.addEventListener("submit", function (event) {
 
         event.preventDefault(); // Prevent form submission
+
+
 
         if (formProcessing) {
             return false;
@@ -294,23 +295,3 @@ if (popupDeleteForm) {
 
         // Get the current form
         const currentForm = event.target;
-
-        // Find the .alert element within the current form
-        const alertElement = currentForm.querySelector(".alert");
-
-        alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-        alertElement.style.display = "block";
-
-        const sanctum_token = get_local_storage_token('sanctum_token');
-        if (!sanctum_token) {
-            alertElement.textContent = "Some thing is wrong.";
-            alertElement.classList.add("alert-danger");
-            return false;
-        }
-
-        const headers = get_ajax_header();
-
-        alertElement.textContent = "Please Wait!";
-        alertElement.classList.add("alert-info");
-    });
-}

@@ -173,7 +173,6 @@ html.dark {
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
-    z-index: 1;
     /* Sit on top */
     /* padding-top: 100px; */
     /* Location of the box */
@@ -190,15 +189,23 @@ html.dark {
     background-color: rgba(0, 0, 0, 0.4);
     /* Black w/ opacity */
 
+    z-index: 990;
+
+    /* transform: translate(-50%, 0); */
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+    /* border-radius: 8px; */
+    
+    /* pointer-events: none; */
+    transition: opacity 0.4s ease;
 
 }
 
-.modal-content-wraper {
+.custom-modal .modal-content-wraper {
     display: flex;
     align-items: center;
     flex-direction: column;
-    border: 1px solid red;
     height: 100%;
+    z-index: 991;
 }
 
 /* Modal Content */
@@ -210,11 +217,12 @@ html.dark {
     border: 1px solid #888;
     width: 80%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s;
+    /* -webkit-animation-name: animatetop; */
+    /* -webkit-animation-duration: 0.4s; */
+    /* animation-name: animatetop; */
+    /* animation-duration: 0.4s; */
     border-radius: 10px;
+    z-index: 992;
 }
 
 .dark .custom-modal .modal-content {
@@ -270,8 +278,44 @@ html.dark {
     }
 }
 
+.custom-modal .modal-content.show {
+    pointer-events: auto;
+    animation: animatetop-show 0.4s forwards;
+}
+  
+.custom-modal .modal-content.hide {
+    animation: animatetop-hide 0.4s forwards;
+}
+  
+  /* Show Animation */
+  @keyframes animatetop-show {
+    from {
+      top: -300px;
+      opacity: 0;
+    }
+    to {
+      top: 0;
+      opacity: 1;
+      /* transform: translate(-50%, -50%); */
+    }
+  }
+  
+  /* Hide Animation */
+  @keyframes animatetop-hide {
+    from {
+      top: 0;
+      opacity: 1;
+      /* transform: translate(-50%, -50%); */
+    }
+    to {
+      top: -300px;
+      opacity: 0;
+      /* transform: translate(-50%, 0); */
+    }
+  }
+
 /* The Close Button */
-.custom-modal .close {
+.custom-modal .close-model {
     color: rgb(48, 48, 48);
     float: right;
     font-size: 28px;
@@ -282,14 +326,14 @@ html.dark {
     border: 1px solid red;
 }
 
-.custom-modal .close:hover,
-.custom-modal .close:focus {
+.custom-modal .close-model:hover,
+.custom-modal .close-model:focus {
     color: #000;
     text-decoration: none;
     cursor: pointer;
 }
 
-.dark .custom-modal .close {
+.dark .custom-modal .close-model {
     color: var(--text-color);
 }
 

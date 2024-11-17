@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class addItemPoupup extends Component
+class PopupAddItemModel extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class addItemPoupup extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.add-item-poupup');
+        return view('components.popup-add-item-model');
     }
 }

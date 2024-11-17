@@ -5,29 +5,29 @@
         </h2>
     </x-slot>
 
+    <!-- Add Item Popup -->
+    <x-popup-add-item-model>
+        <x-popup-form-input type="text" name="category_name" label="{{__('Category Name:')}}" class="required" maxlength="50" value="test" />
+        <x-popup-form-input type="text" name="base_price" label="{{__('Base Price:')}}" class="required price_validate" maxlength="10" value="2.5"  />
+        <x-popup-form-input type="text" name="description" label="{{__('Description:')}}" class="required" maxlength="255" value="test" />
+        <x-popup-form-input type="color" name="color_code" label="{{__('Color Code:')}}" value="#000001" class="color_code" />
+    </x-popup-add-item-model>
+
+    <!-- Add Item Popup -->
+    <x-popup-delete-item-model>
+        {{__('Do you want to delete category?')}}
+    </x-popup-delete-item-model>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-slate-800 dark:border-gray-600">
                 <div class="p-6 text-gray-900">
-                    <x-add-item-poupup>
-                        <x-popup-textbox type="text" name="category_name" label="{{__('Category Name:')}}" class="required" maxlength="50" value="test" />
-                        <x-popup-textbox type="text" name="base_price" label="{{__('Base Price:')}}" class="required price_validate" maxlength="10" value="2.5"  />
-                        <x-popup-textbox type="text" name="description" label="{{__('Description:')}}" class="required" maxlength="255" value="test" />
-                        <x-popup-textbox type="color" name="color_code" label="{{__('Color Code:')}}" value="#000001" class="color_code" />
-                    </x-add-item-poupup>
-
                     <div
                         class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between pb-4">
                         <div>
-                            <button
-                                class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                                type="button">
-                                {{ __('Add New Category') }}
-                            </button>
-
-                            <button id="addItemButton"
+                            <button id="buttonPopupShowAddItemModel"
                                 class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                Add Item
+                                {{__('Add Category')}}
                             </button>
                         </div>
                         <div class="pb-4 search-input">
@@ -48,16 +48,16 @@
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <div class="table-container">
+                        <div class="table-container" id="tableContainer">
                             <table class="custom-table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Category Name</th>
-                                        <th>Base Price</th>
-                                        <th>Color Code</th>
-                                        <th>Description</th>
-                                        <th class="text-center">Actions</th>
+                                        <th>{{__('#ID')}}</th>
+                                        <th>{{__('Category Name')}}</th>
+                                        <th>{{__('Base Price')}}</th>
+                                        <th>{{__('Color Code')}}</th>
+                                        <th>{{__('Description')}}</th>
+                                        <th class="text-center">{{__('Actions')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -70,7 +70,7 @@
                                             <td>{{ $category->description }}</td>
                                             <td class="text-center">
                                                 <a href="#" class="btn edit-btn">Edit</a>
-                                                <a href="#" class="btn delete-btn">Delete</a>
+                                                <a href="#" class="btn delete-btn delete-button" data-id={{$loop->iteration}}>Delete</a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -85,16 +85,9 @@
                 </div>
             </div>
         </div>
-
-
-
     </div>
 </x-app-layout>
 
-
-
-
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-
-
-</div>
+<script>
+    const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
+</script>

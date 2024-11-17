@@ -19,6 +19,7 @@ class CategoryApiController extends Controller
     public function store(Request $request){        
 
         $category_name = $request->category_name;
+
         if(!empty($category_name)){
             // Check if the category already exists manually (Optional if you want to customize the message further)
             $existingCategory = Category::where('category_name', $request->category_name)->first();
@@ -70,11 +71,7 @@ class CategoryApiController extends Controller
                     'category_name' => [$e->getMessage()]
                 ]
             ], 409);
-        }  
-        
-        
-
-        
+        }
     }
 
     public function search(Request $request)
