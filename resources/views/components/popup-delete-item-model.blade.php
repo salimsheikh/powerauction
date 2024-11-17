@@ -10,7 +10,7 @@
             <div class="modal-body space-y-4">
                 <form id="popupDeleteForm" method="post" class="space-y-4">
                     <div class="alert alert-info model-body-alert danger-alert"></div>
-                    {{ $slot }}
+                    <div class="body-content">{{ $slot }}</div>
                     <div class="modal-body-footer">
                         <x-button-popup-close>
                             {{ __('Cancel') }}

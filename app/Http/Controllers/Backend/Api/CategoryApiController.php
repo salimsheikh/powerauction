@@ -8,6 +8,9 @@ use App\Models\Category;
 
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
+
 class CategoryApiController extends Controller
 {
     public function index()
@@ -19,7 +22,7 @@ class CategoryApiController extends Controller
     public function store(Request $request){        
 
         $category_name = $request->category_name;
-
+        
         if(!empty($category_name)){
             // Check if the category already exists manually (Optional if you want to customize the message further)
             $existingCategory = Category::where('category_name', $request->category_name)->first();
@@ -33,7 +36,7 @@ class CategoryApiController extends Controller
                     ]
                 ], 409);  // 409 Conflict - used when the request could not be completed due to a conflict.
             }
-        }
+        }       
         
         // Validate the request
         $validated = $request->validate([
@@ -112,12 +115,24 @@ class CategoryApiController extends Controller
 
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        $category->delete();
+        
+        try {
+            $category = Category::findOrFail($id); // Attempt to find the category by ID
+            $category->delete(); // Delete the category if found
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Category deleted successfully.',
-        ]);
+            $message = __('Category deleted successfully');
+            return jsonResponse(true,$message,[],200);
+
+        } catch (ModelNotFoundException $e) {
+            $errors = ['Category not found' => [$e->getMessage()]];
+            $message = __('An unexpected error occurred.');
+            return jsonResponse(false,$message,$errors,404);
+        } catch (Exception $e) {
+            $errors = ['category_delete' => [$e->getMessage()]];
+            $message = __('An unexpected error occurred.');
+            return jsonResponse(false,$message,$errors,500);
+        }
+
+       
     }
 }

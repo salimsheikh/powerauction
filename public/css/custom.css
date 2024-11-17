@@ -31,7 +31,7 @@ html.dark {
 /* Table Container */
 .table-container {
     overflow-x: auto;
-    margin: 20px 0;
+    margin: 0;
 }
 
 /* Table Styling with Rounded Corners */

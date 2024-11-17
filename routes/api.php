@@ -13,13 +13,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Add your API routes here.
 });
 
-Route::middleware(['auth:sanctum', 'throttle:5,1'])->prefix('backend')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
         Route::get('/categories', [CategoryApiController::class, 'index']);
         Route::post('/categories/store', [CategoryApiController::class, 'store']);
         Route::get('/categories/search', [CategoryApiController::class, 'search']);
         Route::get('/categories/refresh', [CategoryApiController::class, 'refresh']);
         Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
-        Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);
-    
+        Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);    
 });
-

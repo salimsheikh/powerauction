@@ -43,7 +43,7 @@ if (popupCloseModels) {
 // Function to hide the modal
 function hideModal() {
 
-    if(!popupTargetModel){
+    if (!popupTargetModel) {
         return false;
     }
 
@@ -171,20 +171,22 @@ if (popupAddForm) {
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;
-            
+
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
                 });
-            }            
+            }
+
             return response.json();
         }).then((data) => {
-            console.log("response 2");            
+            console.log("response 2");
             alertElement.textContent = data.message;
-            alertElement.classList.add("alert-success");            
+            alertElement.classList.add("alert-success");
+            
         }).catch((error) => {
             console.log("response 3");
-            if (error.errors) {                
+            if (error.errors) {
                 let errorMessage = '';
                 for (const key in error.errors) {
                     errorMessage += `${error.errors[key].join(', ')}\n`;
@@ -195,17 +197,21 @@ if (popupAddForm) {
                 console.error('Error:', error);
                 alertElement.classList.add("alert-danger");
                 alertElement.textContent = error;
-            }            
+            }
         });
 
         return false;
     });
 }
 
-function get_ajax_header(){
+function get_csrf_token(){
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+}
 
-    const csrf_token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    
+function get_ajax_header() {
+
+    const csrf_token = get_csrf_token();
+
     const sanctum_token = get_local_storage_token('sanctum_token');
 
     return {
@@ -222,6 +228,9 @@ function get_local_storage_token() {
 // Define get_token as an async function
 const get_token = async function () {
     const token = get_local_storage_token('sanctum_token');
+
+    const csrf_token = get_csrf_token();
+
     if (!token) {
         // Make the login request
         try {
@@ -229,7 +238,7 @@ const get_token = async function () {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-CSRF-TOKEN': csrf_token,
                 },
                 body: JSON.stringify({ create_token: 'create_token' }),
             });
@@ -263,13 +272,16 @@ initialize(); // Call the async function
 const tableContainer = document.getElementById('tableContainer');
 const popupDeleteItemModal = document.getElementById('popupDeleteItemModal');
 let selectedButton = null;
+let delete_id = 0;
 
 // Add event listener to dynamically created buttons
 tableContainer.addEventListener('click', function (e) {
     e.preventDefault();
 
     if (e.target && e.target.classList.contains('delete-button')) {
-        selectedButton = e.target; // Store the clicked button      
+        selectedButton = e.target; // Store the clicked button
+        
+        delete_id = selectedButton.getAttribute('data-id');       
 
         popupDeleteItemModal.style.display = "block";
         const modalContent = popupDeleteItemModal.querySelector(".modal-content");
@@ -278,11 +290,22 @@ tableContainer.addEventListener('click', function (e) {
         modalContent.classList.add('show');
 
         popupTargetModel = popupDeleteItemModal;
+
+        // Find the .alert element within the current form
+        const alertElement = popupTargetModel.querySelector(".alert");
+        alertElement.style.display = "none";
+
+        const body_content = popupTargetModel.querySelector('.body-content');
+        body_content.style.display = "block";
+
+        const deleteButton = document.getElementById('btnPopupDelete');
+
+        deleteButton.disabled = false;
     }
 });
 
 const popupDeleteForm = document.getElementById("popupDeleteForm");
-if (popupDeleteForm) { 
+if (popupDeleteForm) {
 
     popupDeleteForm.addEventListener("submit", function (event) {
 
@@ -298,6 +321,12 @@ if (popupDeleteForm) {
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
 
+        const body_content = currentForm.querySelector('.body-content');
+
+        const deleteButton = document.getElementById('btnPopupDelete');
+
+        
+
         alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
         alertElement.style.display = "block";
 
@@ -312,5 +341,53 @@ if (popupDeleteForm) {
 
         alertElement.textContent = "Please Wait!";
         alertElement.classList.add("alert-info");
+        body_content.style.display = "none";
+        deleteButton.disabled = true;
+
+        formProcessing = true;
+        console.log(delete_id);
+
+        fetch(`${BASE_API_URL}/${delete_id}`, {
+            method: 'delete',
+            headers: headers,
+            body: JSON.stringify([]),
+        }).then((response) => {
+            console.log("response 1");
+            //do not delete
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+            formProcessing = false;
+
+            if (!response.ok) {
+                return response.json().then((error) => {
+                    throw error;
+                });
+            }
+
+            return response.json();
+        }).then((data) => {
+            console.log("response 2",data);
+            alertElement.textContent = data.message;
+            alertElement.classList.add("alert-success");
+            setTimeout(function(){
+                hideModal();
+                deleteButton.disabled = true;
+            },1500);            
+        }).catch((error) => {
+            deleteButton.disabled = true;
+            console.log("response 3");
+            if (error.errors) {
+                let errorMessage = '';
+                for (const key in error.errors) {
+                    errorMessage += `${error.errors[key].join(', ')}\n`;
+                }
+                alertElement.classList.add("alert-danger");
+                alertElement.textContent = errorMessage;
+            } else {
+                console.error('Error:', error);
+                alertElement.classList.add("alert-danger");
+                alertElement.textContent = error;
+            }
+        });
+
     });
 }

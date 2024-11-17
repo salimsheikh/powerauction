@@ -7,15 +7,19 @@
 
     <!-- Add Item Popup -->
     <x-popup-add-item-model>
-        <x-popup-form-input type="text" name="category_name" label="{{__('Category Name:')}}" class="required" maxlength="50" value="test" />
-        <x-popup-form-input type="text" name="base_price" label="{{__('Base Price:')}}" class="required price_validate" maxlength="10" value="2.5"  />
-        <x-popup-form-input type="text" name="description" label="{{__('Description:')}}" class="required" maxlength="255" value="test" />
-        <x-popup-form-input type="color" name="color_code" label="{{__('Color Code:')}}" value="#000001" class="color_code" />
+        <x-popup-form-input type="text" name="category_name" label="{{ __('Category Name:') }}" class="required"
+            maxlength="50" value="test" />
+        <x-popup-form-input type="text" name="base_price" label="{{ __('Base Price:') }}"
+            class="required price_validate" maxlength="10" value="2.5" />
+        <x-popup-form-input type="text" name="description" label="{{ __('Description:') }}" class="required"
+            maxlength="255" value="test" />
+        <x-popup-form-input type="color" name="color_code" label="{{ __('Color Code:') }}" value="#000001"
+            class="color_code" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
     <x-popup-delete-item-model>
-        {{__('Do you want to delete category?')}}
+        {{ __('Do you want to delete category?') }}
     </x-popup-delete-item-model>
 
     <div class="py-12">
@@ -27,7 +31,7 @@
                         <div>
                             <button id="buttonPopupShowAddItemModel"
                                 class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                {{__('Add Category')}}
+                                {{ __('Add Category') }}
                             </button>
                         </div>
                         <div class="pb-4 search-input">
@@ -52,25 +56,26 @@
                             <table class="custom-table">
                                 <thead>
                                     <tr>
-                                        <th>{{__('#ID')}}</th>
-                                        <th>{{__('Category Name')}}</th>
-                                        <th>{{__('Base Price')}}</th>
-                                        <th>{{__('Color Code')}}</th>
-                                        <th>{{__('Description')}}</th>
-                                        <th class="text-center">{{__('Actions')}}</th>
+                                        <th>{{ __('#ID') }}</th>
+                                        <th>{{ __('Category Name') }}</th>
+                                        <th>{{ __('Base Price') }}</th>
+                                        <th>{{ __('Color Code') }}</th>
+                                        <th>{{ __('Description') }}</th>
+                                        <th class="text-center">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($categories as $category)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $category->id }}</td>
                                             <td>{{ $category->category_name }}</td>
                                             <td>{{ $category->base_price }}</td>
                                             <td>{{ $category->color_code }}</td>
                                             <td>{{ $category->description }}</td>
                                             <td class="text-center">
-                                                <a href="#" class="btn edit-btn">Edit</a>
-                                                <a href="#" class="btn delete-btn delete-button" data-id={{$loop->iteration}}>Delete</a>
+                                                <a href="#" class="btn edit-btn">{{__('Edit')}}</a>
+                                                <a href="#" class="btn delete-btn delete-button"
+                                                    data-id={{ $category->id }}>{{__('Delete')}}</a>
                                             </td>
                                         </tr>
                                     @endforeach
