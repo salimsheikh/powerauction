@@ -322,7 +322,7 @@ html.dark {
     font-weight: bold;
 }
 
-.invalid {
+.invalid, .dark .invalid {
     border: 1px solid red;
 }
 
