@@ -65,8 +65,10 @@ html.dark {
     color: var(--text-color);
 }
 
-.custom-table thead th.text-center {
+.custom-table thead th.text-center,
+.custom-table tbody td.text-center {
     text-align: center;
+    white-space: nowrap;
 
 }
 
@@ -89,6 +91,15 @@ html.dark {
 .custom-table td {
     padding: 10px;
     color: var(--text-color);
+}
+
+.custom-table td span{
+    display: inline-block; /* Change block to inline-block */
+    padding: 2px 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.7rem;
+    width: auto; /* Auto width works with inline-block */
 }
 
 /* Buttons */
@@ -323,7 +334,9 @@ html.dark {
 }
 
 .invalid, .dark .invalid {
-    border: 1px solid red;
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }
 
 .custom-modal .close-model:hover,
@@ -347,9 +360,15 @@ html.dark {
     opacity: 1;
     visibility: visible;
     height: auto;
-    width: auto;
-    transition: opacity 0.5s ease, visibility 0.5s ease, height 0.5s ease, width 0.5s ease;
+    width: auto;    
     overflow: hidden; /* Ensures smooth height transition */
+
+    transition: opacity 0.5s ease,
+                visibility 0.5s ease,
+                height 0.5s ease,
+                width 0.5s ease,
+                background-color 0.5s ease,
+                color 0.5s ease;
 }
 
 /* Visible state */
@@ -454,4 +473,91 @@ html.dark {
 
 .color_code::-moz-focus-inner {
     padding: 0;
+}
+
+
+.custom-pagination {
+    display: flex;
+    justify-content: flex-end;
+    list-style-type: none;
+    padding: 0;
+}
+.custom-pagination li {
+    margin: 0;
+}
+
+.custom-pagination li:first-child a{
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.custom-pagination li:last-child a{
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+.custom-pagination a {
+    text-decoration: none;
+    padding: 8px 12px;    
+    border-width: 1px;
+    margin-left: -1px;
+    line-height: 1.25rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+
+    --tw-text-opacity: 1;
+    color: rgb(55 65 81 / var(--tw-text-opacity));
+
+    --tw-border-opacity: 1;
+    border-color: rgb(209 213 219 / var(--tw-border-opacity));
+
+    --tw-bg-opacity: 1;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.dark .custom-pagination a {
+    --tw-text-opacity: 1;
+    color: rgb(156 163 175 / var(--tw-text-opacity));
+
+    --tw-bg-opacity: 1;
+    background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+    --tw-border-opacity: 1;
+    border-color: rgb(75 85 99 / var(--tw-border-opacity));
+}
+
+.custom-pagination a:hover {
+    background-color: #007bff;
+    color: white;
+}
+.custom-pagination .active a {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+.custom-pagination .disabled a {
+    color: #ccc;
+    pointer-events: none;
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+    .custom-pagination a {
+        padding: 6px;  
+        font-size: 0.7rem;  
+    }
+}
+
+@media (max-width: 700px) {
+    .custom-pagination li:not(:first-child):not(:last-child) {
+        display: none;
+    }
+
+    .custom-pagination{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .custom-pagination li:last-child a,
+    .custom-pagination li:first-child a{
+        border-radius: 0.375rem;
+    }
 }

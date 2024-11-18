@@ -13,10 +13,20 @@ use Exception;
 
 class CategoryApiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
-        return response()->json($categories);
+        $columns = [];
+        $columns['id'] = __('ID');
+        $columns['category_name'] = __('category_name');
+        $columns['color_code'] = __('color_code');
+        $columns['base_price'] = __('base_price');
+        $columns['description'] = __('description');
+
+        $categories = Category::select('id','category_name','color_code','base_price', 'description')->paginate(5);
+        return response()->json([
+            'columns' => $columns,
+            'categories' => $categories
+        ]);
     }
 
     public function store(Request $request){        
@@ -101,26 +111,30 @@ class CategoryApiController extends Controller
         try {
 
             $category = Category::select('category_name','color_code','base_price', 'description')->find($id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Category successfully found.',
-                'data' => $category,
-            ],200);
+            if($category){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Category successfully found.',
+                    'data' => $category,
+                ],200);
+            }else{
+                $res['errors'] = ['category' => [__('Category not found.')]];
+                $res['message'] = __('An unexpected error occurred.');
+                $res['statusCode'] = 404;
+                return jsonResponse($res);
+            }
             
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['Category not found' => [$e->getMessage()]];
+            $res['errors'] = ['category' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
-            $res['errors'] = ['category_delete' => [$e->getMessage()]];
+            $res['errors'] = ['category' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);
         }
-        
-        
     }
 
     public function update(Request $request, $id)

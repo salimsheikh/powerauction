@@ -64,27 +64,62 @@
                         </div>
                     </div>
 
-                    
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Category Name</th>
+                                <th>Color Code</th>
+                                <th>Base Price</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                    <ul class="custom-pagination" id="pagination"></ul>
 
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container" id="tableContainer">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('#ID') }}</th>
-                                        <th>{{ __('Category Name') }}</th>
-                                        <th>{{ __('Base Price') }}</th>
-                                        <th>{{ __('Color Code') }}</th>
-                                        <th>{{ __('Description') }}</th>
-                                        <th class="text-center">{{ __('Actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-body"></tbody>
-                            </table>                            
+                            @if ($categories->count() > 0)
+                                <table class="custom-table">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ __('#ID') }}</th>
+                                            <th>{{ __('Category Name') }}</th>
+                                            <th>{{ __('Base Price') }}</th>
+                                            <th>{{ __('Color Code') }}</th>
+                                            <th>{{ __('Description') }}</th>
+                                            <th class="text-center">{{ __('Actions') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($categories as $category)
+                                            <tr>
+                                                <td>{{ $category->id }}</td>
+                                                <td>{{ $category->category_name }}</td>
+                                                <td>{{ $category->base_price }}</td>
+                                                <td>{{ $category->color_code }}</td>
+                                                <td>{{ $category->description }}</td>
+                                                <td class="text-center">
+                                                    <a href="#" class="btn edit-btn edit-button" data-id={{ $category->id }}>{{ __('Edit') }}</a>
+                                                    <a href="#" class="btn delete-btn delete-button" data-id={{ $category->id }}>{{ __('Delete') }}</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <div class="alert alert-info">{{__('No item found.')}}</div>
+                            @endif
                         </div>
                     </div>
-                    <div class="my-4"><ul class="custom-pagination" id="pagination"></ul></div>                    
+                    @if ($categories->count() > 0)
+                        <!-- Pagination Links -->
+                        <div class="my-4">
+                            {{ $categories->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
