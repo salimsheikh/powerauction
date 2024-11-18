@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class PopupDeleteItemModel extends Component
+class PopupUpdateItemModel extends Component
 {
     public $title = '';
     /**
@@ -22,6 +22,6 @@ class PopupDeleteItemModel extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.popup-delete-item-model');
+        return view('components.popup-update-item-model');
     }
 }

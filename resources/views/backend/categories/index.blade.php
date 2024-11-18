@@ -6,21 +6,33 @@
     </x-slot>
 
     <!-- Add Item Popup -->
-    <x-popup-add-item-model>
+    <x-popup-add-item-model title="{{__('Add new Category')}}">
         <x-popup-form-input type="text" name="category_name" label="{{ __('Category Name:') }}" class="required"
-            maxlength="50" value="test" />
+            maxlength="50" value="" />
         <x-popup-form-input type="text" name="base_price" label="{{ __('Base Price:') }}"
-            class="required price_validate" maxlength="10" value="2.5" />
+            class="required price_validate" maxlength="10" value="" />
         <x-popup-form-input type="text" name="description" label="{{ __('Description:') }}" class="required"
-            maxlength="255" value="test" />
+            maxlength="255" value="" />
         <x-popup-form-input type="color" name="color_code" label="{{ __('Color Code:') }}" value="#000001"
             class="color_code" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
-    <x-popup-delete-item-model>
+    <x-popup-delete-item-model title="{{__('Delete Category')}}">
         {{ __('Do you want to delete category?') }}
     </x-popup-delete-item-model>
+
+    <!-- Update Item Popup -->
+    <x-popup-update-item-model title="{{__('Update Category')}}">
+        <x-popup-form-input type="text" name="category_name" id="update_category_name" label="{{ __('Category Name:') }}" class="category_name required"
+            maxlength="50" value="" />
+        <x-popup-form-input type="text" name="base_price" id="update_base_price" label="{{ __('Base Price:') }}"
+            class="required price_validate base_price" maxlength="10" value="" />
+        <x-popup-form-input type="text" name="description" id="update_description" label="{{ __('Description:') }}" class="required description"
+            maxlength="255" value="" />
+        <x-popup-form-input type="color" name="color_code" id="update_color_code" label="{{ __('Color Code:') }}" value="#000001"
+            class="color_code" />
+    </x-popup-update-item-model>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -53,40 +65,45 @@
                     </div>
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container" id="tableContainer">
-                            <table class="custom-table">
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('#ID') }}</th>
-                                        <th>{{ __('Category Name') }}</th>
-                                        <th>{{ __('Base Price') }}</th>
-                                        <th>{{ __('Color Code') }}</th>
-                                        <th>{{ __('Description') }}</th>
-                                        <th class="text-center">{{ __('Actions') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($categories as $category)
+                            @if ($categories->count() > 0)
+                                <table class="custom-table">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $category->id }}</td>
-                                            <td>{{ $category->category_name }}</td>
-                                            <td>{{ $category->base_price }}</td>
-                                            <td>{{ $category->color_code }}</td>
-                                            <td>{{ $category->description }}</td>
-                                            <td class="text-center">
-                                                <a href="#" class="btn edit-btn">{{__('Edit')}}</a>
-                                                <a href="#" class="btn delete-btn delete-button"
-                                                    data-id={{ $category->id }}>{{__('Delete')}}</a>
-                                            </td>
+                                            <th>{{ __('#ID') }}</th>
+                                            <th>{{ __('Category Name') }}</th>
+                                            <th>{{ __('Base Price') }}</th>
+                                            <th>{{ __('Color Code') }}</th>
+                                            <th>{{ __('Description') }}</th>
+                                            <th class="text-center">{{ __('Actions') }}</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($categories as $category)
+                                            <tr>
+                                                <td>{{ $category->id }}</td>
+                                                <td>{{ $category->category_name }}</td>
+                                                <td>{{ $category->base_price }}</td>
+                                                <td>{{ $category->color_code }}</td>
+                                                <td>{{ $category->description }}</td>
+                                                <td class="text-center">
+                                                    <a href="#" class="btn edit-btn edit-button" data-id={{ $category->id }}>{{ __('Edit') }}</a>
+                                                    <a href="#" class="btn delete-btn delete-button" data-id={{ $category->id }}>{{ __('Delete') }}</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <div class="alert alert-info">{{__('No item found.')}}</div>
+                            @endif
                         </div>
                     </div>
-                    <!-- Pagination Links -->
-                    <div class="my-4">
-                        {{ $categories->links() }}
-                    </div>
+                    @if ($categories->count() > 0)
+                        <!-- Pagination Links -->
+                        <div class="my-4">
+                            {{ $categories->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -94,5 +111,6 @@
 </x-app-layout>
 
 <script>
+    const lang = @json(getJSLang('category'));
     const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
 </script>

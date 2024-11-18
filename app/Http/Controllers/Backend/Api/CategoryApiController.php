@@ -93,8 +93,63 @@ class CategoryApiController extends Controller
         return response()->json($categories);
     }
 
+    public function edit(Request $request, $id)
+    {
+        // Select specific fields
+        // Find by ID       
+        
+        try {
+
+            $category = Category::select('category_name','color_code','base_price', 'description')->find($id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category successfully found.',
+                'data' => $category,
+            ],200);
+            
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['Category not found' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['category_delete' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+        
+        
+    }
+
     public function update(Request $request, $id)
     {
+        $res = [];
+        $res['success'] = false;
+        $res['message'] = false;
+        $res['errors'] = false;
+        $res['statusCode'] = false;
+
+        $category_name = $request->category_name;
+        
+        if(!empty($category_name)){
+            // Check if the category already exists manually (Optional if you want to customize the message further)
+            $existingCategory = Category::where('category_name', $request->category_name)
+            ->where('id', '!=', $id) // Exclude the given ID
+            ->first();
+            if ($existingCategory) {
+                // Return a custom error response for duplicate category_name
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Category name already exists.'),
+                    'errors' => [
+                        'category_name' => [__('The category name has already been taken.')]
+                    ]
+                ], 409);  // 409 Conflict - used when the request could not be completed due to a conflict.
+            }
+        }
+
         $category = Category::findOrFail($id);
 
         $request->validate([
@@ -102,35 +157,60 @@ class CategoryApiController extends Controller
             'base_price' => 'required|numeric',
             'description' => 'required|string|max:255',
             'color_code' => 'nullable|string|max:10',
-        ]);
+        ]);       
 
-        $category->update($request->all());
+        try {
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Category updated successfully.',
-            'category' => $category,
-        ]);
+            $category->update($request->all());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Category updated successfully.',
+                'category' => $category,
+            ]);
+
+            $res['success'] = true;
+            $res['message'] = __('Category updated successfully');
+            $res['statusCode'] = 201;
+            return jsonResponse($res);
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['Category not found' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['category_delete' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
     }
 
     public function destroy($id)
     {
-        
+        $res = [];
+        $res['success'] = false;
+        $res['message'] = false;
+        $res['errors'] = false;
+        $res['statusCode'] = false;
+
         try {
             $category = Category::findOrFail($id); // Attempt to find the category by ID
             $category->delete(); // Delete the category if found
-
-            $message = __('Category deleted successfully');
-            return jsonResponse(true,$message,[],200);
-
+            $res['success'] = true;
+            $res['message'] = __('Category deleted successfully');
+            $res['statusCode'] = 201;
+            return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
-            $errors = ['Category not found' => [$e->getMessage()]];
-            $message = __('An unexpected error occurred.');
-            return jsonResponse(false,$message,$errors,404);
+            $res['errors'] = ['Category not found' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
         } catch (Exception $e) {
-            $errors = ['category_delete' => [$e->getMessage()]];
-            $message = __('An unexpected error occurred.');
-            return jsonResponse(false,$message,$errors,500);
+            $res['errors'] = ['category_delete' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
         }
 
        

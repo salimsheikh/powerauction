@@ -343,7 +343,32 @@ html.dark {
     margin-bottom: 1rem;
     border: 1px solid transparent;
     border-radius: .25rem;
-    display: none;
+
+    opacity: 1;
+    visibility: visible;
+    height: auto;
+    width: auto;
+    transition: opacity 0.5s ease, visibility 0.5s ease, height 0.5s ease, width 0.5s ease;
+    overflow: hidden; /* Ensures smooth height transition */
+}
+
+/* Visible state */
+.alert.alert-visible {
+    opacity: 1;
+    visibility: visible;
+    height: auto;    
+    transition: opacity 0.5s ease, visibility 0.5s ease, height 0.5s ease, width 0.5s ease;
+    overflow: hidden; /* Ensures smooth height transition */
+}
+
+/* Hidden state */
+.alert.alert-hidden {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    padding: 0; /* Optional: To remove internal padding when hidden */
+    margin: 0; /* Optional: To collapse external margins */
 }
 
 .alert-primary {

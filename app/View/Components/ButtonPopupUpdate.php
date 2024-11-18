@@ -6,15 +6,14 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class PopupDeleteItemModel extends Component
+class ButtonPopupUpdate extends Component
 {
-    public $title = '';
     /**
      * Create a new component instance.
      */
-    public function __construct($title = '')
+    public function __construct()
     {
-        $this->title = $title;
+        //
     }
 
     /**
@@ -22,6 +21,6 @@ class PopupDeleteItemModel extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.popup-delete-item-model');
+        return view('components.button-popup-update');
     }
 }

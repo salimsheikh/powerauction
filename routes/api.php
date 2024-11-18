@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -13,11 +13,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Add your API routes here.
 });
 
-Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(function () {
         Route::get('/categories', [CategoryApiController::class, 'index']);
         Route::post('/categories/store', [CategoryApiController::class, 'store']);
         Route::get('/categories/search', [CategoryApiController::class, 'search']);
         Route::get('/categories/refresh', [CategoryApiController::class, 'refresh']);
+        Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
         Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
         Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);    
 });

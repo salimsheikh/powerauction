@@ -4,7 +4,7 @@
         <!-- Modal content -->
         <div class="modal-content max-w-lg">
             <div class="modal-header">
-                <h2>{{ __('Add New Item') }}</h2>
+                <h2>{{$title}}</h2>
                 <span class="popupCloseModel close-model">&times;</span>
             </div>
             <div class="modal-body space-y-4">

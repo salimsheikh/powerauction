@@ -16,11 +16,15 @@ if (buttonPopupShowAddItemModel) {
 
         popupTargetModel = popupAddItemModal;
 
-        popupAddItemModal.style.display = "block";
-        const modalContent = popupCustomModel.querySelector(".modal-content");
+        popupTargetModel.style.display = "block";
+        const modalContent = popupTargetModel.querySelector(".modal-content");
 
         modalContent.classList.remove('hidden', 'hide');
         modalContent.classList.add('show');
+
+        // Find the .alert element within the current form
+        const alertElement = popupTargetModel.querySelector(".alert");
+        alertElement.classList.add("alert-hidden");
     }
 }
 
@@ -102,16 +106,19 @@ if (popupAddForm) {
             if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
                 field.value = field.value.trim();
             }
-
         });
 
         let firstInvalidField = null;
+
+        let validData = true;
+        let requiredData = true;
 
         // Validate fields
         fields.forEach((field) => {
             if (field.classList.contains("required") && field.value === "") {
                 field.classList.add("invalid");
                 if (!firstInvalidField) firstInvalidField = field;
+                requiredData = true;
             }
 
             if (field.classList.contains("email_validate") && field.value !== "") {
@@ -119,6 +126,7 @@ if (popupAddForm) {
                 if (!emailPattern.test(field.value)) {
                     field.classList.add("invalid");
                     if (!firstInvalidField) firstInvalidField = field;
+                    validData = false;
                 }
             }
 
@@ -128,31 +136,31 @@ if (popupAddForm) {
                 if (!regex.test(field.value)) {
                     field.classList.add("invalid");
                     if (!firstInvalidField) firstInvalidField = field;
+                    validData = false;
                 }
             }
         });
 
-        alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-        alertElement.style.display = "block";
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success","alert-hidden");
 
         // Focus on the first invalid field
         if (firstInvalidField) {
             firstInvalidField.focus();
-            alertElement.textContent = "Please enter the required field.";
+            alertElement.textContent = lang.enter_required_fields;
             alertElement.classList.add("alert-danger");
             return false;
         }
 
         const sanctum_token = get_local_storage_token('sanctum_token');
         if (!sanctum_token) {
-            alertElement.textContent = "Some thing is wrong.";
+            alertElement.textContent = lang.something_wrong;
             alertElement.classList.add("alert-danger");
             return false;
         }
 
         const headers = get_ajax_header();
 
-        alertElement.textContent = "Please Wait!";
+        alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
 
         var formValues = {};
@@ -183,28 +191,31 @@ if (popupAddForm) {
             console.log("response 2");
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
-            
-        }).catch((error) => {
-            console.log("response 3");
-            if (error.errors) {
-                let errorMessage = '';
-                for (const key in error.errors) {
-                    errorMessage += `${error.errors[key].join(', ')}\n`;
+
+            // Remove the invalid class and trim inputs
+            fields.forEach((field) => {
+                if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
+                    field.value = '';
                 }
-                alertElement.classList.add("alert-danger");
-                alertElement.textContent = errorMessage;
-            } else {
-                console.error('Error:', error);
-                alertElement.classList.add("alert-danger");
-                alertElement.textContent = error;
-            }
+
+                if (field.type === "color") {
+                    field.value = '#000001';
+                }
+            });
+
+            setTimeout(function(){
+                hideModal();
+            },1500);
+
+        }).catch((error) => {
+            fatchResponseCatch(error, alertElement);
         });
 
         return false;
     });
 }
 
-function get_csrf_token(){
+function get_csrf_token() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }
 
@@ -275,34 +286,36 @@ let selectedButton = null;
 let delete_id = 0;
 
 // Add event listener to dynamically created buttons
-tableContainer.addEventListener('click', function (e) {
-    e.preventDefault();
+if (tableContainer) {
+    tableContainer.addEventListener('click', function (e) {
+        e.preventDefault();
 
-    if (e.target && e.target.classList.contains('delete-button')) {
-        selectedButton = e.target; // Store the clicked button
-        
-        delete_id = selectedButton.getAttribute('data-id');       
+        if (e.target && e.target.classList.contains('delete-button')) {
+            selectedButton = e.target; // Store the clicked button
 
-        popupDeleteItemModal.style.display = "block";
-        const modalContent = popupDeleteItemModal.querySelector(".modal-content");
+            delete_id = selectedButton.getAttribute('data-id');
 
-        modalContent.classList.remove('hidden', 'hide');
-        modalContent.classList.add('show');
+            popupDeleteItemModal.style.display = "block";
+            const modalContent = popupDeleteItemModal.querySelector(".modal-content");
 
-        popupTargetModel = popupDeleteItemModal;
+            modalContent.classList.remove('hidden', 'hide');
+            modalContent.classList.add('show');
 
-        // Find the .alert element within the current form
-        const alertElement = popupTargetModel.querySelector(".alert");
-        alertElement.style.display = "none";
+            popupTargetModel = popupDeleteItemModal;
 
-        const body_content = popupTargetModel.querySelector('.body-content');
-        body_content.style.display = "block";
+            // Find the .alert element within the current form
+            const alertElement = popupTargetModel.querySelector(".alert");
+            alertElement.classList.add('alert-hidden')
 
-        const deleteButton = document.getElementById('btnPopupDelete');
+            const body_content = popupTargetModel.querySelector('.body-content');
+            body_content.style.display = "block";
 
-        deleteButton.disabled = false;
-    }
-});
+            const deleteButton = document.getElementById('btnPopupDelete');
+
+            deleteButton.disabled = false;
+        }
+    });
+}
 
 const popupDeleteForm = document.getElementById("popupDeleteForm");
 if (popupDeleteForm) {
@@ -324,29 +337,24 @@ if (popupDeleteForm) {
         const body_content = currentForm.querySelector('.body-content');
 
         const deleteButton = document.getElementById('btnPopupDelete');
-
-        
-
-        alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-        alertElement.style.display = "block";
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success","alert-hidden");
 
         const sanctum_token = get_local_storage_token('sanctum_token');
         if (!sanctum_token) {
-            alertElement.textContent = "Some thing is wrong.";
+            alertElement.textContent = lang.something_wrong;
             alertElement.classList.add("alert-danger");
             return false;
         }
 
         const headers = get_ajax_header();
 
-        alertElement.textContent = "Please Wait!";
-        alertElement.classList.add("alert-info");
-        body_content.style.display = "none";
+        alertElement.textContent = lang.please_wait;
+        alertElement.classList.add("alert-info");        
         deleteButton.disabled = true;
+        body_content.style.display = "none";
 
         formProcessing = true;
-        console.log(delete_id);
-
+        
         fetch(`${BASE_API_URL}/${delete_id}`, {
             method: 'delete',
             headers: headers,
@@ -365,29 +373,293 @@ if (popupDeleteForm) {
 
             return response.json();
         }).then((data) => {
-            console.log("response 2",data);
+            console.log("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
-            setTimeout(function(){
+            setTimeout(function () {
                 hideModal();
-                deleteButton.disabled = true;
-            },1500);            
+                deleteButton.disabled = false;
+            }, 1500);
         }).catch((error) => {
-            deleteButton.disabled = true;
-            console.log("response 3");
-            if (error.errors) {
-                let errorMessage = '';
-                for (const key in error.errors) {
-                    errorMessage += `${error.errors[key].join(', ')}\n`;
-                }
-                alertElement.classList.add("alert-danger");
-                alertElement.textContent = errorMessage;
-            } else {
-                console.error('Error:', error);
-                alertElement.classList.add("alert-danger");
-                alertElement.textContent = error;
-            }
+            deleteButton.disabled = false;
+            fatchResponseCatch(error, alertElement);
         });
 
     });
+}
+
+var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+// Change the icons inside the button based on previous settings
+if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
+    '(prefers-color-scheme: dark)').matches)) {
+    themeToggleLightIcon.classList.remove('hidden');
+} else {
+    themeToggleDarkIcon.classList.remove('hidden');
+}
+
+var themeToggleBtn = document.getElementById('theme-toggle');
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', function () {
+
+        // toggle icons inside button
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+
+        // if set via local storage previously
+        if (localStorage.getItem('color-theme')) {
+            if (localStorage.getItem('color-theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            }
+
+            // if NOT set via local storage previously
+        } else {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+
+    });
+}
+
+var popupUpdateItemModal = document.getElementById("popupUpdateItemModal");
+let edit_id = 0;
+
+// Add event listener to dynamically created buttons
+if (tableContainer) {
+    tableContainer.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (e.target && e.target.classList.contains('edit-button')) {
+            selectedButton = e.target; // Store the clicked button
+
+            if (formProcessing) {
+                return false;
+            }
+
+            edit_id = e.target.getAttribute('data-id');
+
+            popupTargetModel = popupUpdateItemModal;
+
+            popupTargetModel.style.display = "block";
+            const modalContent = popupTargetModel.querySelector(".modal-content");
+
+            modalContent.classList.remove('hidden', 'hide');
+            modalContent.classList.add('show');
+
+            // Find the .alert element within the current form
+            const alertElement = popupTargetModel.querySelector(".alert");
+
+            const body_content = popupTargetModel.querySelector('.body-content');
+
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");         
+
+            const sanctum_token = get_local_storage_token('sanctum_token');
+            if (!sanctum_token) {
+                alertElement.textContent = lang.something_wrong;
+                alertElement.classList.add("alert-danger");
+                return false;
+            }
+
+            const headers = get_ajax_header();
+
+            alertElement.textContent = lang.please_wait;
+            alertElement.classList.add("alert-info");
+
+            formProcessing = true;
+            console.log(edit_id);
+
+            console.log(`${BASE_API_URL}/edit/${edit_id}`)
+
+            fetch(`${BASE_API_URL}/edit/${edit_id}`, {
+                method: 'get',
+                headers: headers,
+                // body: JSON.stringify([]),
+            }).then((response) => {
+                console.log("response 1");
+                //do not delete
+                alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+                formProcessing = false;
+
+                if (!response.ok) {
+                    return response.json().then((error) => {
+                        throw error;
+                    });
+                }
+
+                return response.json();
+            }).then((data) => {
+                console.log("response 2", data);
+                alertElement.textContent = data.message;
+                alertElement.classList.add("alert-success");
+                setTimeout(function () {
+                    alertElement.classList.add('alert-hidden');
+                }, 500);
+
+                let formData = data.data;
+
+                for (const key in formData) {
+                    if (formData.hasOwnProperty(key)) {
+                        if (formData[key] != "") {
+                            document.getElementById('update_' + key).value = formData[key];
+                        }
+                    }
+                }
+
+            }).catch((error) => {
+                fatchResponseCatch(error, alertElement);
+            });
+
+        }
+    });
+}
+
+const popupUpdateForm = document.getElementById('popupUpdateForm');
+if(popupUpdateForm){
+    popupUpdateForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        if (formProcessing) {
+            return false;
+        }
+
+        // Get the current form
+        const currentForm = event.target;
+
+        // Find the .alert element within the current form
+        const alertElement = currentForm.querySelector(".alert");
+
+        // Get all input and textarea elements
+        const fields = this.querySelectorAll("input, textarea");
+
+        // Remove the invalid class and trim inputs
+        fields.forEach((field) => {
+            field.classList.remove("invalid");
+            if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
+                field.value = field.value.trim();
+            }
+        });
+
+        let firstInvalidField = null;
+
+        // Validate fields
+        fields.forEach((field) => {
+            if (field.classList.contains("required") && field.value === "") {
+                field.classList.add("invalid");
+                if (!firstInvalidField) firstInvalidField = field;
+            }
+
+            if (field.classList.contains("email_validate") && field.value !== "") {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(field.value)) {
+                    field.classList.add("invalid");
+                    if (!firstInvalidField) firstInvalidField = field;
+                }
+            }
+
+            if (field.classList.contains("price_validate") && field.value !== "") {
+                // Validate if it's a valid number with one decimal place
+                const regex = /^[0-9]+(\.[0-9]{1,2})?$/;
+                if (!regex.test(field.value)) {
+                    field.classList.add("invalid");
+                    if (!firstInvalidField) firstInvalidField = field;
+                }
+            }
+        });
+
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+        
+        // Focus on the first invalid field
+        if (firstInvalidField) {
+            firstInvalidField.focus();
+            alertElement.textContent = lang.enter_required_fields;
+            alertElement.classList.add("alert-danger");
+            return false;
+        }
+
+        const sanctum_token = get_local_storage_token('sanctum_token');
+        if (!sanctum_token) {
+            alertElement.textContent = lang.something_wrong;
+            alertElement.classList.add("alert-danger");
+            return false;
+        }
+
+        const headers = get_ajax_header();
+
+        alertElement.textContent = lang.please_wait;
+        alertElement.classList.add("alert-info");
+
+        var formValues = {};
+        fields.forEach((field) => {
+            formValues[field.name] = field.value;
+        });
+
+        formProcessing = true;
+
+        fetch(`${BASE_API_URL}/${edit_id}`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(formValues),
+        }).then((response) => {
+            console.log("response 1");
+            //do not delete
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+            formProcessing = false;
+
+            if (!response.ok) {
+                return response.json().then((error) => {
+                    throw error;
+                });
+            }
+
+            return response.json();
+        }).then((data) => {
+            console.log("response 2");
+            alertElement.textContent = data.message;
+            alertElement.classList.add("alert-success");
+
+            setTimeout(function () {
+                hideModal();
+            }, 1500);
+
+        }).catch((error) => {
+            fatchResponseCatch(error, alertElement);
+        });
+
+        return false;
+    });
+}
+
+
+function fatchResponseCatch(error, alertElement){
+    
+    console.log("response 3");
+    if (error.errors) {
+        let errorMessage = '';
+        for (const key in error.errors) {
+            errorMessage += `${error.errors[key].join(', ')}\n`;
+        }
+        alertElement.classList.add("alert-danger");
+        alertElement.textContent = errorMessage;
+    } else {
+        console.error('Error:', error);
+        alertElement.classList.add("alert-danger");
+
+        // Custom handling for unexpected response
+        if (error.search('Unexpected token')) {
+            alertElement.textContent = 'The server returned an invalid response. Please try again later.';
+        } else {
+            alertElement.textContent = 'An error occurred: ' + error;
+        }
+    }
 }

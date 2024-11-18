@@ -10,6 +10,7 @@ class PopupFormInput extends Component
 {
     public $type = "";
     public $name = "";
+    public $id = "";
     public $class = "";
     public $label = "";
     public $value = "";
@@ -18,14 +19,17 @@ class PopupFormInput extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct($type = 'text', $name = 'inputname', $label = 'label', $class = '', $value = '', $mexlength = '100')
+    public function __construct($type = 'text', $name = 'inputname', $id = '', $label = 'label', $class = '', $value = '', $mexlength = '100')
     {
+        $id = $id == "" ? $name : $id;
+
         $this->type = $type;
         $this->name = $name;
+        $this->id = $id;
         $this->label = $label;
-        $this->class = $class;
+        $this->class = $class != "" ? $class : $id;
         $this->value = $value;
-        $this->mexlength = $mexlength;
+        $this->mexlength = $mexlength != '' ? $mexlength : 191;
     }
 
     /**
