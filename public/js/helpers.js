@@ -298,18 +298,35 @@ initialize(); // Call the async function
 // Fetch data and render table
 async function fetchAndRender(page = 1) {
 
+    var tableSearch = document.getElementById('table-search').value;    
+
     const headers = get_ajax_header();
 
-    const response = await fetch(`${BASE_API_URL}?page=${page}`, {
+    let url = `${BASE_API_URL}?page=${page}`;
+    url += tableSearch != "" ? "&query="+encodeURIComponent(tableSearch) : "";
+
+    console.log(url);
+    
+    const response = await fetch(url, {
         method: 'get',
         headers: headers
-    });
+    }); 
+
+    
 
     const data = await response.json();    
 
+    console.log(data.categories.currentPage);
+    console.log(data.categories.currentPage);
+
     renderTable(data.categories.data);
 
-    renderPagination(data.categories.links);
+    renderPagination(data.categories.links,data.categories.current_page, data.categories.last_page, data.categories.total);
+
+    // Apply to all elements with class "dynamic-box"
+    document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
+
+    formProcessing = false;
 }
  // Render table rows
  function renderTable(rows) {
@@ -319,7 +336,7 @@ async function fetchAndRender(page = 1) {
             <td>${row.id}</td>
             <td>${row.category_name}</td>            
             <td>${row.base_price}</td>
-            <td>${row.color_code == null ? '' : `<span style="background-color: ${row.color_code};">${row.color_code}</span>`}</td>
+            <td>${row.color_code == null ? '' : `<span class="color-code" style="background-color: ${row.color_code};">${row.color_code}</span>`}</td>
             <td>${row.description}</td>
             <td class="text-center">
                 <a href="#" class="btn edit-btn edit-button" data-id="${row.id}">Edit</a>
@@ -330,13 +347,17 @@ async function fetchAndRender(page = 1) {
 }
 
 // Render pagination
-function renderPagination(links) {
+function renderPagination(links, currentPage, totalPages, totalItems) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = links.map(link => `
         <li class="${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}">
             <a href="#" onclick="handlePagination(event, '${link.url}')">${link.label}</a>
         </li>
     `).join('');
+
+    // Render pagination info (e.g., current page, total pages, total items)
+    const paginationInfo = document.getElementById('pagination-info');
+    paginationInfo.innerHTML = `Page ${currentPage} of ${totalPages} | Total items: ${totalItems}`;
 }
 
 // Handle pagination click
@@ -350,3 +371,17 @@ function handlePagination(event, url) {
 
 // Initial load
 fetchAndRender();
+
+function setTextColorBasedOnBg(element) {
+    // Get the background color
+    const bgColor = window.getComputedStyle(element).backgroundColor;
+
+    // Extract RGB values
+    const rgb = bgColor.match(/\d+/g).map(Number); // Extract numbers from "rgb(x, y, z)"
+
+    // Calculate luminance
+    const luminance = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+
+    // Set text color based on luminance
+    element.style.color = luminance > 0.5 ? "black" : "white";
+}

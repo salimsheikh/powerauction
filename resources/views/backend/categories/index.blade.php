@@ -49,8 +49,9 @@
                         <div class="pb-4 search-input">
                             <label for="table-search" class="sr-only">{{ __('Search') }}</label>
                             <div class="relative">
-                                <div
-                                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                <form id="formSearch" method="GET">
+                                <div id="searchText"
+                                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 cursor-pointer outline-none">
                                     <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -60,12 +61,11 @@
                                 <input type="text" id="table-search"
                                     class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="{{ __('Search for items') }}">
+
+                                <form>
                             </div>
                         </div>
                     </div>
-
-                    
-
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container" id="tableContainer">
@@ -84,7 +84,10 @@
                             </table>                            
                         </div>
                     </div>
-                    <div class="my-4"><ul class="custom-pagination" id="pagination"></ul></div>                    
+                    <div class="my-4 lg:flex justify-between items-center text-gray-900 dark:text-white">
+                        <div id="pagination-info"></div>
+                        <ul class="custom-pagination" id="pagination"></ul>
+                    </div>                    
                 </div>
             </div>
         </div>

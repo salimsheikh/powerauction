@@ -15,6 +15,40 @@ class CategoryApiController extends Controller
 {
     public function index(Request $request)
     {
+        //\Log::info('Request Object:', ['data' => json_encode($request)]);
+
+        //$categories = Category::select('id','category_name','color_code','base_price', 'description')->paginate(10);
+
+        // Get the search query from the request
+        $query = $request->input('query','');        
+
+        \Log::info('Request Object:', ['data' => $query]);
+
+        // Start the query builder for the Category model
+        $categoriesQuery = Category::query();
+
+        // If there is a search query, apply the filters
+        if ($query) {
+            $categoriesQuery->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('category_name', 'like', '%' . $query . '%')
+                    ->orWhere('description', 'like', '%' . $query . '%')
+                    ->orWhere('base_price', 'like', '%' . $query . '%')
+                    ->orWhere('color_code', 'like', '%' . $query . '%');
+            });
+        }        
+
+        // Paginate the results
+        $categories = $categoriesQuery->paginate(10);
+
+
+        // Output the SQL query and bindings
+        //$sql = $categoriesQuery->toSql();
+        //$bindings = $categoriesQuery->getBindings();
+
+        //\Log::info('Generated SQL Query: ' . $sql);
+        //\Log::info('Bindings: ' . implode(', ', $bindings));
+
+        // Define column names (localized)
         $columns = [];
         $columns['id'] = __('ID');
         $columns['category_name'] = __('category_name');
@@ -22,7 +56,7 @@ class CategoryApiController extends Controller
         $columns['base_price'] = __('base_price');
         $columns['description'] = __('description');
 
-        $categories = Category::select('id','category_name','color_code','base_price', 'description')->paginate(5);
+        // Return the columns and categories data in JSON format
         return response()->json([
             'columns' => $columns,
             'categories' => $categories
@@ -89,13 +123,25 @@ class CategoryApiController extends Controller
 
     public function search(Request $request)
     {
+        $columns = [];
+        $columns['id'] = __('ID');
+        $columns['category_name'] = __('category_name');
+        $columns['color_code'] = __('color_code');
+        $columns['base_price'] = __('base_price');
+        $columns['description'] = __('description');       
+
         $query = $request->input('query');
+
         $categories = Category::where('category_name', 'like', '%' . $query . '%')
             ->orWhere('description', 'like', '%' . $query . '%')
-            ->get();
+            ->orWhere('base_price', 'like', '%' . $query . '%')
+            ->paginate(10);
 
-        return response()->json($categories);
-    }
+        return response()->json([
+            'columns' => $columns,
+            'categories' => $categories
+        ]);
+}
 
     public function refresh()
     {

@@ -520,6 +520,7 @@ html.dark {
 
     --tw-bg-opacity: 1;
     background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+    
     --tw-border-opacity: 1;
     border-color: rgb(75 85 99 / var(--tw-border-opacity));
 }
@@ -538,10 +539,18 @@ html.dark {
     pointer-events: none;
 }
 
+#pagination-info{    
+    font-size: 14px;
+}
+
 @media (min-width: 701px) and (max-width: 900px) {
     .custom-pagination a {
         padding: 6px;  
         font-size: 0.7rem;  
+    }
+
+    #pagination-info{
+        display: none;
     }
 }
 
@@ -559,5 +568,10 @@ html.dark {
     .custom-pagination li:last-child a,
     .custom-pagination li:first-child a{
         border-radius: 0.375rem;
+    }
+    
+    #pagination-info{
+        display: none;
+        font-size: 14px;
     }
 }

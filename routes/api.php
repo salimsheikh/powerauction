@@ -14,11 +14,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(function () {
-        Route::get('/categories', [CategoryApiController::class, 'index']);
-        Route::post('/categories/store', [CategoryApiController::class, 'store']);
-        Route::get('/categories/search', [CategoryApiController::class, 'search']);
-        Route::get('/categories/refresh', [CategoryApiController::class, 'refresh']);
-        Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
-        Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
-        Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);    
+    Route::get('/categories', [CategoryApiController::class, 'index']);
+    Route::post('/categories/store', [CategoryApiController::class, 'store']);                
+    Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
+    Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);    
 });

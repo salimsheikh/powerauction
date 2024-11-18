@@ -1,5 +1,3 @@
-var formProcessing = false;
-
 var popupTargetModel = null;
 
 var popupCustomModel = document.getElementsByClassName("custom-modal")[0];
@@ -404,3 +402,37 @@ if (popupDeleteForm) {
 
     });
 }
+
+
+const formSearch = document.getElementById("formSearch");
+if (formSearch) {
+
+    formSearch.addEventListener("submit", function (event) {
+
+        event.preventDefault(); // Prevent form submission
+
+        if (formProcessing) {
+            return false;
+        }
+
+        fetchAndRender();
+
+    });
+}
+
+const searchText = document.getElementById("searchText");
+if (searchText) {
+
+    formSearch.addEventListener("click", function (event) {
+
+        event.preventDefault(); // Prevent form submission
+
+        if (formProcessing) {
+            return false;
+        }
+
+        fetchAndRender();
+
+    });
+}
+
