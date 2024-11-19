@@ -7,7 +7,7 @@
 
     <!-- Add Item Popup -->
     <x-popup-add-item-model title="{{__('Add new Category')}}">
-        <x-popup-form-input type="text" name="category_name" label="{{ __('Category Name:') }}" class="required"
+        <x-popup-form-input type="text" name="category_name" label="{{ __('Category Name:') }}" class="focus_first category_name required"
             maxlength="50" value="" />
         <x-popup-form-input type="text" name="base_price" label="{{ __('Base Price:') }}"
             class="required price_validate" maxlength="10" value="" />
@@ -24,7 +24,7 @@
 
     <!-- Update Item Popup -->
     <x-popup-update-item-model title="{{__('Update Category')}}">
-        <x-popup-form-input type="text" name="category_name" id="update_category_name" label="{{ __('Category Name:') }}" class="category_name required"
+        <x-popup-form-input type="text" name="category_name" id="update_category_name" label="{{ __('Category Name:') }}" class="focus_first category_name required"
             maxlength="50" value="" />
         <x-popup-form-input type="text" name="base_price" id="update_base_price" label="{{ __('Base Price:') }}"
             class="required price_validate base_price" maxlength="10" value="" />

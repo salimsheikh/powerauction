@@ -15,6 +15,11 @@ if (buttonPopupShowAddItemModel) {
         popupTargetModel = popupAddItemModal;
 
         showPopupForm();
+
+        const focus_first = popupTargetModel.querySelector(".focus_first");
+
+        focus_first.focus();
+        
     }
 }
 
@@ -51,7 +56,7 @@ if (popupAddForm) {
 
         // Get all input and textarea elements
         const fields = currentForm.querySelectorAll("input, textarea");
-
+       
         alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
 
         const validForm = validateForm(currentForm, alertElement);
@@ -95,6 +100,8 @@ if (popupAddForm) {
 
             cleanForm(fields);
 
+            fetchAndRender(current_page);
+
             setTimeout(function () {
                 hideModal();
             }, 1500);
@@ -128,7 +135,16 @@ if (tableContainer) {
 
             popupTargetModel = popupUpdateItemModal;
 
-            showPopupForm();
+            
+
+            // Get all input and textarea elements
+            const fields = popupTargetModel.querySelectorAll("input, textarea");
+
+            cleanForm(fields);
+
+            const focus_first = popupTargetModel.querySelector(".focus_first");
+
+            focus_first.focus();
 
             // Find the .alert element within the current form
             const alertElement = popupTargetModel.querySelector(".alert");
@@ -169,7 +185,10 @@ if (tableContainer) {
             }).then((data) => {
 
                 alertElement.textContent = data.message;
-                alertElement.classList.add("alert-success");
+                alertElement.classList.add("alert-success");               
+
+                focus_first.focus();
+
                 setTimeout(function () {
                     alertElement.classList.remove("alert-success");
                     alertElement.classList.add('alert-hidden');
@@ -179,11 +198,13 @@ if (tableContainer) {
 
                 for (const key in formData) {
                     if (formData.hasOwnProperty(key)) {
-                        if (formData[key] != "") {
+                        if (formData[key] != "" && formData[key] != null) {
                             document.getElementById('update_' + key).value = formData[key];
                         }
                     }
                 }
+
+                showPopupForm();
 
             }).catch((error) => {
                 fatchResponseCatch(error, alertElement);
@@ -297,6 +318,8 @@ if (popupUpdateForm) {
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
 
+            fetchAndRender(current_page);
+            
             setTimeout(function () {
                 hideModal();
             }, 1500);
@@ -328,6 +351,7 @@ if (tableContainer) {
 
             const deleteButton = document.getElementById('btnPopupDelete');
             deleteButton.disabled = false;
+            deleteButton.focus();
         }
     });
 }
@@ -391,6 +415,18 @@ if (popupDeleteForm) {
             console.log("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
+
+            const table_body = document.getElementById('table-body');
+
+             // Get all <tr> elements inside the table
+            const rows = document.querySelectorAll('#table-body tr').length;           
+
+            if(rows <=1){
+                current_page = current_page >= 1 ?  current_page - 1 : current_page;
+            }
+            console.log(current_page);
+            fetchAndRender(current_page);
+
             setTimeout(function () {
                 hideModal();
                 deleteButton.disabled = false;
@@ -399,7 +435,6 @@ if (popupDeleteForm) {
             deleteButton.disabled = false;
             fatchResponseCatch(error, alertElement);
         });
-
     });
 }
 

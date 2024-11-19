@@ -293,31 +293,36 @@ async function initialize() {
     const token = await get_token();
 }
 
-initialize(); // Call the async function
+//initialize(); // Call the async function
+
+let current_page = 1;
 
 // Fetch data and render table
 async function fetchAndRender(page = 1) {
 
-    var tableSearch = document.getElementById('table-search').value;    
+    const tbody = document.getElementById('table-body');
+    if(!tbody){
+        return false;
+    }
 
-    const headers = get_ajax_header();
+    var tableSearchElement = document.getElementById('table-search').value; 
+    var tableSearch = "";
+    if(tableSearchElement){
+        tableSearch = tableSearchElement.value;
+    }
 
     let url = `${BASE_API_URL}?page=${page}`;
+
     url += tableSearch != "" ? "&query="+encodeURIComponent(tableSearch) : "";
 
-    console.log(url);
+    const headers = get_ajax_header();
     
     const response = await fetch(url, {
         method: 'get',
         headers: headers
-    }); 
-
-    
+    });
 
     const data = await response.json();    
-
-    console.log(data.categories.currentPage);
-    console.log(data.categories.currentPage);
 
     renderTable(data.categories.data);
 
@@ -365,12 +370,13 @@ function handlePagination(event, url) {
     event.preventDefault();
     if (url) {
         const page = new URL(url).searchParams.get('page');
+        current_page = page;
         fetchAndRender(page);
     }
 }
 
 // Initial load
-fetchAndRender();
+fetchAndRender(current_page);
 
 function setTextColorBasedOnBg(element) {
     // Get the background color

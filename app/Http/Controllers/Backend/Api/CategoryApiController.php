@@ -35,7 +35,11 @@ class CategoryApiController extends Controller
                     ->orWhere('base_price', 'like', '%' . $query . '%')
                     ->orWhere('color_code', 'like', '%' . $query . '%');
             });
-        }        
+        }
+
+        // Order by category_name in ascending order
+        //$categoriesQuery->orderBy('category_name', 'asc');
+        $categoriesQuery->orderBy('id', 'desc');
 
         // Paginate the results
         $categories = $categoriesQuery->paginate(10);
