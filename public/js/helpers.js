@@ -65,7 +65,7 @@ inputs.forEach(input => {
 
         if (input.classList.contains('base_price')) {
             var v = input.classList.contains('base_price')
-            if(isNumberKey(v,e)){
+            if (isNumberKey(v, e)) {
                 input.classList.remove('invalid'); // Remove the 'invalid' class
             }
         }
@@ -301,42 +301,107 @@ let current_page = 1;
 async function fetchAndRender(page = 1) {
 
     const tbody = document.getElementById('table-body');
-    if(!tbody){
+    if (!tbody) {
         return false;
     }
 
-    var tableSearchElement = document.getElementById('table-search').value; 
+    var tableSearchElement = document.getElementById('table-search');
     var tableSearch = "";
-    if(tableSearchElement){
+    if (tableSearchElement) {
         tableSearch = tableSearchElement.value;
     }
 
     let url = `${BASE_API_URL}?page=${page}`;
 
-    url += tableSearch != "" ? "&query="+encodeURIComponent(tableSearch) : "";
+    url += tableSearch != "" ? "&query=" + encodeURIComponent(tableSearch) : "";
 
     const headers = get_ajax_header();
-    
+
     const response = await fetch(url, {
         method: 'get',
         headers: headers
     });
 
-    const data = await response.json();    
+    const data = await response.json();
 
-    renderTable(data.categories.data);
+    const columns = data.columns;
 
-    renderPagination(data.categories.links,data.categories.current_page, data.categories.last_page, data.categories.total);
+    renderTableHeader(data.columns);
+
+    renderTable(data.categories.data, data.categories.total, data.columns);
+
+    renderPagination(data.categories.links, data.categories.current_page, data.categories.last_page, data.categories.total);
 
     // Apply to all elements with class "dynamic-box"
     document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
 
     formProcessing = false;
 }
- // Render table rows
- function renderTable(rows) {
+
+function renderTableHeader(columns) {
+    document.getElementById('table-head').innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
+}
+// Render table rows
+function renderTable(rows, totalItems, columns) {
     const tbody = document.getElementById('table-body');
-    tbody.innerHTML = rows.map(row => `
+
+    if (totalItems > 0) {
+        tbody.innerHTML = renderTableRows(rows, columns);
+    } else {
+        const colspan = Object.keys(columns).length;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="${colspan}">
+                    <p class="text-center text-gray-800 dark:text-white">${lang.not_found}</p>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function renderTableRows(rows, columns) {
+    let id = 0;
+    let output = "";
+    let cell_value = "";
+    let cell_class = "";
+    let cell_edit = `<span class="block buttonText">${lang.edit}</span>
+                        <svg class="hidden w-5 h-5 animate-spin text-white absolute loadingSpinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
+                        </svg>`;
+    rows.forEach(row => {
+        id = row.id;
+        output += "<tr>";
+        for (const [cn] of Object.entries(columns)) {
+            cell_value = "";
+            cell_class = cn;
+            switch (cn) {
+                case "action":
+                    cell_value = row[cn];
+                    break;
+                case "color_code":
+                    cell_value = row[cn];
+                    cell_value = cell_value == null ? '' : `<span class="color-code" style="background-color: ${cell_value};">${cell_value}</span>`;
+                    break;
+                case "actions":
+                    cell_value += `<a href="#" class="btn edit-btn edit-button"  data-id="${id}">${cell_edit}</a>`;
+                    cell_value += `<a href="#" class="btn delete-btn delete-button" data-id="${id}">${lang.delete}</a>`;
+                    break;
+                default:
+                    cell_value = row[cn];
+                    break;
+            }
+            output += `<td class="${cell_class}">${cell_value}</td>`;
+
+        }
+        output += "</tr>";
+    });
+
+    return output;
+}
+
+function renderRowByMap(rows) {
+    return rows.map(row => `
         <tr>
             <td>${row.id}</td>
             <td>${row.category_name}</td>            
@@ -354,15 +419,20 @@ async function fetchAndRender(page = 1) {
 // Render pagination
 function renderPagination(links, currentPage, totalPages, totalItems) {
     const pagination = document.getElementById('pagination');
-    pagination.innerHTML = links.map(link => `
-        <li class="${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}">
-            <a href="#" onclick="handlePagination(event, '${link.url}')">${link.label}</a>
-        </li>
-    `).join('');
-
-    // Render pagination info (e.g., current page, total pages, total items)
     const paginationInfo = document.getElementById('pagination-info');
-    paginationInfo.innerHTML = `Page ${currentPage} of ${totalPages} | Total items: ${totalItems}`;
+    if (totalItems > 0) {
+        pagination.innerHTML = links.map(link => `
+            <li class="${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}">
+                <a href="#" onclick="handlePagination(event, '${link.url}')">${link.label}</a>
+            </li>
+        `).join('');
+
+        // Render pagination info (e.g., current page, total pages, total items)        
+        paginationInfo.innerHTML = `Page ${currentPage} of ${totalPages} | Total items: ${totalItems}`;
+    } else {
+        pagination.innerHTML = ``;
+        paginationInfo.innerHTML = ``;
+    }
 }
 
 // Handle pagination click
@@ -391,3 +461,5 @@ function setTextColorBasedOnBg(element) {
     // Set text color based on luminance
     element.style.color = luminance > 0.5 ? "black" : "white";
 }
+
+

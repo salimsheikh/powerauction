@@ -37,9 +37,11 @@ class CategoryApiController extends Controller
             });
         }
 
+        $categoriesQuery->where('status', 'publish');
+
         // Order by category_name in ascending order
-        //$categoriesQuery->orderBy('category_name', 'asc');
-        $categoriesQuery->orderBy('id', 'desc');
+        $categoriesQuery->orderBy('category_name', 'asc');
+        //$categoriesQuery->orderBy('id', 'desc');
 
         // Paginate the results
         $categories = $categoriesQuery->paginate(10);
@@ -55,10 +57,11 @@ class CategoryApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['id'] = __('ID');
-        $columns['category_name'] = __('category_name');
-        $columns['color_code'] = __('color_code');
-        $columns['base_price'] = __('base_price');
-        $columns['description'] = __('description');
+        $columns['category_name'] = __('Category Name');        
+        $columns['base_price'] = __('Base Price');
+        $columns['color_code'] = __('Color Code');
+        $columns['description'] = __('Description');
+        $columns['actions'] = __('Actions');
 
         // Return the columns and categories data in JSON format
         return response()->json([
@@ -124,35 +127,7 @@ class CategoryApiController extends Controller
             ], 409);
         }
     }
-
-    public function search(Request $request)
-    {
-        $columns = [];
-        $columns['id'] = __('ID');
-        $columns['category_name'] = __('category_name');
-        $columns['color_code'] = __('color_code');
-        $columns['base_price'] = __('base_price');
-        $columns['description'] = __('description');       
-
-        $query = $request->input('query');
-
-        $categories = Category::where('category_name', 'like', '%' . $query . '%')
-            ->orWhere('description', 'like', '%' . $query . '%')
-            ->orWhere('base_price', 'like', '%' . $query . '%')
-            ->paginate(10);
-
-        return response()->json([
-            'columns' => $columns,
-            'categories' => $categories
-        ]);
-}
-
-    public function refresh()
-    {
-        $categories = Category::all();
-        return response()->json($categories);
-    }
-
+   
     public function edit(Request $request, $id)
     {
         // Select specific fields

@@ -12,7 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\CustomAuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest','throttle:100,6'])->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
@@ -29,9 +29,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 
-    Route::post('csutom-login', [CustomAuthController::class, 'login']);
+    Route::post('csutom-login', [CustomAuthController::class, 'login']);    
     
-    Route::post('csutom-logout', [CustomAuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
 Route::middleware('auth')->group(function () {

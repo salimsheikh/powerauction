@@ -14,5 +14,6 @@ class Category extends Model
         'base_price',
         'description',
         'color_code',
+        'status',
     ];
 }

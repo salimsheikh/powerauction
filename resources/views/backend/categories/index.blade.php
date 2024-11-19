@@ -67,10 +67,12 @@
                         </div>
                     </div>
 
+                    
+
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container" id="tableContainer">
                             <table class="custom-table">
-                                <thead>
+                                <thead id="table-head">
                                     <tr>
                                         <th>{{ __('#ID') }}</th>
                                         <th>{{ __('Category Name') }}</th>
@@ -80,7 +82,13 @@
                                         <th class="text-center">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-body"></tbody>
+                                <tbody id="table-body">
+                                    <tr>
+                                        <td colspan="6">
+                                            <p class="text-center text-gray-800 dark:text-white">{{__('Please wait! loading table.')}}</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>                            
                         </div>
                     </div>

@@ -129,13 +129,11 @@ if (tableContainer) {
 
             if (formProcessing) {
                 return false;
-            }
+            }            
 
             edit_id = e.target.getAttribute('data-id');
 
-            popupTargetModel = popupUpdateItemModal;
-
-            
+            popupTargetModel = popupUpdateItemModal;            
 
             // Get all input and textarea elements
             const fields = popupTargetModel.querySelectorAll("input, textarea");
@@ -161,19 +159,27 @@ if (tableContainer) {
             const headers = get_ajax_header();
 
             alertElement.textContent = lang.please_wait;
-            alertElement.classList.add("alert-info");
+            alertElement.classList.add("alert-info");            
 
+            const buttonText = selectedButton.querySelector(".buttonText");
+            const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
+
+            buttonText.classList.add('hidden'); // Hide the text
+            loadingSpinner.classList.remove('hidden'); // Show the spinner
+           
             formProcessing = true;
 
             fetch(`${BASE_API_URL}/edit/${edit_id}`, {
                 method: 'get',
-                headers: headers,
-                // body: JSON.stringify([]),
+                headers: headers
             }).then((response) => {
                 console.log("response 1");
                 //do not delete
                 alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 formProcessing = false;
+
+                buttonText.classList.remove('hidden'); // Hide the text
+                loadingSpinner.classList.add('hidden'); // Show the spinner
 
                 if (!response.ok) {
                     return response.json().then((error) => {
@@ -317,6 +323,8 @@ if (popupUpdateForm) {
             console.log("response 2");
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
+
+            console.log(current_page)
 
             fetchAndRender(current_page);
             
