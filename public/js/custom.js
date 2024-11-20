@@ -446,7 +446,6 @@ if (popupDeleteForm) {
     });
 }
 
-
 const formSearch = document.getElementById("formSearch");
 if (formSearch) {
 
@@ -456,26 +455,32 @@ if (formSearch) {
 
         if (formProcessing) {
             return false;
-        }
+        }       
 
         fetchAndRender();
-
     });
 }
 
-const searchText = document.getElementById("searchText");
-if (searchText) {
+const tableSearch = document.getElementById('table-search');
+if(tableSearch){
+    tableSearch.addEventListener('keydown', function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            fetchAndRender();
+        }
+    });
+}
 
-    formSearch.addEventListener("click", function (event) {
-
+const btnSearchText = document.getElementById("btnSearchText");
+if (btnSearchText) {
+    btnSearchText.addEventListener("click", function (event) {
         event.preventDefault(); // Prevent form submission
 
         if (formProcessing) {
             return false;
-        }
+        }       
 
         fetchAndRender();
-
     });
 }
 

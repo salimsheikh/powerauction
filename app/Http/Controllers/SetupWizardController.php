@@ -35,7 +35,9 @@ class SetupWizardController extends Controller
         ]);
 
         // Log in the admin user
-        Auth::login($admin);
-        return redirect(route('dashboard')); // Redirect to the dashboard after setup
+        //Auth::login($admin);
+        //return redirect(route('dashboard')); // Redirect to the dashboard after setup
+
+        return redirect(route('login')); // Redirect to the dashboard after setup
     }
 }

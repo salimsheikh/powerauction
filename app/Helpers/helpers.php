@@ -32,13 +32,18 @@ if (!function_exists('getJSLang')) {
     function getJSLang($page = '')
     {
         $lang = array();
+
+        /*Configs */
+        $lang['default_color_code'] = '#ffffff';
+
+        /**Labels */
         $lang['please_wait'] = __('Please Wait!');
         $lang['something_wrong'] = __('Some thing is wrong.');
         $lang['enter_required_fields'] = __("Please enter the required fields.");
 
         $lang['edit'] = __("Edit");
         $lang['delete'] = __("Delete");
-        $lang['trash'] = __("Trash");
+        $lang['trash'] = __("Trash");        
 
         switch($page){
             case "category":

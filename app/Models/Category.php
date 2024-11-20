@@ -15,5 +15,7 @@ class Category extends Model
         'description',
         'color_code',
         'status',
+        'created_by',
+        'updated_by'
     ];
 }

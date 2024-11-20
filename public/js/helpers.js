@@ -305,10 +305,10 @@ async function fetchAndRender(page = 1) {
         return false;
     }
 
-    var tableSearchElement = document.getElementById('table-search');
+    var SearchedText = document.getElementById('table-search');
     var tableSearch = "";
-    if (tableSearchElement) {
-        tableSearch = tableSearchElement.value;
+    if (SearchedText) {
+        tableSearch = SearchedText.value;
     }
 
     let url = `${BASE_API_URL}?page=${page}`;
@@ -420,7 +420,7 @@ function renderRowByMap(rows) {
 function renderPagination(links, currentPage, totalPages, totalItems) {
     const pagination = document.getElementById('pagination');
     const paginationInfo = document.getElementById('pagination-info');
-    if (totalItems > 0) {
+    if (totalItems > 0 && totalPages > 1) {        
         pagination.innerHTML = links.map(link => `
             <li class="${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}">
                 <a href="#" onclick="handlePagination(event, '${link.url}')">${link.label}</a>

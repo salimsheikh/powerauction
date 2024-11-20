@@ -190,6 +190,22 @@ html.dark {
     padding-left: 2.5rem;
 }
 
+.table-header-search{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 560px){
+    .table-header-search{
+        display: flex;
+        justify-content:center;
+        flex-direction: column;
+        gap: 20px;
+    }   
+}
+
 .py-2 {
     padding-top: 0.5rem
         /* 12px */

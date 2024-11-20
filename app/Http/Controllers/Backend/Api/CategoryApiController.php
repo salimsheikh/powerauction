@@ -20,7 +20,7 @@ class CategoryApiController extends Controller
         //$categories = Category::select('id','category_name','color_code','base_price', 'description')->paginate(10);
 
         // Get the search query from the request
-        $query = $request->input('query','');        
+        $query = $request->input('query','');
 
         \Log::info('Request Object:', ['data' => $query]);
 
@@ -102,12 +102,20 @@ class CategoryApiController extends Controller
 
         $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
         
-        try {
+        try {           
+
+            $status = $request->input('status','publish');
+
+            // Current authenticated user ID
+            $userId = auth()->id();                     
+
             $result = Category::create([
                 'category_name'=> $request->category_name,
                 'base_price'=> $request->base_price,
                 'description'=> $request->description,            
                 'color_code'=> $color_code,
+                'status'=> $status,
+                'created_by'=> $userId,
             ]);
 
             return response()->json([
@@ -200,8 +208,19 @@ class CategoryApiController extends Controller
 
         try {
 
-            $category->update($request->all());
+            $data = $request->all();
+            // Current authenticated user ID
 
+            $data['status'] = $request->input('status','publish');
+
+            $userId = auth()->id();
+
+            // Update modified_by field
+            $data['updated_by'] = $userId;
+
+            // Update the record
+            $category->update($data);
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Category updated successfully.',
