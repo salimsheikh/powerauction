@@ -326,11 +326,13 @@ async function fetchAndRender(page = 1) {
 
     const columns = data.columns;
 
-    renderTableHeader(data.columns);
+    const items = data.items;
 
-    renderTable(data.categories.data, data.categories.total, data.columns);
+    renderTableHeader(columns);
 
-    renderPagination(data.categories.links, data.categories.current_page, data.categories.last_page, data.categories.total);
+    renderTable(items.data, items.total, columns);
+
+    renderPagination(items.links, items.current_page, items.last_page, items.total);
 
     // Apply to all elements with class "dynamic-box"
     document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
@@ -420,7 +422,7 @@ function renderRowByMap(rows) {
 function renderPagination(links, currentPage, totalPages, totalItems) {
     const pagination = document.getElementById('pagination');
     const paginationInfo = document.getElementById('pagination-info');
-    if (totalItems > 0 && totalPages > 1) {        
+    if (totalItems > 0 && totalPages > 1) {
         pagination.innerHTML = links.map(link => `
             <li class="${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}">
                 <a href="#" onclick="handlePagination(event, '${link.url}')">${link.label}</a>

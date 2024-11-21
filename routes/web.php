@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SetupWizardController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SettingController;
+use App\Http\Controllers\Backend\PlayerController;
 
 Route::get('/', function () {
     //return view('welcome');
@@ -30,6 +31,8 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get("/players",[PlayerController::class, 'index'])->name('players.index');
+
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
 });

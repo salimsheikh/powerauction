@@ -38,42 +38,42 @@ class CategoryApiController extends Controller
         \Log::info('Request Object:', ['data' => $query]);
 
         // Start the query builder for the Category model
-        $categoriesQuery = Category::query();
+       $itemQuery = Category::query();
 
-        // If there is a search query, apply the filters
-        if ($query) {
-            $categoriesQuery->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('category_name', 'like', '%' . $query . '%')
-                    ->orWhere('description', 'like', '%' . $query . '%')
-                    ->orWhere('base_price', 'like', '%' . $query . '%')
-                    ->orWhere('color_code', 'like', '%' . $query . '%');
-            });
-        }
+       // If there is a search query, apply the filters
+       if ($query) {
+           $itemQuery->where(function ($queryBuilder) use ($query) {
+               $queryBuilder->where('category_name', 'like', '%' . $query . '%')
+                   ->orWhere('description', 'like', '%' . $query . '%')
+                   ->orWhere('base_price', 'like', '%' . $query . '%')
+                   ->orWhere('color_code', 'like', '%' . $query . '%');
+           });
+       }
 
-        $categoriesQuery->where('status', 'publish');
+       $itemQuery->where('status', 'publish');
 
-        // Order by category_name in ascending order
-        $categoriesQuery->orderBy('category_name', 'asc');
-        //$categoriesQuery->orderBy('id', 'desc');
+       // Order by category_name in ascending order
+       $itemQuery->orderBy('category_name', 'asc');
+       //$categoriesQuery->orderBy('id', 'desc');
 
-        // Paginate the results
-        $categories = $categoriesQuery->paginate(10);
+       // Paginate the results
+       $items = $itemQuery->paginate(10);
 
 
-        // Output the SQL query and bindings
-        //$sql = $categoriesQuery->toSql();
-        //$bindings = $categoriesQuery->getBindings();
+       // Output the SQL query and bindings
+       //$sql = $itemQuery->toSql();
+       //$bindings = $itemQuery->getBindings();
 
-        //\Log::info('Generated SQL Query: ' . $sql);
-        //\Log::info('Bindings: ' . implode(', ', $bindings));
+       //\Log::info('Generated SQL Query: ' . $sql);
+       //\Log::info('Bindings: ' . implode(', ', $bindings));
 
-        $columns = $this->get_columns();
+       $columns = $this->get_columns();
 
-        // Return the columns and categories data in JSON format
-        return response()->json([
-            'columns' => $columns,
-            'categories' => $categories
-        ]);
+       // Return the columns and items data in JSON format
+       return response()->json([
+           'columns' => $columns,
+           'items' => $items
+       ]);
     }
 
     public function store(Request $request){        

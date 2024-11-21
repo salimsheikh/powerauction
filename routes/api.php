@@ -8,6 +8,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 use App\Http\Controllers\Backend\Api\CategoryApiController;
+use App\Http\Controllers\Backend\Api\PlayerApiController;
 
 Route::middleware('auth:sanctum')->group(function () {
     // Add your API routes here.
@@ -19,4 +20,11 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
     Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);    
+
+
+    Route::get('/players', [PlayerApiController::class, 'index']);
+    Route::post('/players/store', [PlayerApiController::class, 'store']);                
+    Route::get('/players/edit/{id}', [PlayerApiController::class, 'edit']);
+    Route::put('/players/{id}', [PlayerApiController::class, 'update']);
+    Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
 });

@@ -18,6 +18,10 @@
                     <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                         {{ __('Category') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
+                        {{ __('Players') }}
+                    </x-nav-link>
                     
                 </div>
             </div>

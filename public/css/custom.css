@@ -335,6 +335,30 @@ body::-webkit-scrollbar-track {
     border-color: var(--border-color);
 }
 
+.custom-modal.column-1 .modal-content{ 
+    max-width: 600px;
+    gap: 20px;
+}
+
+.custom-modal.column-1 .popup-fields{
+    display: grid;
+    grid-template-columns: 1fr;    
+    gap: 20px;
+}
+
+.custom-modal.column-2 .popup-fields{ 
+    display: grid;
+    grid-template-columns: 1fr 1fr;    
+    gap: 20px;
+}
+
+/* Media query for small screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .popup-fields{ 
+        grid-template-columns: 1fr; /* Switch to one column on small screens */
+    }
+}
+
 .custom-modal .modal-header {
     display: flex;
     justify-content: space-between;
