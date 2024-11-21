@@ -31,22 +31,20 @@
                     
                     <div>
                         <x-input-label for="terms_condition" :value="__('Terms & Condition')" />
-                        <textarea name="settings[terms_condition]" id="terms_condition" rows="10" cols="80">{{ old('settings.terms_condition', $terms_condition) }}</textarea>
+                        <textarea name="settings[terms_condition]" id="terms_condition" rows="10" cols="80" class="w-full">{{ old('settings.terms_condition', $terms_condition) }}</textarea>
                         <x-input-error class="mt-2" :messages="$errors->get('settings.terms_condition')" />
                     </div>
 
                     <div class="mt-5">
                         <x-input-label for="privacy_policy" :value="__('Privacy Policy')" />
-                        <textarea name="settings[privacy_policy]" id="privacy_policy" rows="10" cols="80">{{ old('settings.privacy_policy', $privacy_policy) }}</textarea>
+                        <textarea name="settings[privacy_policy]" id="privacy_policy" rows="10" cols="80" class="w-full">{{ old('settings.privacy_policy', $privacy_policy) }}</textarea>
                         <x-input-error class="mt-2" :messages="$errors->get('settings.privacy_policy')" />
                     </div>
 
                     <div class="flex items-center gap-4 mt-3">
                         <x-primary-button>{{ __('Save') }}</x-primary-button>
                     </div>
-
-                </form>
-                
+                </form>                
             </div>
         </div>
     </div>
@@ -57,13 +55,13 @@
     </script>
     <script src="https://cdn.tiny.cloud/1/miguh24g9nnuc0d65gtvvur4r7p4lqyx0ut0s9prrzwlstsr/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     
-    <script>
+    <script>            
             tinymce.init({
-            selector: 'textarea#terms_condition, textarea#privacy_policy',
-            // plugins: ' link image table',
-            plugins: 'code',
-            menubar: '',
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
-        });
+                selector: 'textarea#terms_condition, textarea#privacy_policy',
+                // plugins: ' link image table',
+                plugins: 'code',
+                menubar: '',
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
+            });            
     </script>
 </x-app-layout>

@@ -13,6 +13,19 @@ use Exception;
 
 class CategoryApiController extends Controller
 {
+    function get_columns(){
+         // Define column names (localized)
+         $columns = [];
+         $columns['id'] = __('ID');
+         $columns['category_name'] = __('Category Name');        
+         $columns['base_price'] = __('Base Price');
+         $columns['color_code'] = __('Color Code');
+         $columns['description'] = __('Description');
+         $columns['actions'] = __('Actions');
+
+         return $columns;
+    }
+
     public function index(Request $request)
     {
         //\Log::info('Request Object:', ['data' => json_encode($request)]);
@@ -54,14 +67,7 @@ class CategoryApiController extends Controller
         //\Log::info('Generated SQL Query: ' . $sql);
         //\Log::info('Bindings: ' . implode(', ', $bindings));
 
-        // Define column names (localized)
-        $columns = [];
-        $columns['id'] = __('ID');
-        $columns['category_name'] = __('Category Name');        
-        $columns['base_price'] = __('Base Price');
-        $columns['color_code'] = __('Color Code');
-        $columns['description'] = __('Description');
-        $columns['actions'] = __('Actions');
+        $columns = $this->get_columns();
 
         // Return the columns and categories data in JSON format
         return response()->json([
@@ -172,11 +178,7 @@ class CategoryApiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $res = [];
-        $res['success'] = false;
-        $res['message'] = false;
-        $res['errors'] = false;
-        $res['statusCode'] = false;
+        $res = $this->get_response();
 
         $category_name = $request->category_name;
         
@@ -246,11 +248,7 @@ class CategoryApiController extends Controller
 
     public function destroy($id)
     {
-        $res = [];
-        $res['success'] = false;
-        $res['message'] = false;
-        $res['errors'] = false;
-        $res['statusCode'] = false;
+        $res = $this->get_response();
 
         try {
             $category = Category::findOrFail($id); // Attempt to find the category by ID
@@ -269,8 +267,15 @@ class CategoryApiController extends Controller
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);
-        }
+        }       
+    }
 
-       
+    function get_response(){
+        $res = [];
+        $res['success'] = false;
+        $res['message'] = false;
+        $res['errors'] = false;
+        $res['statusCode'] = false;
+        return $res;
     }
 }
