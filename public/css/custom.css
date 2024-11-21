@@ -28,6 +28,26 @@ html.dark {
     --delete-btn-hover-bg-color: #a71d2a;
 }
 
+.header img{
+    width: 150px;
+}
+
+.black_logo{
+    display: block;
+}
+
+.white_logo{
+    display: none;
+}
+
+.dark .black_logo{
+    display: none;
+}
+
+.dark .white_logo{
+    display: block;
+}
+
 /* Table Container */
 .table-container {
     overflow-x: auto;

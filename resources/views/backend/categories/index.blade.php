@@ -100,5 +100,3 @@
         const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
     </script>
 </x-app-layout>
-
-

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SetupWizardController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\SettingController;
 
 Route::get('/', function () {
     //return view('welcome');
@@ -28,18 +29,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
-
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');  // Show categories list
-    Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create'); // Show form to create category
-    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store'); // Store new category
-    Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit'); // Show edit form
-    Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update'); // Update category
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy'); // Delete category
-    
-     // Display all categories
-    //  Route::get('/admin/categories', [CategoryController::class, 'index'])->name('backend.categories.index');
-
-    // Route::post('/backend/category/store', [CategoryController::class, 'store'])->name('backend.category.store');
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

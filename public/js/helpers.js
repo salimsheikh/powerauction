@@ -365,10 +365,10 @@ function renderTableRows(rows, columns) {
     let cell_value = "";
     let cell_class = "";
     let cell_edit = `<span class="block buttonText">${lang.edit}</span>
-                        <svg class="hidden w-5 h-5 animate-spin text-white absolute loadingSpinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
-                        </svg>`;
+                     <svg class="hidden w-5 h-5 animate-spin text-white absolute loadingSpinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
+                     </svg>`;
     rows.forEach(row => {
         id = row.id;
         output += "<tr>";
