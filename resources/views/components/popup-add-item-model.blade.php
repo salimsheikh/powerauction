@@ -7,7 +7,7 @@
                 <h2>{{$title}}</h2>
                 <span class="popupCloseModel close-model">&times;</span>
             </div>
-            <div class="modal-body space-y-4">
+            <div class="modal-body space-y-4"  enctype="multipart/form-data">
                 <form id="{{$formId}}" method="post" class="space-y-4">
                     <div class="alert alert-info model-body-alert"></div>
                     <div class="popup-fields">

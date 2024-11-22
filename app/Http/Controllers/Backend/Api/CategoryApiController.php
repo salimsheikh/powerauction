@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 
 class CategoryApiController extends Controller
@@ -99,7 +100,7 @@ class CategoryApiController extends Controller
         }
 
         // Validate the request
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'category_name' => 'required|string|max:150|unique:categories,category_name',
             'base_price' => 'required|numeric',
             'description' => 'required|string|max:255',
@@ -108,6 +109,14 @@ class CategoryApiController extends Controller
             'category_name.required' => 'Category name is required!',
             'category_name.unique' => 'This category name is already taken!',
         ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'succes' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
 

@@ -45,8 +45,8 @@ if (popupCloseModels) {
 
 const popupAddForm = document.getElementById("popupAddForm");
 if (popupAddForm) {
-    document.getElementById("popupAddForm").addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent form submission
+    document.getElementById("popupAddForm").addEventListener("submit", async (e) => {
+        e.preventDefault(); // Prevent form submission
 
         if (formProcessing) {
             return false;
@@ -67,40 +67,29 @@ if (popupAddForm) {
         if (!validForm) {
             return false;
         }
-
-        const headers = get_ajax_header();
-
+        
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
 
-        let formData = [];
-        const imageInput = document.getElementById('image');
-        if(imageInput){
-
-            if (imageInput.files.length === 0) {
-                console.error("No file selected.");
-                return;
-            }
-
-            formData  = new FormData();
-            formData.append('image', imageInput.files[0]); // Add the selected file to FormData
-
-            console.log(formData);  
-
-           
-    
-        }else{
+        let headers = get_ajax_header(true);
+        let formData = new FormData();
+        const imageInput = document.getElementById('image');        
+        if(imageInput){            
+            formData.append('image', imageInput.files[0]);
             fields.forEach((field) => {
-                formData[field.name] = field.value;
+                if(field.name != 'image'){
+                    formData.append(field.name, field.value);
+                }
             });
-    
-        }       
-          
-        
+        }else{            
+            fields.forEach((field) => {
+                formData.append(field.name, field.value);
+            });
+        }
 
         formProcessing = true;
 
-        await fetch(`${BASE_API_URL}/store`, {
+        const response = await  fetch(`${BASE_API_URL}/store`, {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -180,7 +169,7 @@ if (tableContainer) {
                 return false;
             }
 
-            const headers = get_ajax_header();
+            const headers = get_ajax_header(false);
 
             alertElement.textContent = lang.please_wait;
             alertElement.classList.add("alert-info");            
@@ -314,7 +303,7 @@ if (popupUpdateForm) {
             return false;
         }
 
-        const headers = get_ajax_header();
+        const headers = get_ajax_header(false);
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
@@ -417,7 +406,7 @@ if (popupDeleteForm) {
             return false;
         }
 
-        const headers = get_ajax_header();
+        const headers = get_ajax_header(false);
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
@@ -462,7 +451,7 @@ if (popupDeleteForm) {
             setTimeout(function () {
                 hideModal();
                 deleteButton.disabled = false;
-            }, 1500);
+            }, 1000);
         }).catch((error) => {
             deleteButton.disabled = false;
             fatchResponseCatch(error, alertElement);

@@ -257,17 +257,24 @@ function get_csrf_token() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }
 
-function get_ajax_header() {
+function get_ajax_header(isFileUpload) {
 
     const csrf_token = get_csrf_token();
 
     const sanctum_token = get_local_storage_token('sanctum_token');
 
-    return {
-        'Content-Type': 'application/json',
+    const headers = {
+        //'Content-Type': 'application/json',
         'Authorization': `Bearer ${sanctum_token}`,
         'X-CSRF-TOKEN': csrf_token,
+    } 
+
+    // Example dynamic logic to set Content-Type
+    if (!isFileUpload) {
+        headers['Content-Type'] = 'application/json';
     }
+
+    return headers;
 }
 
 function get_local_storage_token() {
@@ -338,7 +345,7 @@ async function fetchAndRender(page = 1) {
 
     url += tableSearch != "" ? "&query=" + encodeURIComponent(tableSearch) : "";
 
-    const headers = get_ajax_header();
+    const headers = get_ajax_header(false);
 
     const response = await fetch(url, {
         method: 'get',
@@ -407,6 +414,10 @@ function renderTableRows(rows, columns) {
                 case "color_code":
                     cell_value = row[cn];
                     cell_value = cell_value == null ? '' : `<span class="color-code" style="background-color: ${cell_value};">${cell_value}</span>`;
+                    break;
+                case "image":
+                    cell_value = row[cn];
+                    cell_value = `<img src="${image_url }/${cell_value}">`;
                     break;
                 case "actions":
                     cell_value += `<a href="#" class="btn edit-btn edit-button"  data-id="${id}">${cell_edit}</a>`;

@@ -7,6 +7,15 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\PlayerController;
 
+
+
+use Intervention\Image\Facades\Image;
+
+Route::get('/test-image', function () {
+    $img = Image::canvas(200, 100, '#ff0000');
+    return $img->response('jpg');
+});
+
 Route::get('/', function () {
     //return view('welcome');
     if (Auth::check()) {

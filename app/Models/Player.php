@@ -42,4 +42,12 @@ class Player extends Model
     protected $guarded = [
         // You can add columns that should be protected here (if any)
     ];
+
+    // Many-to-One relationship with Category
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    
 }
