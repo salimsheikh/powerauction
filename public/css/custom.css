@@ -291,17 +291,11 @@ body::-webkit-scrollbar-track {
     background-color: rgb(0, 0, 0);
     /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
-
     z-index: 990;
-
-    /* transform: translate(-50%, 0); */
-    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-    /* border-radius: 8px; */
-    
-    /* pointer-events: none; */
     transition: opacity 0.4s ease;
 
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .custom-modal .modal-content-wraper {
@@ -329,6 +323,8 @@ body::-webkit-scrollbar-track {
     z-index: 992;
 }
 
+
+
 .dark .custom-modal .modal-content {
     background-color: var(--background-color);
     color: var(--text-color);
@@ -350,13 +346,6 @@ body::-webkit-scrollbar-track {
     display: grid;
     grid-template-columns: 1fr 1fr;    
     gap: 20px;
-}
-
-/* Media query for small screens (max-width: 768px) */
-@media (max-width: 768px) {
-    .popup-fields{ 
-        grid-template-columns: 1fr; /* Switch to one column on small screens */
-    }
 }
 
 .custom-modal .modal-header {
@@ -450,11 +439,7 @@ body::-webkit-scrollbar-track {
     font-weight: bold;
 }
 
-.invalid, .dark .invalid {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-}
+
 
 .custom-modal .close-model:hover,
 .custom-modal .close-model:focus {
@@ -553,6 +538,47 @@ body::-webkit-scrollbar-track {
     color: #1b1e21;
     background-color: #d6d8d9;
     border-color: #c6c8ca;
+}
+
+
+
+input.inputbox, select.inputbox, textarea.inputbox{
+    width: 100%;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem; 
+    padding-left: 0.75rem;
+    padding-right: 0.75rem; 
+    border-radius: 0.5rem; 
+    border-width: 1px; 
+    border-color: #D1D5DB;     
+    background-color: #F3F4F6; 
+    
+}
+
+.inputblock label{
+    width: 30%;
+}
+
+.inputblock input, 
+.inputblock select, 
+.inputblock textarea{
+    width: 70%;
+}
+
+.dark input.inputbox, 
+.dark select.inputbox, 
+.dark textarea.inputbox{
+    border-color: #D1D5DB;     
+    background-color: #4b5563 ; 
+
+    border-color: #4b5563;
+    background-color: #374151;
+}
+
+@media (min-width: 768px) {
+    input.inputbox{
+        /* width: 66.666667%;  */
+    }
 }
 
 input.color_code {
@@ -658,6 +684,23 @@ input.color_code::-moz-focus-inner {
     font-size: 14px;
 }
 
+.invalid,
+textarea.inputbox.invalid,
+select.inputbox.invalid,
+input.inputbox.invalid,
+.dark input.inputbox.invalid
+/*, 
+input.inputbox.invalid,
+select.inputbox.invalid,
+.dark .invalid, 
+.dark input.inputbox.invalid,
+.dark select.inputbox.invalid,
+.dark text.inputbox.invalid */ {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
 @media (min-width: 701px) and (max-width: 1100px) {
     .custom-pagination a {
         padding: 6px;  
@@ -690,5 +733,33 @@ input.color_code::-moz-focus-inner {
     #pagination-info{
         display: none;
         font-size: 14px;
+    }
+}
+
+
+@media screen and (max-width:1200px){
+    .custom-modal .modal-content {
+        width: 100%;
+    }
+}
+
+/* Media query for small screens (max-width: 768px) */
+@media (max-width: 768px) {
+    .custom-modal.column-2 .popup-fields{ 
+        grid-template-columns: 1fr; /* Switch to one column on small screens */
+    }
+
+    .inputblock label{
+        width: 100%;
+    }
+    
+    .inputblock input, 
+    .inputblock select, 
+    .inputblock textarea{
+        width: 100%;
+    }
+
+    .custom-modal .modal-content {
+        max-width: 100%;
     }
 }

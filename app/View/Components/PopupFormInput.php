@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use App\Models\Category;
 
 class PopupFormInput extends Component
 {
@@ -15,6 +16,8 @@ class PopupFormInput extends Component
     public $label = "";
     public $value = "";
     public $mexlength = "";
+    public $options = "";
+    public $firstOption = "";
 
     /**
      * Create a new component instance.
@@ -30,6 +33,46 @@ class PopupFormInput extends Component
         $this->class = $class != "" ? $class : $id;
         $this->value = $value;
         $this->mexlength = $mexlength != '' ? $mexlength : 191;
+        $this->options = [];
+        $this->firstOption = '';
+
+        if($type == 'select'){
+            switch($name){
+                case "category":
+                    $this->firstOption = __('Select Category');
+                    $items = Category::where('status', 'publish')->orderBy('category_name', 'ASC')->get();               
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->category_name;
+                    }
+                    break;
+                case "profile_type":
+                    $this->firstOption = __('Select Profile');
+                    $this->options = [
+                        "men" => __('Men'),
+                        "women" => __('Women'),
+                        "senior-citizen" => __('Senior Citizen')
+                    ];
+                    break;
+                case "type":
+                    $this->firstOption = __('Select Type');
+                    $this->options = [
+                        "batsman" => __('Batsman'),
+                        "bowler" => __('Bowler'),
+                        "all-rounder" => __('All Rounder')
+                    ];
+                    break;
+                case "style":                
+                    $this->firstOption = __('Select Type');
+                    $this->options = [
+                        "Left Hand Batsman" => __('Left Hand Batsman'),
+                        "Right Hand Batsman" => __('Right Hand Batsman'),
+                        "Left Hand Bowler" => __('Left Hand Bowler'),
+                        "Right Hand Bowler" => __('Right Hand Bowler')
+                    ];
+                    break;    
+            }
+        }
+
     }
 
     /**

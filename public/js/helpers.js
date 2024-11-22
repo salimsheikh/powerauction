@@ -53,7 +53,7 @@ if (themeToggleBtn) {
 
 
 // Select all inputs in the form
-const inputs = document.querySelectorAll('input, textarea');
+const inputs = document.querySelectorAll('input, textarea, select');
 
 // Add onchange event listener to all inputs
 inputs.forEach(input => {
@@ -68,6 +68,13 @@ inputs.forEach(input => {
             if (isNumberKey(v, e)) {
                 input.classList.remove('invalid'); // Remove the 'invalid' class
             }
+        }
+    });
+
+    input.addEventListener('change', function (e) {
+        // Check if the input has 'invalid' class
+        if (input.classList.contains('invalid')) {
+            input.classList.remove('invalid'); // Remove the 'invalid' class
         }
     });
 });
@@ -155,12 +162,12 @@ function fatchResponseCatch(error, alertElement) {
 function validateForm(currentForm, alertElement) {
 
     // Get all input and textarea elements
-    const fields = currentForm.querySelectorAll("input, textarea");
+    const fields = currentForm.querySelectorAll("input, textarea, select");
 
     // Remove the invalid class and trim inputs
     fields.forEach((field) => {
         field.classList.remove("invalid");
-        if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
+        if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email" || field.type === "select") {
             field.value = field.value.trim();
         }
     });
