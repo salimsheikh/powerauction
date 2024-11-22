@@ -575,12 +575,6 @@ input.inputbox, select.inputbox, textarea.inputbox{
     background-color: #374151;
 }
 
-@media (min-width: 768px) {
-    input.inputbox{
-        /* width: 66.666667%;  */
-    }
-}
-
 input.color_code {
     appearance: none;
     -moz-appearance: none;
