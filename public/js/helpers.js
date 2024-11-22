@@ -177,6 +177,13 @@ function validateForm(currentForm, alertElement) {
     let validData = true;
     let requiredData = true;
 
+    let formdata = []
+    fields.forEach((field) => {
+        formdata[field.name] = field.value;
+    });
+
+    
+
     // Validate fields
     fields.forEach((field) => {
         if (field.classList.contains("required") && field.value === "") {
@@ -224,13 +231,22 @@ function validateForm(currentForm, alertElement) {
 }
 
 function cleanForm(fields) {
+    let ft = '';
+    return false;
     // Remove the invalid class and trim inputs
     fields.forEach((field) => {
-        if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
+        
+        ft = field.type;
+
+        if (ft === "text" || ft === "email" || ft === "select" || ft == 'select-one') {
             field.value = '';
         }
 
-        if (field.type === "color") {
+        if(field.tagName === "TEXTAREA" || field.tagName === "textarea"){
+            field.value = "";
+        }
+
+        if (ft === "color") {
             field.value = '#000001';
         }
     });

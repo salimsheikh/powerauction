@@ -1,3 +1,7 @@
+"use strick";
+
+var formProcessing = false;
+
 var popupTargetModel = null;
 
 var popupCustomModel = document.getElementsByClassName("custom-modal")[0];
@@ -41,12 +45,12 @@ if (popupCloseModels) {
 
 const popupAddForm = document.getElementById("popupAddForm");
 if (popupAddForm) {
-    document.getElementById("popupAddForm").addEventListener("submit", function (event) {
+    document.getElementById("popupAddForm").addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent form submission
 
         if (formProcessing) {
             return false;
-        }
+        }        
 
         // Get the current form
         const currentForm = event.target;
@@ -55,7 +59,7 @@ if (popupAddForm) {
         const alertElement = currentForm.querySelector(".alert");
 
         // Get all input and textarea elements
-        const fields = currentForm.querySelectorAll("input, textarea");
+        const fields = currentForm.querySelectorAll("input, textarea, select");
        
         alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
 
@@ -69,17 +73,37 @@ if (popupAddForm) {
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
 
-        var formValues = {};
-        fields.forEach((field) => {
-            formValues[field.name] = field.value;
-        });
+        let formData = [];
+        const imageInput = document.getElementById('image');
+        if(imageInput){
+
+            if (imageInput.files.length === 0) {
+                console.error("No file selected.");
+                return;
+            }
+
+            formData  = new FormData();
+            formData.append('image', imageInput.files[0]); // Add the selected file to FormData
+
+            console.log(formData);  
+
+           
+    
+        }else{
+            fields.forEach((field) => {
+                formData[field.name] = field.value;
+            });
+    
+        }       
+          
+        
 
         formProcessing = true;
 
-        fetch(`${BASE_API_URL}/store`, {
+        await fetch(`${BASE_API_URL}/store`, {
             method: 'POST',
             headers: headers,
-            body: JSON.stringify(formValues),
+            body: formData,
         }).then((response) => {
             console.log("response 1");
             //do not delete
@@ -484,3 +508,16 @@ if (btnSearchText) {
     });
 }
 
+document.getElementById('profile_type').value = 'men';
+document.getElementById('type').value = 'batsman';
+document.getElementById('style').value = 'Left Hand Batsman';
+document.getElementById('dob').value = '02-02-1980';
+
+
+document.getElementById('category').value = '1';
+document.getElementById('nick_name').value = 'batsman';
+document.getElementById('last_played_league').value = 'Left Hand Batsman';
+document.getElementById('address').value = 'Kurla';
+
+document.getElementById('city').value = 'Nehru Nagar';
+document.getElementById('email').value = 'salimsheikh@gmail.com';

@@ -10,13 +10,13 @@ class Player extends Model
     use HasFactory;
 
     protected $table = 'players'; // Specifies the table name
-    protected $primaryKey = 'players_id'; // Specifies the primary key
+    protected $primaryKey = 'id'; // Specifies the primary key
     public $timestamps = true; // Enables timestamp columns (created_at and updated_at)
 
     // Columns that are mass assignable
     protected $fillable = [
         'uniq_id',
-        'players_name',
+        'player_name',
         'nickname',
         'mobile',
         'email',
@@ -33,6 +33,9 @@ class Player extends Model
         'address',
         'city',
         'order_id',
+        'status',
+        'created_by',
+        'updated_by',
     ];
 
     // Columns that should not be mass assignable

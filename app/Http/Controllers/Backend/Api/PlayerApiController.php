@@ -8,7 +8,7 @@ use App\Models\Player;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
@@ -19,10 +19,15 @@ class PlayerApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['id'] = __('ID');
-        $columns['category_name'] = __('Category Name');
-        $columns['base_price'] = __('Base Price');
-        $columns['color_code'] = __('Color Code');
-        $columns['description'] = __('Description');
+        $columns['player_name'] = __('Category Name');
+        $columns['image'] = __('Unique Id');
+        $columns['color_code'] = __('Profile');
+        $columns['nickname'] = __('Name');
+        $columns['profile_type'] = __('Profile Type');
+        $columns['type'] = __('Type');
+        $columns['style'] = __('Style');
+        $columns['dob'] = __('Age');
+        $columns['category_id'] = __('Category');        
         $columns['actions'] = __('Actions');
 
         return $columns;
@@ -30,6 +35,9 @@ class PlayerApiController extends Controller
 
     public function index(Request $request)
     {
+        
+        
+
         // Get the search query from the request
         $query = $request->input('query', '');
 
@@ -46,7 +54,7 @@ class PlayerApiController extends Controller
             });
         }
 
-        //    $itemQuery->where('status', 'publish');
+        $itemQuery->where('status', 'publish');
 
         // Order by category_name in ascending order
         $itemQuery->orderBy('player_name', 'asc');
@@ -67,55 +75,75 @@ class PlayerApiController extends Controller
     public function store(Request $request)
     {
 
-        $category_name = $request->category_name;
-
-        if (!empty($category_name)) {
-            // Check if the category already exists manually (Optional if you want to customize the message further)
-            $existingCategory = Player::where('category_name', $request->category_name)->first();
-            if ($existingCategory) {
-                // Return a custom error response for duplicate category_name
-                return response()->json([
-                    'success' => false,
-                    'message' => __('Category name already exists.'),
-                    'errors' => [
-                        'category_name' => [__('The category name has already been taken.')]
-                    ]
-                ], 409);  // 409 Conflict - used when the request could not be completed due to a conflict.
-            }
-        }
-
-        // Validate the request
-        $validated = $request->validate([
-            'category_name' => 'required|string|max:150|unique:categories,category_name',
-            'base_price' => 'required|numeric',
-            'description' => 'required|string|max:255',
-            'color_code' => 'nullable|string|max:10',
-        ], [
-            'category_name.required' => 'Category name is required!',
-            'category_name.unique' => 'This category name is already taken!',
-        ]);
-
-        $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
-
         try {
+
+            // Validate the image
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+
+            //\Log::info('Request Object:', ['data' => json_encode($request)]);
 
             $status = $request->input('status', 'publish');
 
             // Current authenticated user ID
             $userId = Auth::id();
 
-            $result = Player::create([
-                'category_name' => $request->category_name,
-                'base_price' => $request->base_price,
-                'description' => $request->description,
-                'color_code' => $color_code,
-                'status' => $status,
-                'created_by' => $userId,
-            ]);
+            \Log::info(json_encode($request->file('image')));
+
+            $image_path = "";
+
+            // Store the uploaded image
+            if ($request->file('image')) {
+
+                $image_path = $request->file('image')->store('images', 'public');
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Image uploaded successfully',
+                    'image_path' => $image_path,
+                ], 200);
+
+               
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Category updated successfully.',
+                'message' => 'Image uploaded successfully',
+                'image_path' => $image_path,
+            ], 200);
+
+            $formData = [
+                'player_name' => $request->player_name,
+                'image' => $request->image,
+                
+                'profile_type' => $request->profile_type,
+                'type' => $request->type,
+                'style' => $request->style,
+                'dob' => $request->dob,
+
+                'category_id' => $request->category,
+                'nickname' => $request->nick_name,
+                'last_played_league' => $request->last_played_league,
+                'address' => $request->address,
+
+                'city' => $request->city,
+                'email' => $request->email,
+
+                'status' => $status,
+                'created_by' => $userId,
+            ];
+
+            \Log::info(print_r($formData,true));
+
+            $result = Player::create($formData);
+
+            \Log::info(print_r($formData,true));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Player added successfully.',
                 'category' => array(),
             ]);
         } catch (Exception $e) {

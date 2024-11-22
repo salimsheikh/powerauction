@@ -7,17 +7,17 @@
 
     <!-- Add Item Popup -->
     <x-popup-add-item-model title="{{__('Add new Player')}}" formType="add" formID="popupAddForm" popupClasses="column-2" actionButtonLabel="{{__('Add Player')}}">
-        <x-popup-form-input type="text" name="players_name" label="{{ __('Players Name:') }}" class="focus_first players_name required"
-            maxlength="50" value="" />
+        <x-popup-form-input type="text" name="player_name" label="{{ __('Players Name:') }}" class="focus_first player_name required"
+            maxlength="50" value="Salim Shaikh" />
         <x-popup-form-input type="file" name="image" label="{{ __('Player Profile:') }}"
-            class="required image" maxlength="10" value="" />
+            class="required image" maxlength="10" value="test" />
         <x-popup-form-input type="select" name="profile_type" label="{{ __('Profile Type:') }}" class="required"
             maxlength="255" value="" />
         <x-popup-form-input type="select" name="type" label="{{ __('Type:') }}" value=""
             class="required" />
         <x-popup-form-input type="select" name="style" label="{{ __('Style:') }}" value=""
             class="required" />
-        <x-popup-form-input type="date" name="dob" label="{{ __('DOB:') }}" value=""
+        <x-popup-form-input type="text" name="dob" label="{{ __('DOB:') }}" value="02-02-1980"
             class="required" />
         <x-popup-form-input type="select" name="category" label="{{ __('Category:') }}" value=""
             class="required" />

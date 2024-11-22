@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class CustomAuthController extends Controller
 {
@@ -34,7 +35,7 @@ class CustomAuthController extends Controller
 
             // Return response
             return response()->json([
-                'message' => __('Login successful, Please wait redirect to dashboard.'),
+                'message' => __('Login successfully, Redirecting to dashboard.'),
                 'access_token' => $token,
                 'token_type' => 'Bearer',
             ]);

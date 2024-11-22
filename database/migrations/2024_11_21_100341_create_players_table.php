@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->id('players_id');
+            $table->id('id');
             $table->string('uniq_id', 100)->nullable();
-            $table->string('players_name', 100)->nullable();
+            $table->string('player_name', 100)->nullable();
             $table->string('nickname', 100)->nullable();
             $table->string('mobile', 50)->nullable();
             $table->string('email', 100)->nullable();
@@ -30,9 +30,10 @@ return new class extends Migration
             $table->string('last_played_league', 100)->nullable();
             $table->text('address')->nullable();
             $table->string('city', 100)->nullable();
+            $table->string('status',15)->default('publish');
            
             $table->integer('order_id')->default(9999);
-            $table->primary('players_id');
+            $table->primary('id');
 
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
