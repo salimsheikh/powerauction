@@ -417,7 +417,7 @@ function renderTableRows(rows, columns) {
                     break;
                 case "image":
                     cell_value = row[cn];
-                    cell_value = `<img src="${image_url }/${cell_value}">`;
+                    cell_value = `<img src="${image_url }/players/thumbs/${cell_value}">`;
                     break;
                 case "actions":
                     cell_value += `<a href="#" class="btn edit-btn edit-button"  data-id="${id}">${cell_edit}</a>`;

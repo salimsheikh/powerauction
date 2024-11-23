@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Backend\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Player;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
@@ -21,7 +23,7 @@ class PlayerApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['id'] = __('ID');
-        $columns['player_name'] = __('Category Name');
+        $columns['player_name'] = __('Profile Name');
         $columns['image'] = __('Unique Id');
         $columns['color_code'] = __('Profile');
         $columns['nickname'] = __('Name');
@@ -94,33 +96,58 @@ class PlayerApiController extends Controller
         $thumbnailPath = "";
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagePath = $image->store('players', 'public');
 
-            // Create a thumbnail using Intervention Image
-            $thumbnail = Image::make($image)->resize(100, 100);
-            $thumbfilename = basename($imagePath);
+            // Get the uploaded file
+            $uploadedFile = $request->file('image');
 
-            // Generate a custom file name
-            $customFileName = Str::random(10) . '_' . time() . '.' . $file->getClientOriginalExtension();
 
-            $thumbnailPath = storage_path('app/public/players/thumbs');
+            // Players Image Direcotry
+            $playerImagePath = storage_path('app/public/players/');
+
+            // Players Image Direcotry
+            $thumbImagePath = storage_path('app/public/players/thumbs/');
 
             // Check if the folder exists, if not, create it
-            if (!File::exists($thumbnailPath)) {
-                File::makeDirectory($thumbnailPath, 0777, true); // true to create subdirectories
+            if (!File::exists($playerImagePath)) {
+                File::makeDirectory($playerImagePath, 0777, true); // true to create subdirectories
             }
+            
+            // Check if the folder exists, if not, create it
+            if (!File::exists($thumbImagePath)) {
+                File::makeDirectory($thumbImagePath, 0777, true); // true to create subdirectories
+            } 
 
-            // Log::info("thumbnail". $thumbnail);
-            // Log::info(basename($imagePath));
+            // Define the custom file name
+            $filename = Str::random(6) . '_' .time() . '.jpg';
 
-            // Log::info("{$thumbnailPath}/{$filename}");
+            /** Simple upload the file */
+            //$imagePath = $uploadedFile->store('players', 'public');
 
-            // Save the thumbnail in the 'public' disk
-            // $thumbnail->save(storage_path('/players/thumbs' . basename($imagePath)));
+             // Convert the image to JPG and resize it (optional)
+            $largeImage = Image::make($uploadedFile->getPathname())->encode('jpg', 90); // Convert to JPG with 90% quality
 
-            // $thumbnail->save(storage_path('/players/thumb//'.basename($imagePath)));
-            $thumbnail->save("{$thumbnailPath}/{$thumbfilename}");
+
+             // Save the image to the specified directory
+            $largeImage->save($playerImagePath."".$filename);
+
+            // Define the path where the file will be stored
+            //$path = $file->storeAs('uploads', $customFileName, 'public');
+            //$baseFileName = basename($imagePath);
+                      
+
+            // Resize and convert the image to JPG
+            $thumbImage = Image::make($uploadedFile->getPathname())
+            ->resize(150, 150, function ($constraint) {
+                $constraint->aspectRatio(); // Maintain aspect ratio
+                $constraint->upsize();     // Prevent upscaling
+            })
+            ->encode('jpg', 80); // Encode to JPG with 80% quality
+
+            // Optionally crop the image to exactly 80x80
+            $thumbImage->crop(80, 80);
+
+            // Save the image to the specified path
+            $thumbImage->save($thumbImagePath.$filename);
         }
 
         $status = $request->input('status', 'publish');
@@ -128,12 +155,12 @@ class PlayerApiController extends Controller
         // Current authenticated user ID
         $userId = Auth::id();
 
-        $imagePath = Storage::url($imagePath);
+        // $imagePath = Storage::url($imagePath);
 
         $formData = [
             'player_name' => $request->player_name,
-            'image' => $thumbfilename,
-            'image_thumb' => $thumbfilename,
+            'image' => $filename,
+            'image_thumb' => $filename,
             
             'profile_type' => $request->profile_type,
             'type' => $request->type,
@@ -180,9 +207,7 @@ class PlayerApiController extends Controller
     public function ssssstore(Request $request)
     {
 
-        $request->validate([
-            'image' => 'required|image|max:10240', // max 10MB
-        ]);
+      
 
         try {
 
