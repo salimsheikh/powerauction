@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Models\Category;
+use App\Models\Style;
 
 class PopupFormInput extends Component
 {
@@ -63,12 +64,11 @@ class PopupFormInput extends Component
                     break;
                 case "style":                
                     $this->firstOption = __('Select Type');
-                    $this->options = [
-                        "Left Hand Batsman" => __('Left Hand Batsman'),
-                        "Right Hand Batsman" => __('Right Hand Batsman'),
-                        "Left Hand Bowler" => __('Left Hand Bowler'),
-                        "Right Hand Bowler" => __('Right Hand Bowler')
-                    ];
+                    $this->firstOption = __('Select Category');
+                    $items = Style::orderBy('order', 'ASC')->get();               
+                    foreach($items as $item){
+                        $this->options[$item->slug] = $item->name;
+                    }
                     break;    
             }
         }

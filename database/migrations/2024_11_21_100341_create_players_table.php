@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('mobile', 50)->nullable();
             $table->string('email', 100)->nullable();
             $table->string('category_id', 10)->nullable();
-            $table->string('dob', 200)->nullable();
+            $table->date('dob')->nullable();
             $table->string('image', 250)->nullable();
             $table->string('image_thumb', 250)->nullable();
             $table->string('bat_type', 20)->nullable();

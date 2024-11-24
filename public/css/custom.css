@@ -122,20 +122,15 @@ body::-webkit-scrollbar-track {
 
 .custom-table thead th.actions{
     text-align: center;
+    vertical-align: middle;
 }
-.custom-table tbody td.actions {
+.custom-table tbody td.actions div{
     text-align: center;
     white-space: nowrap;
     display: flex;
     justify-content: center;
     gap: 10px;
-    /*
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: center;
-    vertical-align: middle;
-    */
+    align-items: center; /* This aligns items vertically in the center */
 }
 
 

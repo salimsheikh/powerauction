@@ -15,6 +15,6 @@
             @endforeach
         </select>
     @else
-        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox" />
+        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" placeholder="2000-02-02" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox" />
     @endif    
 </div>

@@ -402,6 +402,7 @@ function renderTableRows(rows, columns) {
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
                      </svg>`;
     rows.forEach(row => {
+        console.log(row);
         id = row.id;
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
@@ -420,8 +421,10 @@ function renderTableRows(rows, columns) {
                     cell_value = `<img src="${image_url }/players/thumbs/${cell_value}">`;
                     break;
                 case "actions":
+                    cell_value += "<div>";
                     cell_value += `<a href="#" class="btn edit-btn edit-button"  data-id="${id}">${cell_edit}</a>`;
                     cell_value += `<a href="#" class="btn delete-btn delete-button" data-id="${id}">${lang.delete}</a>`;
+                    cell_value += "</div>";
                     break;
                 default:
                     cell_value = row[cn];

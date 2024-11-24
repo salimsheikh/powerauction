@@ -17,7 +17,7 @@
             class="required" />
         <x-popup-form-input type="select" name="style" label="{{ __('Style:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" name="dob" label="{{ __('DOB:') }}" value="02-02-1980"
+        <x-popup-form-input type="date" name="dob" label="{{ __('DOB:') }}" value="1980-02-02"
             class="required" />
         <x-popup-form-input type="select" name="category" label="{{ __('Category:') }}" value=""
             class="required" />
