@@ -145,13 +145,24 @@ function fatchResponseCatch(error, alertElement) {
     console.log("response 3");
     if (error.errors) {
         let errorMessage = '';
-        for (const key in error.errors) {
-            errorMessage += `${error.errors[key].join(', ')}\n`;
+        let firstInvalidField = false;
+        for (const field_name in error.errors) {
+            errorMessage += `${error.errors[field_name].join(', ')}`+"<br>";
+
+            // Select the input element by its name attribute
+            const errorInput = document.querySelector('[name="'+field_name+'"]');
+            if(errorInput){
+                errorInput.classList.add('invalid'); // Replace 'your-class-name' with the desired class
+                if(!firstInvalidField){
+                    firstInvalidField = true;
+                    errorInput.focus();
+                }
+            }
         }
         alertElement.classList.add("alert-danger");
-        alertElement.textContent = errorMessage;
+        alertElement.innerHTML = errorMessage;
     } else {
-        console.error('Error:', error);
+        console.log('Error:', error);
         alertElement.classList.add("alert-danger");
 
         // Custom handling for unexpected response
@@ -159,7 +170,7 @@ function fatchResponseCatch(error, alertElement) {
     }
 }
 
-function validateForm(currentForm, alertElement) {
+function validateForm(currentForm, alertElement) {   
 
     // Get all input and textarea elements
     const fields = currentForm.querySelectorAll("input, textarea, select");
@@ -180,9 +191,7 @@ function validateForm(currentForm, alertElement) {
     let formdata = []
     fields.forEach((field) => {
         formdata[field.name] = field.value;
-    });
-
-    
+    });    
 
     // Validate fields
     fields.forEach((field) => {
@@ -232,7 +241,7 @@ function validateForm(currentForm, alertElement) {
 
 function cleanForm(fields) {
     let ft = '';
-    return false;
+   
     // Remove the invalid class and trim inputs
     fields.forEach((field) => {
         
@@ -360,7 +369,7 @@ async function fetchAndRender(page = 1) {
 
     renderTableHeader(columns);
 
-    renderTable(items.data, items.total, columns);
+    renderTable(data);
 
     renderPagination(items.links, items.current_page, items.last_page, items.total);
 
@@ -374,11 +383,18 @@ function renderTableHeader(columns) {
     document.getElementById('table-head').innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
 }
 // Render table rows
-function renderTable(rows, totalItems, columns) {
+function renderTable(data) {    
+
+    const columns = data.columns;
+
+    const items = data.items.data;
+
+    const totalItems = data.items.total;
+    
     const tbody = document.getElementById('table-body');
 
     if (totalItems > 0) {
-        tbody.innerHTML = renderTableRows(rows, columns);
+        tbody.innerHTML = renderTableRows(items, columns, data.items);
     } else {
         const colspan = Object.keys(columns).length;
         tbody.innerHTML = `
@@ -391,7 +407,8 @@ function renderTable(rows, totalItems, columns) {
     }
 }
 
-function renderTableRows(rows, columns) {
+function renderTableRows(rows, columns, page) {
+
     let id = 0;
     let output = "";
     let cell_value = "";
@@ -401,14 +418,19 @@ function renderTableRows(rows, columns) {
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
                      </svg>`;
+    let i = 0;
     rows.forEach(row => {
-        console.log(row);
-        id = row.id;
+        
+        id = row.id;        
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
             cell_value = "";
             cell_class = cn;
             switch (cn) {
+                case "sr":
+                    cell_value = (page.current_page - 1) * page.per_page + i + 1;
+                    i++;
+                    break;
                 case "action":
                     cell_value = row[cn];
                     break;
@@ -418,7 +440,12 @@ function renderTableRows(rows, columns) {
                     break;
                 case "image":
                     cell_value = row[cn];
-                    cell_value = `<img src="${image_url }/players/thumbs/${cell_value}">`;
+                    if (cell_value.includes('http')) {
+                        cell_value = `<img src="${cell_value}">`;
+                    }else{
+                        cell_value = `<img src="${image_url}/players/thumbs/${cell_value}">`;
+                    }
+                    
                     break;
                 case "actions":
                     cell_value += "<div>";

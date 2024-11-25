@@ -19,7 +19,8 @@ class CategoryApiController extends Controller
     {
         // Define column names (localized)
         $columns = [];
-        $columns['id'] = __('ID');
+        //$columns['id'] = __('ID');
+        $columns['sr'] = __('Sr.');
         $columns['category_name'] = __('Category Name');
         $columns['base_price'] = __('Base Price');
         $columns['color_code'] = __('Color Code');

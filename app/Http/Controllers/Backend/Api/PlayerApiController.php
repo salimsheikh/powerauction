@@ -29,7 +29,7 @@ class PlayerApiController extends Controller
     {
         // Define column names (localized)
         $columns = [];
-        $columns['id'] = __('ID');
+        $columns['sr'] = __('Sr.');
         $columns['uniq_id'] = __('Unique Id');
         $columns['image'] = __('Profile');
         $columns['player_nickname'] = __('Name');
@@ -79,9 +79,7 @@ class PlayerApiController extends Controller
             $items[$key]->profile_type_label = '';
             $items[$key]->type_label = '';
             $items[$key]->style_label = '';
-
         }
-
 
         $columns = $this->get_columns();
 
@@ -95,7 +93,18 @@ class PlayerApiController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:6000',
+            'player_name' => 'required|string|max:255', // Player name is required, must be a string, and have a maximum of 255 characters.
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image with size restrictions.
+            'profile_type' => 'required|string', // Profile type required with specific allowed values.
+            'type' => 'required|string', // Type field is required.
+            'style' => 'required|string|max:100', // Style is optional but should not exceed 100 characters.
+            'dob' => 'required|date', // Date of birth must be a valid date.
+            'category_id' => 'required|integer|exists:categories,id', // Category ID is required and should reference an existing category.
+            'nickname' => 'required|string|max:100', // Nickname is optional but limited to 100 characters.
+            'last_played_league' => 'required|string|max:255', // Optional field with max length of 255.
+            'address' => 'required|string|max:500', // Address is optional but can have a maximum length of 500 characters.
+            'city' => 'required|string|max:255', // City is required and limited to 255 characters.
+            'email' => 'required|email|max:255|unique:players,email', // Email must be valid, unique, and limited to 255 characters.            
         ]);
     
         if ($validator->fails()) {
@@ -120,20 +129,11 @@ class PlayerApiController extends Controller
         // Current authenticated user ID
         $userId = Auth::id();
 
-        // $imagePath = Storage::url($imagePath);
-
         $dateInput = $request->dob;
-        $formattedDate = $request->dob;
 
-        // Use DateTime to create a date object and format it as yyyy-mm-dd
-       // $formattedDate = \DateTime::createFromFormat('d-m-Y', $dateInput)->format('Y-m-d');
-
-       // Replace the first '-' with a character that splits day, month, and year
+        // Replace the first '-' with a character that splits day, month, and year
         $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
-        $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'
-
-
-        \Log::info('Formatted Date: '.$dateInput . "  - - -" . $formattedDate);
+        $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'       
 
         $formData = [
             'player_name' => $request->player_name,
@@ -145,8 +145,8 @@ class PlayerApiController extends Controller
             'style' => $request->style,
             'dob' => $formattedDate,
 
-            'category_id' => $request->category,
-            'nickname' => $request->nick_name,
+            'category_id' => $request->category_id,
+            'nickname' => $request->nickname,
             'last_played_league' => $request->last_played_league,
             'address' => $request->address,
 
@@ -156,8 +156,6 @@ class PlayerApiController extends Controller
             'status' => $status,
             'created_by' => $userId,
         ];
-
-        // \Log::info($formData);  
 
         try{
 
@@ -195,8 +193,12 @@ class PlayerApiController extends Controller
     public function edit(Request $request, $id)
     {
         try {
+            $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'image', 'image_thumb', 'bat_type', 'ball_type', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+    ->find($id);
 
-            $item = Player::select('category_name', 'color_code', 'base_price', 'description')->find($id);
+            \Log::info(print_r($item,true));
+
+            //$item = Player::find($id);
             if ($item) {
                 return response()->json([
                     'success' => true,

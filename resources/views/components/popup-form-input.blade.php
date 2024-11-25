@@ -4,7 +4,7 @@
     @if($type == 'color')
         <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" maxlength="10" class="{{$name}} {{$class}} textbox w-full md:w-2/3 focus:outline-none" />
     @elseif($type == 'file')
-        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox"  accept="image/*" />
+        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox"  accept="image/png, image/gif, image/jpeg" />
     @elseif($type == 'textarea')
         <textarea name="{{$name}}" id="{{$id}}" cols="30" rows="3"  class="{{$name}} {{$class}} inputbox"  maxlength="{{$mexlength}}">{{$value}}</textarea>
     @elseif($type == 'select')        
@@ -15,6 +15,6 @@
             @endforeach
         </select>
     @else
-        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" placeholder="2000-02-02" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox" />
+        <input type="{{$type}}" id="{{$id}}" name="{{$name}}" value="{{$value}}" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} inputbox" />
     @endif    
 </div>

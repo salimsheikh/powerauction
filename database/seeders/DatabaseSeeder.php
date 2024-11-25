@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Player;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +16,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Category::factory(10)->create();
+        //Category::factory(10)->create();
+        //Player::factory()->count(50)->create(); // Create 50 players
 
 
         // Call your specific seeder
         // $this->call(SettingsTableSeeder::class);
+        // $this->call(PlayerSeeder::class);
 
        
     }

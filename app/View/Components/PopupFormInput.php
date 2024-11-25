@@ -39,7 +39,7 @@ class PopupFormInput extends Component
 
         if($type == 'select'){
             switch($name){
-                case "category":
+                case "category_id":
                     $this->firstOption = __('Select Category');
                     $items = Category::where('status', 'publish')->orderBy('category_name', 'ASC')->get();               
                     foreach($items as $item){
@@ -63,13 +63,20 @@ class PopupFormInput extends Component
                     ];
                     break;
                 case "style":                
-                    $this->firstOption = __('Select Type');
-                    $this->firstOption = __('Select Category');
+                    $this->firstOption = __('Select Type');                    
+                    /*
                     $items = Style::orderBy('order', 'ASC')->get();               
                     foreach($items as $item){
                         $this->options[$item->slug] = $item->name;
                     }
-                    break;    
+                    */
+                    $this->options =[
+                        "heft_hand_batsman" => __('Left Hand Batsman'),
+                        "right_hand_batsman" => __('Right Hand Batsman'),
+                        "left_hand_bowler" => __('Left Hand Bowler'),
+                        "right_hand_bowler" =>__('Right Hand Bowler')
+                    ];;
+                    break;
             }
         }
 

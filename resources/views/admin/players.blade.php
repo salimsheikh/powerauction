@@ -7,47 +7,63 @@
 
     <!-- Add Item Popup -->
     <x-popup-add-item-model title="{{__('Add new Player')}}" formType="add" formID="popupAddForm" popupClasses="column-2" actionButtonLabel="{{__('Add Player')}}">
-        <x-popup-form-input type="text" name="player_name" label="{{ __('Players Name:') }}" class="focus_first player_name required"
+        <x-popup-form-input type="text" id="player_name" name="player_name" label="{{ __('Players Name:') }}" class="focus_first player_name required"
             maxlength="50" value="Salim Shaikh" />
-        <x-popup-form-input type="file" name="image" label="{{ __('Player Profile:') }}"
+        <x-popup-form-input type="file" id="image" name="image" label="{{ __('Player Profile:') }}"
             class="required image" maxlength="10" value="test" />
-        <x-popup-form-input type="select" name="profile_type" label="{{ __('Profile Type:') }}" class="required"
+        <x-popup-form-input type="select" id="profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required"
             maxlength="255" value="" />
-        <x-popup-form-input type="select" name="type" label="{{ __('Type:') }}" value=""
+        <x-popup-form-input type="select" id="type" name="type" label="{{ __('Type:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" name="style" label="{{ __('Style:') }}" value=""
+        <x-popup-form-input type="select" id="style" name="style" label="{{ __('Style:') }}" value=""
             class="required" />
-        <x-popup-form-input type="date" name="dob" label="{{ __('DOB:') }}" value="1980-02-02"
+        <x-popup-form-input type="date" id="dob" name="dob" label="{{ __('DOB:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" name="category" label="{{ __('Category:') }}" value=""
+        <x-popup-form-input type="select" id="category_id" name="category_id" label="{{ __('Category:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" name="nick_name" label="{{ __('Nick Name:') }}" value=""
+        <x-popup-form-input type="text" id="nickname" name="nickname" label="{{ __('Nick Name:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" name="last_played_league" label="{{ __('Last Played League:') }}" value=""
+        <x-popup-form-input type="text" id="last_played_league" name="last_played_league" label="{{ __('Last Played League:') }}" value=""
             class="required" />
-        <x-popup-form-input type="textarea" name="address" label="{{ __('Address:') }}" value=""
+        <x-popup-form-input type="textarea" id="address" name="address" label="{{ __('Address:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" name="city" label="{{ __('City:') }}" value=""
+        <x-popup-form-input type="text" id="city" name="city" label="{{ __('City:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" name="email" label="{{ __('Email:') }}" value=""
+        <x-popup-form-input type="text" id="email" name="email" label="{{ __('Email:') }}" value=""
             class="required email_validate" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
     <x-popup-delete-item-model title="{{__('Delete Player')}}">
-        {{ __('Do you want to delete category?') }}
+        {{ __('Do you want to delete Player?') }}
     </x-popup-delete-item-model>
 
     <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update Player')}}">
-        <x-popup-form-input type="text" name="category_name" id="update_category_name" label="{{ __('Category Name:') }}" class="focus_first category_name required"
-            maxlength="50" value="" />
-        <x-popup-form-input type="text" name="base_price" id="update_base_price" label="{{ __('Base Price:') }}"
-            class="required price_validate base_price" maxlength="10" value="" />
-        <x-popup-form-input type="text" name="description" id="update_description" label="{{ __('Description:') }}" class="required description"
+    <x-popup-update-item-model title="{{__('Update Player')}}" formType="update" formID="popupUpdateForm" popupClasses="column-2" actionButtonLabel="{{__('Update Player')}}">
+        <x-popup-form-input type="text" id="update_player_name" name="player_name" label="{{ __('Players Name:') }}" class="focus_first player_name required"
+            maxlength="50" value="Salim Shaikh" />
+        <x-popup-form-input type="file" id="update_image" name="image" label="{{ __('Player Profile:') }}"
+            class="required image" maxlength="10" value="test" />
+        <x-popup-form-input type="select" id="update_profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required"
             maxlength="255" value="" />
-        <x-popup-form-input type="color" name="color_code" id="update_color_code" label="{{ __('Color Code:') }}" value="#000001"
-            class="color_code" />
+        <x-popup-form-input type="select" id="update_type" name="type" label="{{ __('Type:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="select" id="update_style" name="style" label="{{ __('Style:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="date" id="update_dob" name="dob" label="{{ __('DOB:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="select" id="update_category_id" name="category_id" label="{{ __('Category:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="text" id="update_nickname" name="nickname" label="{{ __('Nick Name:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="text" id="update_last_played_league" name="last_played_league" label="{{ __('Last Played League:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="textarea" id="update_address" name="address" label="{{ __('Address:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="text" id="update_city" name="city" label="{{ __('City:') }}" value=""
+            class="required" />
+        <x-popup-form-input type="text" id="update_email" name="email" label="{{ __('Email:') }}" value=""
+            class="required email_validate" />
     </x-popup-update-item-model>
 
     <div class="py-12">

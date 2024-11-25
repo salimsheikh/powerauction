@@ -23,6 +23,17 @@ if (buttonPopupShowAddItemModel) {
         const focus_first = popupTargetModel.querySelector(".focus_first");
 
         focus_first.focus();
+
+        // Select the form by its ID
+        const currentForm = document.getElementById('popupAddForm');
+
+        // Find the submit button within the form and disable it
+        if (currentForm) {
+            const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false; // Disable the button
+            }
+        }
         
     }
 }
@@ -46,7 +57,7 @@ if (popupCloseModels) {
 const popupAddForm = document.getElementById("popupAddForm");
 if (popupAddForm) {
     document.getElementById("popupAddForm").addEventListener("submit", async (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault(); // Prevent form submission        
 
         if (formProcessing) {
             return false;
@@ -89,6 +100,11 @@ if (popupAddForm) {
 
         formProcessing = true;
 
+        const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true; // Disable the button
+        }
+
         const response = await  fetch(`${BASE_API_URL}/store`, {
             method: 'POST',
             headers: headers,
@@ -97,8 +113,6 @@ if (popupAddForm) {
             console.log("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-            formProcessing = false;
-
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
@@ -117,9 +131,15 @@ if (popupAddForm) {
 
             setTimeout(function () {
                 hideModal();
+                formProcessing = false;
             }, 1500);
-
         }).catch((error) => {
+            if (submitButton) {
+                setTimeout(function () {
+                    submitButton.disabled = false; // Disable the button
+                }, 1000);
+            }
+            formProcessing = false;
             fatchResponseCatch(error, alertElement);
         });
 
@@ -214,11 +234,15 @@ if (tableContainer) {
                 }, 500);
 
                 let formData = data.data;
-
+                let elem = null;
                 for (const key in formData) {
                     if (formData.hasOwnProperty(key)) {
                         if (formData[key] != "" && formData[key] != null) {
-                            document.getElementById('update_' + key).value = formData[key];
+                            console.log(key);
+                            elem = document.getElementById('update_' + key);
+                            if(elem && (key != 'image')){
+                                elem.value = formData[key];    
+                            }                            
                         }
                     }
                 }
@@ -373,6 +397,7 @@ if (tableContainer) {
             const deleteButton = document.getElementById('btnPopupDelete');
             deleteButton.disabled = false;
             deleteButton.focus();
+            
         }
     });
 }
@@ -450,7 +475,6 @@ if (popupDeleteForm) {
 
             setTimeout(function () {
                 hideModal();
-                deleteButton.disabled = false;
             }, 1000);
         }).catch((error) => {
             deleteButton.disabled = false;
@@ -497,15 +521,15 @@ if (btnSearchText) {
     });
 }
 
+
 document.getElementById('profile_type').value = 'men';
 document.getElementById('type').value = 'batsman';
-document.getElementById('style').value = 'Left Hand Batsman';
-document.getElementById('dob').value = '02-02-1980';
+document.getElementById('style').value = 'right_hand_batsman';
+document.getElementById('dob').value = '1980-01-01';
 
-
-document.getElementById('category').value = '1';
-document.getElementById('nick_name').value = 'batsman';
-document.getElementById('last_played_league').value = 'Left Hand Batsman';
+document.getElementById('category_id').value = '1';
+document.getElementById('nickname').value = 'batsman';
+document.getElementById('last_played_league').value = 'Last Played League';
 document.getElementById('address').value = 'Kurla';
 
 document.getElementById('city').value = 'Nehru Nagar';

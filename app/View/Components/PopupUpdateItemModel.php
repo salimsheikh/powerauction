@@ -9,12 +9,20 @@ use Illuminate\View\Component;
 class PopupUpdateItemModel extends Component
 {
     public $title = '';
+    public $formType = '';
+    public $formId = '';
+    public $popupClasses = '';
+    public $actionButtonLabel = '';
     /**
      * Create a new component instance.
      */
-    public function __construct($title = '')
+    public function __construct($title = '', $formType = '', $formId = 'popupAddForm', $popupClasses = '', $actionButtonLabel = 'Add Item')
     {
         $this->title = $title;
+        $this->formType = $formType;
+        $this->formId = $formId;
+        $this->popupClasses = $popupClasses;
+        $this->actionButtonLabel = $actionButtonLabel;
     }
 
     /**
