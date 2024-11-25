@@ -48,9 +48,8 @@ class PlayerApiController extends Controller
         // Get the search query from the request
         $query = $request->input('query', '');
 
-        // Start the query builder for the Category model
         // Start the query builder for the Player model
-        $itemQuery = Player::with([]); // Eager load the category relationship
+        $itemQuery = Player::with([]); // Eager load the Player relationship
 
         // If there is a search query, apply the filters
         if ($query) {
@@ -115,47 +114,23 @@ class PlayerApiController extends Controller
             ], 422);
         }
 
-        $filename = "";
+        $formData = $request->all();
+
+        $dob = $request->input('dob', '');
 
         if ($request->hasFile('image')) {
-             // Get the uploaded file
-            $uploadedFile = $request->file('image');
-            
+            $uploadedFile = $request->file('image');               
             $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'players');
-        }
 
-        $status = $request->input('status', 'publish');
+            $formData['image'] = $filename;
+            $formData['image_thumb'] = $filename;
+        }        
 
-        // Current authenticated user ID
-        $userId = Auth::id();
+        $formData['dob'] = $this->get_formated_date($dob);
+        $formData['status'] = $request->input('status', 'publish');
+        $formData['created_by'] = Auth::id(); // Current authenticated user ID
 
-        $dateInput = $request->dob;
-
-        // Replace the first '-' with a character that splits day, month, and year
-        $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
-        $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'       
-
-        $formData = [
-            'player_name' => $request->player_name,
-            'image' => $filename,
-            'image_thumb' => $filename,
-            
-            'profile_type' => $request->profile_type,
-            'type' => $request->type,
-            'style' => $request->style,
-            'dob' => $formattedDate,
-
-            'category_id' => $request->category_id,
-            'nickname' => $request->nickname,
-            'last_played_league' => $request->last_played_league,
-            'address' => $request->address,
-
-            'city' => $request->city,
-            'email' => $request->email,
-
-            'status' => $status,
-            'created_by' => $userId,
-        ];
+     
 
         try{
 
@@ -174,7 +149,7 @@ class PlayerApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Player added successfully.',
-                'category' => array(),
+                'data' => array(),
             ]);
         } catch (Exception $e) {
 
@@ -182,7 +157,7 @@ class PlayerApiController extends Controller
                 'success' => false,
                 'message' => __('Player not added.'),
                 'errors' => [
-                    'category_name' => [$e->getMessage()]
+                    'error' => [$e->getMessage()]
                 ]
             ], 409);
         }
@@ -193,10 +168,10 @@ class PlayerApiController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'image', 'image_thumb', 'bat_type', 'ball_type', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+            $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
     ->find($id);
 
-            \Log::info(print_r($item,true));
+           
 
             //$item = Player::find($id);
             if ($item) {
@@ -211,6 +186,66 @@ class PlayerApiController extends Controller
                 $res['statusCode'] = 404;
                 return jsonResponse($res);
             }
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $res = $this->get_response();        
+
+        $item = Player::findOrFail($id);        
+
+        try {
+
+            $formData = $request->all();  
+            
+            $dob = $request->input('dob', '');
+
+            if ($request->hasFile('image')) {
+               $uploadedFile = $request->file('image');               
+               $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'players');              
+
+               $formData['image'] = $filename;
+               $formData['image_thumb'] = $filename;
+
+               Log::info("file found");
+            }else{
+                unset($formData['image']);
+            }
+
+            if ($dob) {
+                $formData['dob'] = $this->get_formated_date($dob);           
+            }           
+            
+            $formData['status'] = $request->input('status', 'publish');;
+            $formData['updated_by'] = Auth::id(); // Current authenticated user ID               
+
+            // Log::info($dob);
+            // Log::info($formData);
+
+            // Update the record
+            $item->update($formData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Player updated successfully.',
+                'data' => $item,
+            ]);
+
+            $res['success'] = true;
+            $res['message'] = __('Player updated successfully');
+            $res['statusCode'] = 201;
+            return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
             $res['errors'] = ['player' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
@@ -263,5 +298,15 @@ class PlayerApiController extends Controller
         $res['errors'] = false;
         $res['statusCode'] = false;
         return $res;
+    }
+
+    function get_formated_date($dateInput = ''){
+        if($dateInput != ""){
+            // Replace the first '-' with a character that splits day, month, and year
+            $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
+            $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'  
+            return $formattedDate;
+        }
+        return $dateInput;
     }
 }

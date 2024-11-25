@@ -43,8 +43,8 @@
         <x-popup-form-input type="text" id="update_player_name" name="player_name" label="{{ __('Players Name:') }}" class="focus_first player_name required"
             maxlength="50" value="Salim Shaikh" />
         <x-popup-form-input type="file" id="update_image" name="image" label="{{ __('Player Profile:') }}"
-            class="required image" maxlength="10" value="test" />
-        <x-popup-form-input type="select" id="update_profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required"
+            class="image" maxlength="10" value="test" />
+        <x-popup-form-input type="select" id="update_profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required profile_type"
             maxlength="255" value="" />
         <x-popup-form-input type="select" id="update_type" name="type" label="{{ __('Type:') }}" value=""
             class="required" />

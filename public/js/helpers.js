@@ -440,12 +440,13 @@ function renderTableRows(rows, columns, page) {
                     break;
                 case "image":
                     cell_value = row[cn];
-                    if (cell_value.includes('http')) {
-                        cell_value = `<img src="${cell_value}">`;
-                    }else{
-                        cell_value = `<img src="${image_url}/players/thumbs/${cell_value}">`;
+                    if(cell_value){
+                        if (cell_value.includes('http')) {
+                            cell_value = `<img src="${cell_value}">`;
+                        }else{
+                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}">`;
+                        }
                     }
-                    
                     break;
                 case "actions":
                     cell_value += "<div>";

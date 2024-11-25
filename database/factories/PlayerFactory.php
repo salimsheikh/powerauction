@@ -11,7 +11,7 @@ class PlayerFactory extends Factory
     public function definition()
     {
         return [
-            'uniq_id' => "SPL/".$this->faker->randomNumber(5),
+            'uniq_id' => "SPL/".$this->faker->randomNumber(1,100),
             'player_name' => $this->faker->name(),
             'nickname' => $this->faker->word(),
             'mobile' => $this->faker->numerify('##########'),

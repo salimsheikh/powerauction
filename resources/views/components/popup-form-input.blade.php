@@ -8,7 +8,7 @@
     @elseif($type == 'textarea')
         <textarea name="{{$name}}" id="{{$id}}" cols="30" rows="3"  class="{{$name}} {{$class}} inputbox"  maxlength="{{$mexlength}}">{{$value}}</textarea>
     @elseif($type == 'select')        
-        <select name="{{$id}}" id="{{$name}}" class="{{$name}} {{$class}} inputbox">
+        <select id="{{$id}}" name="{{$name}}" class="{{$name}} {{$class}} inputbox">
             <option value="">{{$firstOption}}</option>
             @foreach ($options as $option_name => $value)
                 <option value="{{ $option_name }}">{{ $value }}</option>

@@ -25,6 +25,6 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::get('/players', [PlayerApiController::class, 'index']);
     Route::post('/players/store', [PlayerApiController::class, 'store']);                
     Route::get('/players/edit/{id}', [PlayerApiController::class, 'edit']);
-    Route::put('/players/{id}', [PlayerApiController::class, 'update']);
+    Route::post('/players/{id}', [PlayerApiController::class, 'update']);
     Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
 });

@@ -64,7 +64,7 @@ if (popupAddForm) {
         }        
 
         // Get the current form
-        const currentForm = event.target;
+        const currentForm = e.target;
 
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
@@ -228,6 +228,17 @@ if (tableContainer) {
 
                 focus_first.focus();
 
+                // Select the form by its ID
+                const currentForm = document.getElementById('popupUpdateForm');
+
+                // Find the submit button within the form and disable it
+                if (currentForm) {
+                    const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false; // Disable the button
+                    }
+                }
+
                 setTimeout(function () {
                     alertElement.classList.remove("alert-success");
                     alertElement.classList.add('alert-hidden');
@@ -237,14 +248,23 @@ if (tableContainer) {
                 let elem = null;
                 for (const key in formData) {
                     if (formData.hasOwnProperty(key)) {
-                        if (formData[key] != "" && formData[key] != null) {
-                            console.log(key);
+                        if (formData[key] != "" && formData[key] != null) {                            
                             elem = document.getElementById('update_' + key);
-                            if(elem && (key != 'image')){
-                                elem.value = formData[key];    
-                            }                            
+                            if(elem){
+                                if(key == 'image'){                                    
+                                    elem.value = "";
+                                }else{
+                                    elem.value = formData[key];
+                                }
+                            }
+                                      
                         }
                     }
+                }
+
+                elem = document.getElementById('update_image');
+                if(elem){
+                    elem.value = "";
                 }
 
                 showPopupForm();
@@ -267,82 +287,52 @@ if (popupUpdateForm) {
         }
 
         // Get the current form
-        const currentForm = event.target;
+        const currentForm = document.getElementById('popupUpdateForm');
 
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
 
         // Get all input and textarea elements
-        const fields = this.querySelectorAll("input, textarea");
+        const fields = currentForm.querySelectorAll("input, textarea, select");
 
-        // Remove the invalid class and trim inputs
-        fields.forEach((field) => {
-            field.classList.remove("invalid");
-            if (field.type === "text" || field.tagName === "TEXTAREA" || field.type === "email") {
-                field.value = field.value.trim();
-            }
-        });
-
-        let firstInvalidField = null;
-
-        // Validate fields
-        fields.forEach((field) => {
-            if (field.classList.contains("required") && field.value === "") {
-                field.classList.add("invalid");
-                if (!firstInvalidField) firstInvalidField = field;
-            }
-
-            if (field.classList.contains("email_validate") && field.value !== "") {
-                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailPattern.test(field.value)) {
-                    field.classList.add("invalid");
-                    if (!firstInvalidField) firstInvalidField = field;
-                }
-            }
-
-            if (field.classList.contains("price_validate") && field.value !== "") {
-                // Validate if it's a valid number with one decimal place
-                const regex = /^[0-9]+(\.[0-9]{1,2})?$/;
-                if (!regex.test(field.value)) {
-                    field.classList.add("invalid");
-                    if (!firstInvalidField) firstInvalidField = field;
-                }
-            }
-        });
-
-        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
-
-        // Focus on the first invalid field
-        if (firstInvalidField) {
-            firstInvalidField.focus();
-            alertElement.textContent = lang.enter_required_fields;
-            alertElement.classList.add("alert-danger");
+        const validForm = validateForm(currentForm, alertElement);
+        if (!validForm) {
             return false;
         }
-
-        const sanctum_token = get_local_storage_token('sanctum_token');
-        if (!sanctum_token) {
-            alertElement.textContent = lang.something_wrong;
-            alertElement.classList.add("alert-danger");
-            return false;
-        }
-
-        const headers = get_ajax_header(false);
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
 
-        var formValues = {};
-        fields.forEach((field) => {
-            formValues[field.name] = field.value;
-        });
+        let headers = get_ajax_header(true);
+        let formData = new FormData();
+        const imageInput = document.getElementById('update_image');        
+        if(imageInput){            
+            if(imageInput.files.length > 0){
+                formData.append('image', imageInput.files[0]);
+            }
+            fields.forEach((field) => {
+                if(field.name != 'image'){
+                    // console.log(field.name);
+                    formData.append(field.name, field.value);
+                }
+            });
+        }else{            
+            fields.forEach((field) => {               
+                formData.append(field.name, field.value);
+            });
+        }       
 
         formProcessing = true;
 
+        const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true; // Disable the button
+        }
+
         fetch(`${BASE_API_URL}/${edit_id}`, {
-            method: 'PUT',
+            method: 'POST',
             headers: headers,
-            body: JSON.stringify(formValues),
+            body: formData,
         }).then((response) => {
             console.log("response 1");
             //do not delete
@@ -359,17 +349,22 @@ if (popupUpdateForm) {
         }).then((data) => {
             console.log("response 2");
             alertElement.textContent = data.message;
-            alertElement.classList.add("alert-success");
-
-            console.log(current_page)
+            alertElement.classList.add("alert-success");           
 
             fetchAndRender(current_page);
             
             setTimeout(function () {
                 hideModal();
+                formProcessing = false;
             }, 1500);
 
         }).catch((error) => {
+            if (submitButton) {
+                setTimeout(function () {
+                    submitButton.disabled = false; // Disable the button
+                }, 1000);
+            }
+            formProcessing = false;
             fatchResponseCatch(error, alertElement);
         });
 
@@ -470,7 +465,7 @@ if (popupDeleteForm) {
             if(rows <=1){
                 current_page = current_page >= 1 ?  current_page - 1 : current_page;
             }
-            console.log(current_page);
+          
             fetchAndRender(current_page);
 
             setTimeout(function () {
