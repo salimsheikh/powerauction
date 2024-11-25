@@ -66,9 +66,67 @@
             class="required email_validate" />
     </x-popup-update-item-model>
 
+
+    <x-popup-view-item-model title="{{__('View Player')}}" popupClasses="column-1">
+        <div id="viewItems">
+            
+            <table class="table table-striped" style="border-radius:3px;">
+                <tbody><tr>
+                    <th class="custom_td">Unique Id</th>
+                    <td class="custom_td">SPL/6</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Player Name</th>
+                    <td class="custom_td">Players Name</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Nick Name</th>
+                    <td class="custom_td">Nick Name</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Category</th>
+                    <td class="custom_td">23</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Age</th>
+                    <td class="custom_td">0</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Type</th>
+                    <td class="custom_td">Batsman</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Style</th>
+                    <td class="custom_td">Right Hand Batsman</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Last Played League</th>
+                    <td class="custom_td">test</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Address</th>
+                    <td class="custom_td">tset</td>
+                </tr>                    
+                <tr>
+                    <th class="custom_td">City</th>
+                    <td class="custom_td">Mumbai</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Email</th>
+                    <td class="custom_td">salimsheikh4u2000@gmail.com</td>
+                </tr>
+                <tr>
+                    <th class="custom_td">Creation Date</th>
+                    <td class="custom_td">2024-11-25</td>
+                </tr>
+            </tbody></table>
+            
+        </div>
+    </x-popup-view-item-model>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-slate-800 dark:border-gray-600">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-slate-800 dark:border-gray-600">                
                 <div class="p-6 text-gray-900">
                     <div class="table-header-search">
                         <div>

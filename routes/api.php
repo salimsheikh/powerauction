@@ -19,7 +19,7 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::get('/categories', [CategoryApiController::class, 'index']);
     Route::post('/categories/store', [CategoryApiController::class, 'store']);                
     Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
-    Route::put('/categories/{id}', [CategoryApiController::class, 'update']);
+    Route::post('/categories/{id}', [CategoryApiController::class, 'update']);
     Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);
 
     Route::get('/players', [PlayerApiController::class, 'index']);
@@ -27,4 +27,5 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::get('/players/edit/{id}', [PlayerApiController::class, 'edit']);
     Route::post('/players/{id}', [PlayerApiController::class, 'update']);
     Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
+    Route::get('/players/view/{id}', [PlayerApiController::class, 'view']);
 });

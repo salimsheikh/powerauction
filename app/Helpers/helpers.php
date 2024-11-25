@@ -41,9 +41,10 @@ if (!function_exists('getJSLang')) {
         $lang['something_wrong'] = __('Some thing is wrong.');
         $lang['enter_required_fields'] = __("Please enter the required fields.");
 
+        $lang['view'] = __("View");
         $lang['edit'] = __("Edit");
         $lang['delete'] = __("Delete");
-        $lang['trash'] = __("Trash");        
+        $lang['trash'] = __("Trash");
 
         switch($page){
             case "category":

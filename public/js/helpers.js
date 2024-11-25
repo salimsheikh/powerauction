@@ -261,6 +261,21 @@ function cleanForm(fields) {
     });
 }
 
+function getFormData(fields){
+    let formData = new FormData();
+    fields.forEach((field) => {
+        if(field.type == 'file'){
+            if(field.files.length > 0){
+                formData.append(field.name, field.files[0]);
+            }
+        }else{
+            formData.append(field.name, field.value.trim());
+        }
+    });
+
+    return formData;
+}
+
 
 function get_csrf_token() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -418,6 +433,10 @@ function renderTableRows(rows, columns, page) {
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z"></path>
                      </svg>`;
+    let view_icon = `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-4.553m0 0L21 5.447m-1.447 1.553L10 15m5 0l-4.553 4.553m0 0L3 15" />
+    </svg>`
+
     let i = 0;
     rows.forEach(row => {
         
@@ -426,20 +445,16 @@ function renderTableRows(rows, columns, page) {
         for (const [cn] of Object.entries(columns)) {
             cell_value = "";
             cell_class = cn;
+            cell_value = row[cn] == undefined ? '' : row[cn];
             switch (cn) {
                 case "sr":
                     cell_value = (page.current_page - 1) * page.per_page + i + 1;
                     i++;
                     break;
-                case "action":
-                    cell_value = row[cn];
-                    break;
-                case "color_code":
-                    cell_value = row[cn];
+                case "color_code":                    
                     cell_value = cell_value == null ? '' : `<span class="color-code" style="background-color: ${cell_value};">${cell_value}</span>`;
                     break;
-                case "image":
-                    cell_value = row[cn];
+                case "image":                    
                     if(cell_value){
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
@@ -448,14 +463,18 @@ function renderTableRows(rows, columns, page) {
                         }
                     }
                     break;
-                case "actions":
+                case "actions":                    
                     cell_value += "<div>";
-                    cell_value += `<a href="#" class="btn edit-btn edit-button"  data-id="${id}">${cell_edit}</a>`;
-                    cell_value += `<a href="#" class="btn delete-btn delete-button" data-id="${id}">${lang.delete}</a>`;
+                    cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+                    cell_value += `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
                     cell_value += "</div>";
                     break;
-                default:
-                    cell_value = row[cn];
+                case "view_actions":                    
+                    cell_value += "<div>";
+                    cell_value += `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+                    cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+                    cell_value += `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+                    cell_value += "</div>";
                     break;
             }
             output += `<td class="${cell_class}">${cell_value}</td>`;

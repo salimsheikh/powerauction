@@ -120,11 +120,14 @@ body::-webkit-scrollbar-track {
     color: var(--text-color);
 }
 
-.custom-table thead th.actions{
+.custom-table thead th.actions,
+.custom-table thead th.view_actions{
     text-align: center;
     vertical-align: middle;
 }
-.custom-table tbody td.actions div{
+
+.custom-table tbody td.actions div,
+.custom-table tbody td.view_actions div{
     text-align: center;
     white-space: nowrap;
     display: flex;
@@ -175,14 +178,15 @@ body::-webkit-scrollbar-track {
 }
 
 /* Edit Button */
-.custom-table .edit-btn {
+.custom-table .edit-btn, 
+.custom-table .view-btn {
     background-color: var(--btn-bg-color);
     color: var(--btn-text-color);
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 30px;
+    height: 28px;
     width: 40px;
 }
 
@@ -192,6 +196,15 @@ body::-webkit-scrollbar-track {
 
 .custom-table .edit-btn:hover {
     background-color: var(--btn-hover-bg-color);
+}
+
+.custom-table .view-btn {
+    --tw-bg-opacity: 1;
+    background-color: rgb(108 43 217 / var(--tw-bg-opacity));
+}
+
+.custom-table .view-btn:hover {
+    background-color: #7e22ce;
 }
 
 /* Delete Button */

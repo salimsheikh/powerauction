@@ -38,7 +38,7 @@ class PlayerApiController extends Controller
         $columns['style_label'] = __('Style');
         $columns['age'] = __('Age');
         $columns['category_name'] = __('Category');        
-        $columns['actions'] = __('Actions');
+        $columns['view_actions'] = __('Actions');
 
         return $columns;
     }
@@ -92,18 +92,18 @@ class PlayerApiController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'player_name' => 'required|string|max:255', // Player name is required, must be a string, and have a maximum of 255 characters.
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Optional image with size restrictions.
-            'profile_type' => 'required|string', // Profile type required with specific allowed values.
-            'type' => 'required|string', // Type field is required.
-            'style' => 'required|string|max:100', // Style is optional but should not exceed 100 characters.
-            'dob' => 'required|date', // Date of birth must be a valid date.
-            'category_id' => 'required|integer|exists:categories,id', // Category ID is required and should reference an existing category.
-            'nickname' => 'required|string|max:100', // Nickname is optional but limited to 100 characters.
-            'last_played_league' => 'required|string|max:255', // Optional field with max length of 255.
-            'address' => 'required|string|max:500', // Address is optional but can have a maximum length of 500 characters.
-            'city' => 'required|string|max:255', // City is required and limited to 255 characters.
-            'email' => 'required|email|max:255|unique:players,email', // Email must be valid, unique, and limited to 255 characters.            
+            'player_name' => 'required|string|max:100',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_type' => 'required|string',
+            'type' => 'required|string',
+            'style' => 'required|string|max:100',
+            'dob' => 'required|date',
+            'category_id' => 'required|integer|exists:categories,id',
+            'nickname' => 'required|string|max:100',
+            'last_played_league' => 'required|string|max:100',
+            'address' => 'required|string|max:500',
+            'city' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:players,email',
         ]);
     
         if ($validator->fails()) {
@@ -124,13 +124,14 @@ class PlayerApiController extends Controller
 
             $formData['image'] = $filename;
             $formData['image_thumb'] = $filename;
-        }        
+        }
 
-        $formData['dob'] = $this->get_formated_date($dob);
+        if($dob){
+            $formData['dob'] = $this->get_formated_date($dob);
+        }
+        
         $formData['status'] = $request->input('status', 'publish');
-        $formData['created_by'] = Auth::id(); // Current authenticated user ID
-
-     
+        $formData['created_by'] = Auth::id();
 
         try{
 
@@ -165,15 +166,47 @@ class PlayerApiController extends Controller
         return response()->json(['message' => 'No image uploaded'], 400);
     }
 
-    public function edit(Request $request, $id)
-    {
+    public function view(Request $request, $id){
+
+        $res = $this->get_response();
+
         try {
             $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
-    ->find($id);
+                    ->find($id);
 
-           
+            if ($item) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Player successfully found.',
+                    'data' => $item,
+                ], 200);
+            } else {
+                $res['errors'] = ['player' => [__('Player not found.')]];
+                $res['message'] = __('An unexpected error occurred.');
+                $res['statusCode'] = 404;
+                return jsonResponse($res);
+            }
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
 
-            //$item = Player::find($id);
+    public function edit(Request $request, $id)
+    {
+        $res = $this->get_response();
+
+        try {
+            $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+                    ->find($id);
+
             if ($item) {
                 return response()->json([
                     'success' => true,
@@ -201,7 +234,30 @@ class PlayerApiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $res = $this->get_response();        
+        $res = $this->get_response();
+
+        $validator = Validator::make($request->all(), [
+            'player_name' => 'required|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_type' => 'required|string',
+            'type' => 'required|string',
+            'style' => 'required|string|max:100',
+            'dob' => 'required|date',
+            'category_id' => 'required|integer|exists:categories,id',
+            'nickname' => 'required|string|max:100',
+            'last_played_league' => 'required|string|max:100',
+            'address' => 'required|string|max:500',
+            'city' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:players,email,' . $id,
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'succes' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $item = Player::findOrFail($id);        
 

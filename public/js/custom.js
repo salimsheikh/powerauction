@@ -83,20 +83,7 @@ if (popupAddForm) {
         alertElement.classList.add("alert-info");
 
         let headers = get_ajax_header(true);
-        let formData = new FormData();
-        const imageInput = document.getElementById('image');        
-        if(imageInput){            
-            formData.append('image', imageInput.files[0]);
-            fields.forEach((field) => {
-                if(field.name != 'image'){
-                    formData.append(field.name, field.value);
-                }
-            });
-        }else{            
-            fields.forEach((field) => {
-                formData.append(field.name, field.value);
-            });
-        }
+        let formData = getFormData(fields);
 
         formProcessing = true;
 
@@ -256,8 +243,7 @@ if (tableContainer) {
                                 }else{
                                     elem.value = formData[key];
                                 }
-                            }
-                                      
+                            }                                      
                         }
                     }
                 }
@@ -292,6 +278,8 @@ if (popupUpdateForm) {
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
 
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+
         // Get all input and textarea elements
         const fields = currentForm.querySelectorAll("input, textarea, select");
 
@@ -304,23 +292,7 @@ if (popupUpdateForm) {
         alertElement.classList.add("alert-info");
 
         let headers = get_ajax_header(true);
-        let formData = new FormData();
-        const imageInput = document.getElementById('update_image');        
-        if(imageInput){            
-            if(imageInput.files.length > 0){
-                formData.append('image', imageInput.files[0]);
-            }
-            fields.forEach((field) => {
-                if(field.name != 'image'){
-                    // console.log(field.name);
-                    formData.append(field.name, field.value);
-                }
-            });
-        }else{            
-            fields.forEach((field) => {               
-                formData.append(field.name, field.value);
-            });
-        }       
+        let formData = getFormData(fields);
 
         formProcessing = true;
 
@@ -513,6 +485,97 @@ if (btnSearchText) {
         }       
 
         fetchAndRender();
+    });
+}
+
+// Add event listener to dynamically created buttons
+if (tableContainer) {
+    tableContainer.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (e.target && e.target.classList.contains('view-button')) {
+            selectedButton = e.target; // Store the clicked button
+
+            if (formProcessing) {
+                return false;
+            }            
+
+            edit_id = e.target.getAttribute('data-id');            
+
+            popupTargetModel = document.getElementById('popupViewItemModal');
+
+            // Find the .alert element within the current form
+            const alertElement = popupTargetModel.querySelector(".alert");
+
+            //alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+
+            const sanctum_token = get_local_storage_token('sanctum_token');
+            if (!sanctum_token) {
+                //alertElement.textContent = lang.something_wrong;
+                //alertElement.classList.add("alert-danger");
+                return false;
+            }
+
+            const headers = get_ajax_header(false);
+
+            //alertElement.textContent = lang.please_wait;
+            //alertElement.classList.add("alert-info");            
+
+            const buttonText = selectedButton.querySelector(".buttonText");
+            const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
+
+            //buttonText.classList.add('hidden'); // Hide the text
+            //loadingSpinner.classList.remove('hidden'); // Show the spinner
+           
+            formProcessing = true;
+
+            fetch(`${BASE_API_URL}/view/${edit_id}`, {
+                method: 'get',
+                headers: headers
+            }).then((response) => {
+                console.log("response 1");
+                //do not delete
+                //alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+                formProcessing = false;
+
+                //buttonText.classList.remove('hidden'); // Hide the text
+                //loadingSpinner.classList.add('hidden'); // Show the spinner
+
+                if (!response.ok) {
+                    return response.json().then((error) => {
+                        throw error;
+                    });
+                }
+
+                return response.json();
+            }).then((data) => {
+                
+                console.log(data);
+
+                let formData = data.data;
+
+                console.log(formData);
+
+                let elem = null;
+                for (const key in formData) {
+                    if (formData.hasOwnProperty(key)) {
+                        
+                    }
+                }
+
+                elem = document.getElementById('update_image');
+                if(elem){
+                    elem.value = "";
+                }
+
+                showPopupForm();
+
+            }).catch((error) => {
+                console.log(error);
+                //fatchResponseCatch(error, alertElement);
+            });
+
+        }
     });
 }
 
