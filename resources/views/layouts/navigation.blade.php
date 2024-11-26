@@ -31,7 +31,6 @@
                         {{ __('Leagues') }}
                     </x-nav-link>
 
-
                     <x-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
                         {{ __('Sponsors') }}
                     </x-nav-link>

@@ -1,0 +1,401 @@
+<?php
+
+namespace App\Http\Controllers\Backend\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Team;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
+use App\Services\ImageUploadService;
+
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+
+class TeamApiController extends Controller
+{
+    protected $imageService;
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
+    function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        $columns['sr'] = __('Sr.');
+        $columns['uniq_id'] = __('Unique Id');
+        $columns['image'] = __('Profile');
+        $columns['team_nickname'] = __('Name');
+        $columns['profile_type_label'] = __('Profile Type');
+        $columns['type_label'] = __('Type');
+        $columns['style_label'] = __('Style');
+        $columns['age'] = __('Age');
+        $columns['category_name'] = __('Category');        
+        $columns['view_actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    public function index(Request $request)
+    {
+        // Get the search query from the request
+        $query = $request->input('query', '');
+
+        // Start the query builder for the Team model
+        $itemQuery = Team::with([]); // Eager load the Team relationship
+
+        // If there is a search query, apply the filters
+        if ($query) {
+            $itemQuery->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('team_name', 'like', '%' . $query . '%')
+                    ->orWhere('nickname', 'like', '%' . $query . '%')
+                    ->orWhere('email', 'like', '%' . $query . '%')
+                    ->orWhereHas('category', function ($categoryQuery) use ($query) {
+                        $categoryQuery->where('category_name', 'like', '%' . $query . '%');
+                    });
+            });
+        }
+
+        $itemQuery->where('status', 'publish');
+
+        // Order by category_name in ascending order
+        $itemQuery->orderBy('created_at', 'desc');
+
+        // Paginate the results
+        $items = $itemQuery->paginate(10);
+
+        foreach($items as $key => $item){
+            $items[$key]->category_name = '';
+            $items[$key]->age = '';
+            $items[$key]->team_nickname = '';
+            $items[$key]->profile_type_label = '';
+            $items[$key]->type_label = '';
+            $items[$key]->style_label = '';
+        }
+
+        $columns = $this->get_columns();
+
+        // Return the columns and items data in JSON format
+        return response()->json([
+            'columns' => $columns,
+            'items' => $items
+        ]);
+    }
+
+    public function store(Request $request){
+
+        $validator = Validator::make($request->all(), [
+            'team_name' => 'required|string|max:100',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_type' => 'required|string',
+            'type' => 'required|string',
+            'style' => 'required|string|max:100',
+            'dob' => 'required|date',
+            'category_id' => 'required|integer|exists:categories,id',
+            'nickname' => 'required|string|max:100',
+            'last_played_league' => 'required|string|max:100',
+            'address' => 'required|string|max:500',
+            'city' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:teams,email',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'succes' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $formData = $request->all();
+
+        $dob = $request->input('dob', '');
+
+        if ($request->hasFile('image')) {
+            $uploadedFile = $request->file('image');               
+            $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'teams');
+
+            $formData['image'] = $filename;
+            $formData['image_thumb'] = $filename;
+        }
+
+        if($dob){
+            $formData['dob'] = $this->get_formated_date($dob);
+        }
+        
+        $formData['status'] = $request->input('status', 'publish');
+        $formData['created_by'] = Auth::id();
+
+        try{
+
+            // Create a new record
+            $result = Team::create($formData);
+
+            // Get the inserted record's ID
+            $insertedId = $result->id;
+
+            // Generate a unique ID (for example, using a UUID)
+            $uniqueId = "SPL/".$insertedId;
+
+            // Update the record with the unique ID
+            $result->update(['uniq_id' => $uniqueId]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Team added successfully.',
+                'data' => array(),
+            ]);
+        } catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => __('Team not added.'),
+                'errors' => [
+                    'error' => [$e->getMessage()]
+                ]
+            ], 409);
+        }
+
+        return response()->json(['message' => 'No image uploaded'], 400);
+    }
+
+    public function view(Request $request, $id){
+
+        $res = $this->get_response();
+
+        // Define column names (localized)
+        $columns = [];
+        $columns['uniq_id'] = __('Unique Id');
+        $columns['team_name'] = __('Team Name');
+        $columns['nickname'] = __('Nick Name');
+        $columns['category_name'] = __('Category');
+        $columns['age'] = __('Age');
+        $columns['type'] = __('Type');
+        $columns['style'] = __('Style');
+        $columns['last_played_league'] = __('Last Played League');
+        $columns['address'] = __('Address');
+        $columns['city'] = __('City');
+        $columns['email'] = __('Email');
+        $columns['formated_date'] = __('Creation Date');        
+
+        try {
+            $item = Team::select('image_thumb','uniq_id', 'team_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city', 'created_at')
+                    ->find($id);
+
+            $item->category_name = $item->category?->category_name;
+            $item->style = $item->style_label;
+            $item->type = $item->type_label;
+            $item->age = $item->age;
+            $item->formated_date = $item->created_at->format('d-m-Y');
+
+            if ($item) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Team successfully found.',
+                    'data' => $item,
+                    'rows' => $columns,
+                ], 200);
+            } else {
+                $res['errors'] = ['team1' => [__('Team not found.')]];
+                $res['message'] = __('An unexpected error occurred.');
+                $res['statusCode'] = 404;
+                return jsonResponse($res);
+            }
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $res = $this->get_response();
+
+        try {
+            $item = Team::select('uniq_id', 'team_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+                    ->find($id);
+
+            if ($item) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Team successfully found.',
+                    'data' => $item,
+                ], 200);
+            } else {
+                $res['errors'] = ['team' => [__('Team not found.')]];
+                $res['message'] = __('An unexpected error occurred.');
+                $res['statusCode'] = 404;
+                return jsonResponse($res);
+            }
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $res = $this->get_response();
+
+        $validator = Validator::make($request->all(), [
+            'team_name' => 'required|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_type' => 'required|string',
+            'type' => 'required|string',
+            'style' => 'required|string|max:100',
+            'dob' => 'required|date',
+            'category_id' => 'required|integer|exists:categories,id',
+            'nickname' => 'required|string|max:100',
+            'last_played_league' => 'required|string|max:100',
+            'address' => 'required|string|max:500',
+            'city' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:teams,email,' . $id,
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'succes' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $item = Team::findOrFail($id);
+
+        try {
+
+            $formData = $request->all();  
+            
+            $dob = $request->input('dob', '');
+
+            if ($request->hasFile('image')) {
+
+                $image = $item->image;
+
+                $image_thumb = $item->image_thumb;
+                
+                $uploadedFile = $request->file('image');
+
+                $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'teams');              
+
+                $formData['image'] = $filename;
+
+                $formData['image_thumb'] = $filename;               
+               
+                if($image){
+                    $this->imageService->deleteMainFile($image,'teams');
+                }
+
+                if($image_thumb){
+                    $this->imageService->deleteThumbFile($image_thumb,'teams');
+                }
+            }else{
+                unset($formData['image']);
+                unset($formData['image_thumb']);
+            }
+
+            if ($dob) {
+                $formData['dob'] = $this->get_formated_date($dob);           
+            }           
+            
+            $formData['status'] = $request->input('status', 'publish');;
+            $formData['updated_by'] = Auth::id(); // Current authenticated user ID
+
+            // Update the record
+            $item->update($formData);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Team updated successfully.',
+                'data' => $item,
+            ]);
+
+            $res['success'] = true;
+            $res['message'] = __('Team updated successfully');
+            $res['statusCode'] = 201;
+            return jsonResponse($res);
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['team' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
+
+    public function destroy($id)
+    {
+        $res = $this->get_response();
+
+        $item = Team::select('image')->find($id);
+
+        if ($item) {
+            $image = $item->image; // Access the 'image' value            
+            $this->imageService->deleteSavedFile($image, 'teams');
+        }
+
+        try {
+            $item = Team::findOrFail($id); // Attempt to find the category by ID
+            $item->delete(); // Delete the category if found
+            $res['success'] = true;
+            $res['message'] = __('Team deleted successfully');
+            $res['statusCode'] = 201;
+            return jsonResponse($res);
+        } catch (ModelNotFoundException $e) {
+            $res['errors'] = ['Team not found' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 404;
+            return jsonResponse($res);
+        } catch (Exception $e) {
+            $res['errors'] = ['team_delete' => [$e->getMessage()]];
+            $res['message'] = __('An unexpected error occurred.');
+            $res['statusCode'] = 500;
+            return jsonResponse($res);
+        }
+    }
+
+    function get_response()
+    {
+        $res = [];
+        $res['success'] = false;
+        $res['message'] = false;
+        $res['errors'] = false;
+        $res['statusCode'] = false;
+        return $res;
+    }
+
+    function get_formated_date($dateInput = ''){
+        if($dateInput != ""){
+            // Replace the first '-' with a character that splits day, month, and year
+            $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
+            $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'  
+            return $formattedDate;
+        }
+        return $dateInput;
+    }
+}

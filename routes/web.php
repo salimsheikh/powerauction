@@ -6,6 +6,7 @@ use App\Http\Controllers\SetupWizardController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\PlayerController;
+use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeagueController;
 use App\Http\Controllers\Backend\SponsorController;
 
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get("/players",[PlayerController::class, 'index'])->name('players.index');
+    Route::get("/teams",[TeamController::class, 'index'])->name('teams.index');
     Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
     Route::get("/sponsors",[SponsorController::class, 'index'])->name('sponsors.index');
 
