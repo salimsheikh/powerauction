@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sponsors', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->string('sponsor_name',255);
-            $table->string('sponsor_logo',255);
-            $table->text('sponsor_description')->nullable();
-            $table->string('sponsor_website_url',255)->nullable();
-            $table->enum('sponsor_type', ['premium', 'gold']);
+            $table->string('team_name', 100)->nullable();
+            $table->string('team_logo', 250)->nullable();
+            $table->string('team_logo_thumb', 250)->nullable();
+            $table->string('virtual_point', 50)->nullable();
+            $table->integer('league_id')->nullable();
+            $table->integer('owner_id')->nullable();
             $table->string('status',15)->default('publish');
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sponsors');
+        Schema::dropIfExists('teams');
     }
 };

@@ -12,7 +12,7 @@ class SettingController extends Controller
     public function index(){
         $terms_condition = Setting::where('option_name', 'terms_condition')->value('option_value');
         $privacy_policy = Setting::where('option_name', 'privacy_policy')->value('option_value');
-        return view('backend.settings.index', compact('terms_condition','privacy_policy'));        
+        return view('admin.settings', compact('terms_condition','privacy_policy'));        
     }
 
     public function update(Request $request)

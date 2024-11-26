@@ -227,6 +227,11 @@ body::-webkit-scrollbar-track {
     pointer-events: none;
 }
 
+td.sponsor_description,
+td.description{
+    max-width: 150px;
+}
+
 /* Styling for the search box container */
 .search-box {
     display: flex;

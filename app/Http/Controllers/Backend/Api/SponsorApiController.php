@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+use App\Services\ImageUploadService;
+
 class SponsorApiController extends Controller
 {
     function get_columns()
@@ -16,13 +18,18 @@ class SponsorApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['sr'] = __('Sr.');
-        $columns['logo'] = __('Logo');
-        $columns['name'] = __('Sponsors Name');        
-        $columns['promotion_text'] = __('Sponsors Description');
-        $columns['type'] = __('Type');
+        $columns['sponsor_logo'] = __('Logo');
+        $columns['sponsor_name'] = __('Name');        
+        $columns['sponsor_description'] = __('Description');
+        $columns['sponsor_type_name'] = __('Type');
         $columns['actions'] = __('Actions');
 
         return $columns;
+    }
+
+    public function __construct(ImageUploadService $imageService)
+    {
+        $this->imageService = $imageService;
     }
 
     public function index(Request $request)
@@ -30,14 +37,20 @@ class SponsorApiController extends Controller
         // Get the search query from the request
         $query = $request->input('query', '');
 
-        // Start the query builder for the Player model
-        $itemQuery = Sponsor::with([]); // Eager load the Player relationship
-
+        // Start the query builder for the Sponsor model
+        $itemQuery = Sponsor::with([]); // Eager load the Sponsor relationship
+        
         // If there is a search query, apply the filters
         if ($query) {
             $itemQuery->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', '%' . $query . '%')
-                    ->orWhere('promotion_text', 'like', '%' . $query . '%');
+                $queryBuilder->where('sponsor_name', 'like', '%' . $query . '%')
+                ->orWhere('sponsor_logo', 'like', '%' . $query . '%')
+                ->orWhere('sponsor_description', 'like', '%' . $query . '%')
+                ->orWhere('sponsor_website_url', 'like', '%' . $query . '%')
+                ->orWhere('sponsor_type', 'like', '%' . $query . '%')
+                ->orWhereHas('sponsor_type', function ($sponsorTypeQuery) use ($query) {
+                    $sponsorTypeQuery->where('name', 'like', '%' . $query . '%');
+                });
             });
         }
 
@@ -47,7 +60,14 @@ class SponsorApiController extends Controller
         $itemQuery->orderBy('created_at', 'desc');
 
         // Paginate the results
-        $items = $itemQuery->paginate(10);      
+        $items = $itemQuery->paginate(10);   
+        
+        //sponsor_type
+
+        foreach($items as $key => $item){
+            $item->sponsor_type_name = "";
+        }
+
 
         $columns = $this->get_columns();
 
@@ -61,8 +81,11 @@ class SponsorApiController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100|unique:sponsor,name',      
-            'promotion_text' => 'required|string'
+            'sponsor_name' => 'required|string|max:100|unique:sponsors,sponsor_name',
+            'sponsor_logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',      
+            'sponsor_description' => 'required|string|max:500',
+            'sponsor_website_url' => 'required|string|max:200',
+            'sponsor_type' => 'required|string|max:10'
         ]);
     
         if ($validator->fails()) {
@@ -73,8 +96,14 @@ class SponsorApiController extends Controller
             ], 422);
         }
 
-        $formData = $request->all();
-        
+        $formData = $request->all();        
+
+        if ($request->hasFile('sponsor_logo')) {
+            $uploadedFile = $request->file('sponsor_logo');               
+            $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors');
+            $formData['sponsor_logo'] = $filename;
+        }
+
         $formData['status'] = $request->input('status', 'publish');
         $formData['created_by'] = Auth::id();       
 
@@ -107,7 +136,7 @@ class SponsorApiController extends Controller
         $res = $this->get_response();
 
         try {
-            $item = Sponsor::select('sponsor_name', 'description')->find($id);
+            $item = Sponsor::select('sponsor_name', 'sponsor_description','sponsor_website_url','sponsor_type')->find($id);
 
             if ($item) {
                 return response()->json([
@@ -116,7 +145,7 @@ class SponsorApiController extends Controller
                     'data' => $item,
                 ], 200);
             } else {
-                $res['errors'] = ['player' => [__('Sponsor not found.')]];
+                $res['errors'] = ['sponsor' => [__('Sponsor not found.')]];
                 $res['message'] = __('An unexpected error occurred.');
                 $res['statusCode'] = 404;
                 return jsonResponse($res);
@@ -139,8 +168,11 @@ class SponsorApiController extends Controller
         $res = $this->get_response();
 
         $validator = Validator::make($request->all(), [
-            'sponsor_name' => 'required|string|max:100|unique:sponsor,sponsor_name,' . $id,
-            'description' => 'required|string'
+            'sponsor_name' => 'required|string|max:100|unique:sponsors,sponsor_name,'.$id,
+            'sponsor_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',      
+            'sponsor_description' => 'required|string|max:500',
+            'sponsor_website_url' => 'required|string|max:200',
+            'sponsor_type' => 'required|string|max:10'
         ]);
     
         if ($validator->fails()) {
@@ -155,9 +187,26 @@ class SponsorApiController extends Controller
 
         try {
 
-            $formData = $request->all();            
+            $formData = $request->all(); 
             
-            $formData['status'] = $request->input('status', '1');;
+            if ($request->hasFile('sponsor_logo')) {
+
+                $sponsor_logo = $item->sponsor_logo;
+                
+                $uploadedFile = $request->file('sponsor_logo');
+
+                $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors');              
+
+                $formData['sponsor_logo'] = $filename;              
+               
+                if($sponsor_logo){
+                    $this->imageService->deleteMainFile($sponsor_logo,'sponsors');
+                }               
+            }else{
+                unset($formData['sponsor_logo']);
+            }
+            
+            $formData['status'] = $request->input('status', 'publish');
             $formData['updated_by'] = Auth::id(); // Current authenticated user ID
 
             // Update the record
@@ -165,21 +214,21 @@ class SponsorApiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Player updated successfully.',
+                'message' => 'Sponsor updated successfully.',
                 'data' => $item,
             ]);
 
             $res['success'] = true;
-            $res['message'] = __('Player updated successfully');
+            $res['message'] = __('Sponsor updated successfully');
             $res['statusCode'] = 201;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['errors'] = ['sponsor' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
-            $res['errors'] = ['player' => [$e->getMessage()]];
+            $res['errors'] = ['sponsor' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);

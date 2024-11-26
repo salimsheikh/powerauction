@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('styles', function (Blueprint $table) {
             $table->id();
-            $table->string('slug',100)->unique();
-            $table->string('name');
+            $table->string('style',100)->unique();
+            $table->string('name',100);
             $table->integer('order',0);
 
             $table->unsignedBigInteger('created_by')->default(0); // Created by user

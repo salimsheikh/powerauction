@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use App\Models\Category;
 use App\Models\Style;
+use App\Models\SponsorType;
 
 class PopupFormInput extends Component
 {
@@ -76,6 +77,19 @@ class PopupFormInput extends Component
                         "left_hand_bowler" => __('Left Hand Bowler'),
                         "right_hand_bowler" =>__('Right Hand Bowler')
                     ];;
+                    break;
+                case "sponsor_type":
+                    $this->firstOption = __('Select Type');
+                    $items = SponsorType::orderBy('order', 'ASC')->get();               
+                    foreach($items as $item){
+                        $this->options[$item->slug] = $item->name;
+                    }
+                    /*
+                    $this->options = [
+                        "premium" => __('Premium'),
+                        "gold" => __('Gold')
+                    ];
+                    */
                     break;
             }
         }

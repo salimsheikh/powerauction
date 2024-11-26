@@ -470,6 +470,15 @@ function renderTableRows(rows, columns, page) {
                         }
                     }
                     break;
+                case "sponsor_logo":                    
+                    if(cell_value){
+                        if (cell_value.includes('http')) {
+                            cell_value = `<img src="${cell_value}">`;
+                        }else{
+                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}">`;
+                        }
+                    }
+                    break;
                 case "actions":                    
                     cell_value += "<div>";
                     cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
@@ -483,6 +492,11 @@ function renderTableRows(rows, columns, page) {
                     cell_value += `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
                     cell_value += "</div>";
                     break;
+                case "description":
+                case "sponsor_description":
+                    cell_value = nl2br(cell_value);
+                    break;
+                
             }
             output += `<td class="${cell_class}">${cell_value}</td>`;
 
@@ -596,6 +610,14 @@ function createPlayerProfile(rows,formData){
             tbody.appendChild(newRow);
         }
     }
+}
+
+function nl2br (str, is_xhtml) {
+    if (typeof str === 'undefined' || str === null) {
+        return '';
+    }
+    var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';
+    return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 
 

@@ -15,9 +15,9 @@ class StyleSeeder extends Seeder
     {
         $styles = [
             ["slug" => "left_hand_batsman", "name" => "Left Hand Batsman", "order" => 1],
-            ["slug" => "right_hand_batsman", "name" => "Right Hand Batsman", "order" => 1],
-            ["slug" => "left_hand_bowler", "name" => "Left Hand Bowler", "order" => 1],
-            ["slug" => "right_hand_bowler", "name" => "Right Hand Bowler", "order" => 1]
+            ["slug" => "right_hand_batsman", "name" => "Right Hand Batsman", "order" => 2],
+            ["slug" => "left_hand_bowler", "name" => "Left Hand Bowler", "order" => 3],
+            ["slug" => "right_hand_bowler", "name" => "Right Hand Bowler", "order" => 4]
         ];
 
         foreach ($styles as $style) {

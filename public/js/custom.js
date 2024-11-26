@@ -581,3 +581,8 @@ document.getElementById('address').value = 'Kurla';
 document.getElementById('city').value = 'Nehru Nagar';
 document.getElementById('email').value = 'salimsheikh@gmail.com';
 */
+
+document.getElementById('sponsor_name').value = 'Salim Shaikh';
+document.getElementById('sponsor_description').value = 'batsman';
+document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
+document.getElementById('sponsor_type').value = 'gold';
