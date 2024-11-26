@@ -170,18 +170,40 @@ class PlayerApiController extends Controller
 
         $res = $this->get_response();
 
+        // Define column names (localized)
+        $columns = [];
+        $columns['uniq_id'] = __('Unique Id');
+        $columns['player_name'] = __('Player Name');
+        $columns['nickname'] = __('Nick Name');
+        $columns['category_name'] = __('Category');
+        $columns['age'] = __('Age');
+        $columns['type'] = __('Type');
+        $columns['style'] = __('Style');
+        $columns['last_played_league'] = __('Last Played League');
+        $columns['address'] = __('Address');
+        $columns['city'] = __('City');
+        $columns['email'] = __('Email');
+        $columns['formated_date'] = __('Creation Date');        
+
         try {
-            $item = Player::select('uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+            $item = Player::select('image_thumb','uniq_id', 'player_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city', 'created_at')
                     ->find($id);
+
+            $item->category_name = $item->category?->category_name;
+            $item->style = $item->style_label;
+            $item->type = $item->type_label;
+            $item->age = $item->age;
+            $item->formated_date = $item->created_at->format('d-m-Y');
 
             if ($item) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Player successfully found.',
                     'data' => $item,
+                    'rows' => $columns,
                 ], 200);
             } else {
-                $res['errors'] = ['player' => [__('Player not found.')]];
+                $res['errors'] = ['player1' => [__('Player not found.')]];
                 $res['message'] = __('An unexpected error occurred.');
                 $res['statusCode'] = 404;
                 return jsonResponse($res);
@@ -259,7 +281,7 @@ class PlayerApiController extends Controller
             ], 422);
         }
 
-        $item = Player::findOrFail($id);        
+        $item = Player::findOrFail($id);
 
         try {
 
@@ -268,15 +290,29 @@ class PlayerApiController extends Controller
             $dob = $request->input('dob', '');
 
             if ($request->hasFile('image')) {
-               $uploadedFile = $request->file('image');               
-               $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'players');              
 
-               $formData['image'] = $filename;
-               $formData['image_thumb'] = $filename;
+                $image = $item->image;
 
-               Log::info("file found");
+                $image_thumb = $item->image_thumb;
+                
+                $uploadedFile = $request->file('image');
+
+                $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'players');              
+
+                $formData['image'] = $filename;
+
+                $formData['image_thumb'] = $filename;               
+               
+                if($image){
+                    $this->imageService->deleteMainFile($image,'players');
+                }
+
+                if($image_thumb){
+                    $this->imageService->deleteThumbFile($image_thumb,'players');
+                }
             }else{
                 unset($formData['image']);
+                unset($formData['image_thumb']);
             }
 
             if ($dob) {
@@ -284,10 +320,7 @@ class PlayerApiController extends Controller
             }           
             
             $formData['status'] = $request->input('status', 'publish');;
-            $formData['updated_by'] = Auth::id(); // Current authenticated user ID               
-
-            // Log::info($dob);
-            // Log::info($formData);
+            $formData['updated_by'] = Auth::id(); // Current authenticated user ID
 
             // Update the record
             $item->update($formData);

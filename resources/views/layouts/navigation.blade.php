@@ -22,6 +22,14 @@
                     <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
                         {{ __('Players') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
+                        {{ __('Leagues') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
+                        {{ __('Sponsors') }}
+                    </x-nav-link>
                     
                 </div>
             </div>

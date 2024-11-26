@@ -6,14 +6,19 @@ use App\Http\Controllers\SetupWizardController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\PlayerController;
+use App\Http\Controllers\Backend\LeagueController;
+use App\Http\Controllers\Backend\SponsorController;
 
+Route::fallback(function () {
+    $currentPath = request()->path();
 
+    // Check if the path starts with "admin"
+    if (str_starts_with($currentPath, 'admin')) {
+        return redirect()->route('dashboard');
+    }
 
-use Intervention\Image\Facades\Image;
-
-Route::get('/test-image', function () {
-    $img = Image::canvas(200, 100, '#ff0000');
-    return $img->response('jpg');
+    // Return a 404 response for non-admin unmatched routes
+    abort(404);
 });
 
 Route::get('/', function () {
@@ -41,6 +46,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get("/players",[PlayerController::class, 'index'])->name('players.index');
+    Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
+    Route::get("/sponsors",[SponsorController::class, 'index'])->name('sponsors.index');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');

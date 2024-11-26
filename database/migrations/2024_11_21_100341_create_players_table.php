@@ -42,8 +42,7 @@ return new class extends Migration
 
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
-            $table->foreignId('category_id')->constrained('categories')->onDelete('restrict'); // Restrict deletion if category is used
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');            
         });
     }
 

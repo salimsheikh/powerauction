@@ -211,10 +211,20 @@ body::-webkit-scrollbar-track {
 .custom-table .delete-btn {
     background-color: var(--delete-btn-bg-color);
     color: var(--btn-text-color);
+    padding: 8px;
 }
 
 .custom-table .delete-btn:hover {
     background-color: var(--delete-btn-hover-bg-color);
+}
+
+.custom-table button{
+    padding: 0;
+}
+
+.custom-table button .material-icons{
+    font-size: 15px;
+    pointer-events: none;
 }
 
 /* Styling for the search box container */

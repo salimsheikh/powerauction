@@ -134,7 +134,9 @@ function showPopupForm() {
 
     // Find the .alert element within the current form
     const alertElement = popupTargetModel.querySelector(".alert");
-    alertElement.classList.add("alert-hidden");
+    if(alertElement){
+        alertElement.classList.add("alert-hidden");
+    }
 
     const body_content = popupTargetModel.querySelector('.body-content');
     if (body_content) body_content.style.display = "block";
@@ -159,14 +161,19 @@ function fatchResponseCatch(error, alertElement) {
                 }
             }
         }
-        alertElement.classList.add("alert-danger");
-        alertElement.innerHTML = errorMessage;
+
+        if(alertElement){
+            alertElement.classList.add("alert-danger");
+            alertElement.classList.remove("alert-hidden");
+            alertElement.innerHTML = errorMessage;
+        } 
     } else {
         console.log('Error:', error);
-        alertElement.classList.add("alert-danger");
-
-        // Custom handling for unexpected response
-        alertElement.textContent = 'The server returned an invalid response. Please try again later.';
+        if(alertElement){
+            alertElement.classList.add("alert-danger");
+            alertElement.classList.remove("alert-hidden");
+            alertElement.textContent = 'The server returned an invalid response. Please try again later.';
+        }        
     }
 }
 
@@ -247,7 +254,7 @@ function cleanForm(fields) {
         
         ft = field.type;
 
-        if (ft === "text" || ft === "email" || ft === "select" || ft == 'select-one') {
+        if (ft === "text" || ft === "email" || ft === "select" || ft == 'select-one' || ft == 'file' || ft == 'date') {
             field.value = '';
         }
 
@@ -466,14 +473,14 @@ function renderTableRows(rows, columns, page) {
                 case "actions":                    
                     cell_value += "<div>";
                     cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-                    cell_value += `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+                    cell_value += `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
                     cell_value += "</div>";
                     break;
                 case "view_actions":                    
                     cell_value += "<div>";
-                    cell_value += `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+                    cell_value += `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
                     cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-                    cell_value += `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+                    cell_value += `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
                     cell_value += "</div>";
                     break;
             }
@@ -546,6 +553,49 @@ function setTextColorBasedOnBg(element) {
 
     // Set text color based on luminance
     element.style.color = luminance > 0.5 ? "black" : "white";
+}
+
+function createPlayerProfile(rows,formData){
+
+    const tbody = popupTargetModel.querySelector("table tbody");
+    
+    const img = popupTargetModel.querySelector("img");
+
+    if(formData == null){
+        img.display = 'none';
+        return false;
+    }
+    
+
+    tbody.innerHTML = "";
+    if(formData.image_thumb){
+        const url = `${image_url}/players/thumbs/${formData.image_thumb}`;
+        img.src = url;
+        img.display = 'block';
+    }
+
+    let elem = null;
+    for (const key in rows) {
+        if (rows.hasOwnProperty(key)) {
+
+            // Create a new table row
+            let newRow = document.createElement('tr');
+
+            // Create and append a <th> cell
+            let thCell = document.createElement('th');
+            thCell.textContent = rows[key];
+            thCell.scope = 'row';
+            newRow.appendChild(thCell);
+
+            // Create and append <td> cells
+            let tdCell1 = document.createElement('td');
+            tdCell1.textContent = formData[key];
+            newRow.appendChild(tdCell1);
+
+            // Append the newly created row to the <tbody>
+            tbody.appendChild(newRow);
+        }
+    }
 }
 
 

@@ -34,6 +34,15 @@ if (buttonPopupShowAddItemModel) {
                 submitButton.disabled = false; // Disable the button
             }
         }
+
+        // Get all input and textarea elements
+        const fields = currentForm.querySelectorAll("input, textarea, select");
+
+        fields.forEach((field) => {
+            field.classList.remove("invalid");
+        });    
+
+        //cleanForm(fields);
         
     }
 }
@@ -156,7 +165,13 @@ if (tableContainer) {
             popupTargetModel = popupUpdateItemModal;            
 
             // Get all input and textarea elements
-            const fields = popupTargetModel.querySelectorAll("input, textarea");
+            const fields = popupTargetModel.querySelectorAll("input, textarea, select");
+
+            cleanForm(fields);
+
+            fields.forEach((field) => {
+                field.classList.remove("invalid");
+            });    
 
             cleanForm(fields);
 
@@ -184,8 +199,8 @@ if (tableContainer) {
             const buttonText = selectedButton.querySelector(".buttonText");
             const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
 
-            buttonText.classList.add('hidden'); // Hide the text
-            loadingSpinner.classList.remove('hidden'); // Show the spinner
+            if(buttonText) buttonText.classList.add('hidden'); // Hide the text
+            if(loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
            
             formProcessing = true;
 
@@ -506,26 +521,12 @@ if (tableContainer) {
 
             // Find the .alert element within the current form
             const alertElement = popupTargetModel.querySelector(".alert");
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");           
 
-            //alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
-
-            const sanctum_token = get_local_storage_token('sanctum_token');
-            if (!sanctum_token) {
-                //alertElement.textContent = lang.something_wrong;
-                //alertElement.classList.add("alert-danger");
-                return false;
-            }
-
+            alertElement.textContent = lang.please_wait;
+            alertElement.classList.add("alert-info");
+           
             const headers = get_ajax_header(false);
-
-            //alertElement.textContent = lang.please_wait;
-            //alertElement.classList.add("alert-info");            
-
-            const buttonText = selectedButton.querySelector(".buttonText");
-            const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
-
-            //buttonText.classList.add('hidden'); // Hide the text
-            //loadingSpinner.classList.remove('hidden'); // Show the spinner
            
             formProcessing = true;
 
@@ -534,13 +535,8 @@ if (tableContainer) {
                 headers: headers
             }).then((response) => {
                 console.log("response 1");
-                //do not delete
-                //alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 formProcessing = false;
-
-                //buttonText.classList.remove('hidden'); // Hide the text
-                //loadingSpinner.classList.add('hidden'); // Show the spinner
-
+                alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 if (!response.ok) {
                     return response.json().then((error) => {
                         throw error;
@@ -548,38 +544,30 @@ if (tableContainer) {
                 }
 
                 return response.json();
+
             }).then((data) => {
-                
-                console.log(data);
+
+                alertElement.textContent = data.message;
+                alertElement.classList.add("alert-success");
 
                 let formData = data.data;
-
-                console.log(formData);
-
-                let elem = null;
-                for (const key in formData) {
-                    if (formData.hasOwnProperty(key)) {
-                        
-                    }
-                }
-
-                elem = document.getElementById('update_image');
-                if(elem){
-                    elem.value = "";
-                }
-
+                let rows = data.rows;                
+                createPlayerProfile(rows, formData);
                 showPopupForm();
 
             }).catch((error) => {
                 console.log(error);
-                //fatchResponseCatch(error, alertElement);
+                createPlayerProfile(null, null);
+                showPopupForm();
+                fatchResponseCatch(error, alertElement);
             });
 
         }
     });
 }
 
-
+/*
+document.getElementById('player_name').value = 'Salim Shaikh';
 document.getElementById('profile_type').value = 'men';
 document.getElementById('type').value = 'batsman';
 document.getElementById('style').value = 'right_hand_batsman';
@@ -592,3 +580,4 @@ document.getElementById('address').value = 'Kurla';
 
 document.getElementById('city').value = 'Nehru Nagar';
 document.getElementById('email').value = 'salimsheikh@gmail.com';
+*/

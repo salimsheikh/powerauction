@@ -26,7 +26,10 @@
         } else {
             document.documentElement.classList.remove('dark');        
         }
-    </script>    
+    </script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
 </head>
 
 <body class="font-sans text-gray-900 antialiased dark:bg-gray-900 overflow-y-scroll">

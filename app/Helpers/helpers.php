@@ -45,10 +45,20 @@ if (!function_exists('getJSLang')) {
         $lang['edit'] = __("Edit");
         $lang['delete'] = __("Delete");
         $lang['trash'] = __("Trash");
+        $lang['not_found'] = __('Item not found.');
 
         switch($page){
             case "category":
                 $lang['not_found'] = __('Category not found.');
+                break;
+            case "player":
+                $lang['not_found'] = __('Player not found.');
+                break;
+            case "league":
+                $lang['not_found'] = __('League not found.');
+                break;
+            case "sponsor":
+                $lang['not_found'] = __('Sponsor not found.');
                 break;
         }
 

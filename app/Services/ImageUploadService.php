@@ -88,12 +88,12 @@ class ImageUploadService
         // Construct the absolute path to the file
         /**Image Delete */
         $absolutePath = storage_path($imagePath.$image);
-        $this->delteFile($absolutePath);
+        $this->deleteFile($absolutePath);
         
         /**Thumbnail Delete */
         // Construct the absolute path to the file
         $absolutePath = storage_path($imagePath . "thumbs".DIRECTORY_SEPARATOR.$image);
-        $this->delteFile($absolutePath);
+        $this->deleteFile($absolutePath);
     }
 
     /**
@@ -102,7 +102,7 @@ class ImageUploadService
      * @param  string $absolutePath
      * @return void
      */
-    function delteFile($absolutePath = ''){
+    function deleteFile($absolutePath = ''){
         // Check if the file exists and delete it
         if (File::exists($absolutePath)) {
             File::delete($absolutePath);
@@ -110,5 +110,21 @@ class ImageUploadService
         } else {
             \Log::info("File not found: " . $absolutePath);
         }
+    }
+
+    function deleteMainFile($image = '', $path = ''){
+        //Construct the image base path
+        $imagePath = "app\public".DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;
+
+        $absolutePath = storage_path($imagePath.$image);
+        $this->deleteFile($absolutePath);
+    }
+
+    function deleteThumbFile($image = '', $path = ''){
+        //Construct the image base path
+        $imagePath = "app\public".DIRECTORY_SEPARATOR.$path.DIRECTORY_SEPARATOR;        
+
+        $absolutePath = storage_path($imagePath . "thumbs".DIRECTORY_SEPARATOR.$image);
+        $this->deleteFile($absolutePath);
     }
 }
