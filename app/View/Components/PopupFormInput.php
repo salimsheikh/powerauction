@@ -8,6 +8,7 @@ use Illuminate\View\Component;
 use App\Models\Category;
 use App\Models\Style;
 use App\Models\SponsorType;
+use App\Models\League;
 
 class PopupFormInput extends Component
 {
@@ -90,6 +91,13 @@ class PopupFormInput extends Component
                         "gold" => __('Gold')
                     ];
                     */
+                    break;
+                case "league_id":
+                    $this->firstOption = __('Select League');
+                    $items = League::orderBy('league_name', 'ASC')->get();               
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->league_name;
+                    }
                     break;
             }
         }

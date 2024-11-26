@@ -6,31 +6,21 @@
     </x-slot>
 
     <!-- Add Item Popup -->
-    <x-popup-add-item-model title="{{__('Add new Team')}}" formType="add" formID="popupAddForm" popupClasses="column-2" actionButtonLabel="{{__('Add Team')}}">
-        <x-popup-form-input type="text" id="team_name" name="team_name" label="{{ __('Teams Name:') }}" class="focus_first team_name required"
+    <x-popup-add-item-model title="{{__('Add new Team')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add Team')}}">
+        <x-popup-form-input type="text" id="team_name" name="team_name" label="{{ __('Team Name:') }}" class="focus_first team_name required"
             maxlength="50" value="" />
-        <x-popup-form-input type="file" id="image" name="image" label="{{ __('Team Profile:') }}"
-            class="required image" value="" />
-        <x-popup-form-input type="select" id="profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required profile_type"
-            maxlength="255" value="" />
-        <x-popup-form-input type="select" id="type" name="type" label="{{ __('Type:') }}" value=""
+        <x-popup-form-input type="file" id="team_logo" name="team_logo" label="{{ __('Team Profile:') }}"
+            class="required team_logo" value="" />        
+        <x-popup-form-input type="select" id="league_id" name="league_id" label="{{ __('League:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" id="style" name="style" label="{{ __('Style:') }}" value=""
+        <x-popup-form-input type="text" id="owner_name" name="owner_name" label="{{ __('Owner Name:') }}" value=""
             class="required" />
-        <x-popup-form-input type="date" id="dob" name="dob" label="{{ __('DOB:') }}" value=""
+        <x-popup-form-input type="text" id="owner_email" name="owner_email" label="{{ __('Owner Email:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" id="category_id" name="category_id" label="{{ __('Category:') }}" value=""
+        <x-popup-form-input type="text" id="owner_phone" name="owner_phone" label="{{ __('Owner Phone:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" id="nickname" name="nickname" label="{{ __('Nick Name:') }}" value=""
+        <x-popup-form-input type="password" id="owner_password" name="owner_password" label="{{ __('Owner Password:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" id="last_played_league" name="last_played_league" label="{{ __('Last Played League:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="textarea" id="address" name="address" label="{{ __('Address:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="text" id="city" name="city" label="{{ __('City:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="text" id="email" name="email" label="{{ __('Email:') }}" value=""
-            class="required email_validate" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
@@ -39,31 +29,21 @@
     </x-popup-delete-item-model>
 
     <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update Team')}}" formType="update" formID="popupUpdateForm" popupClasses="column-2" actionButtonLabel="{{__('Update Team')}}">
-        <x-popup-form-input type="text" id="update_team_name" name="team_name" label="{{ __('Teams Name:') }}" class="focus_first team_name required"
+    <x-popup-update-item-model title="{{__('Update Team')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update Team')}}">
+        <x-popup-form-input type="text" id="update_team_name" name="team_name" label="{{ __('Team Name:') }}" class="focus_first team_name required"
             maxlength="50" value="" />
-        <x-popup-form-input type="file" id="update_image" name="image" label="{{ __('Team Profile:') }}"
-            class="image" maxlength="10" value="" />
-        <x-popup-form-input type="select" id="update_profile_type" name="profile_type" label="{{ __('Profile Type:') }}" class="required profile_type"
-            maxlength="255" value="" />
-        <x-popup-form-input type="select" id="update_type" name="type" label="{{ __('Type:') }}" value=""
+        <x-popup-form-input type="file" id="update_team_logo" name="team_logo" label="{{ __('Team Profile:') }}"
+            class="team_logo" value="" />        
+        <x-popup-form-input type="select" id="update_league_id" name="league_id" label="{{ __('League:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" id="update_style" name="style" label="{{ __('Style:') }}" value=""
+        <x-popup-form-input type="text" id="update_owner_name" name="owner_name" label="{{ __('Owner Name:') }}" value=""
             class="required" />
-        <x-popup-form-input type="date" id="update_dob" name="dob" label="{{ __('DOB:') }}" value=""
+        <x-popup-form-input type="text" id="update_owner_email" name="owner_email" label="{{ __('Owner Email:') }}" value=""
             class="required" />
-        <x-popup-form-input type="select" id="update_category_id" name="category_id" label="{{ __('Category:') }}" value=""
+        <x-popup-form-input type="text" id="update_owner_phone" name="owner_phone" label="{{ __('Owner Phone:') }}" value=""
             class="required" />
-        <x-popup-form-input type="text" id="update_nickname" name="nickname" label="{{ __('Nick Name:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="text" id="update_last_played_league" name="last_played_league" label="{{ __('Last Played League:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="textarea" id="update_address" name="address" label="{{ __('Address:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="text" id="update_city" name="city" label="{{ __('City:') }}" value=""
-            class="required" />
-        <x-popup-form-input type="text" id="update_email" name="email" label="{{ __('Email:') }}" value=""
-            class="required email_validate" />
+        <x-popup-form-input type="password" id="update_owner_password" name="owner_password" label="{{ __('Owner Password:') }}" value=""
+            class="update_owner_password" />
     </x-popup-update-item-model>
 
 
@@ -118,19 +98,20 @@
                                 <thead id="table-head">
                                     <tr>
                                         <th>{{ __('#ID') }}</th>
-                                        <th>{{ __('Unique Id') }}</th>
-                                        <th>{{ __('Profile') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Profile Type') }}</th>
-                                        <th>{{ __('Style') }}</th>
-                                        <th>{{ __('Age') }}</th>
-                                        <th>{{ __('Category') }}</th>
+                                        <th>{{ __('Logo') }}</th>
+                                        <th>{{ __('Team Name') }}</th>
+                                        <th>{{ __('Owner Name') }}</th>
+                                        <th>{{ __('Owner Email') }}</th>
+                                        <th>{{ __('Owner Phone') }}</th>
+                                        <th>{{ __('Virtual Point') }}</th>
+                                        <th>{{ __('Remaining Points') }}</th>
+                                        <th>{{ __('League') }}</th>
                                         <th class="view_actions">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body">
                                     <tr>
-                                        <td colspan="9">
+                                        <td colspan="10">
                                             <p class="text-center text-gray-800 dark:text-white">{{__('Please wait! loading table.')}}</p>
                                         </td>
                                     </tr>

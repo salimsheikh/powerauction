@@ -22,7 +22,14 @@ return new class extends Migration
             $table->string('password');
             $table->timestamp('last_login')->nullable();
             $table->rememberToken();
+            $table->unsignedBigInteger('created_by')->default(0); // Created by user
+            $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
+
             $table->timestamps();
+
+            // Foreign keys
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

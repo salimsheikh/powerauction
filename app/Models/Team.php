@@ -24,4 +24,14 @@ class Team extends Model
         'created_by',
         'updated_by',
     ];
+
+    function league(){
+        return $this->belongsTo(League::class, 'league_id');
+    }
+
+    // Accessor for category_name
+    public function getLeagueNameAttribute(): ?string
+    {
+        return $this->league?->league_name; // Safe navigation to avoid null errors
+    }
 }

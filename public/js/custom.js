@@ -256,6 +256,7 @@ if (tableContainer) {
                                 if(key == 'image'){                                    
                                     elem.value = "";
                                 }else{
+                                    console.log(key);
                                     elem.value = formData[key];
                                 }
                             }                                      
@@ -581,8 +582,16 @@ document.getElementById('address').value = 'Kurla';
 document.getElementById('city').value = 'Nehru Nagar';
 document.getElementById('email').value = 'salimsheikh@gmail.com';
 */
-
+/*
 document.getElementById('sponsor_name').value = 'Salim Shaikh';
 document.getElementById('sponsor_description').value = 'batsman';
 document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
 document.getElementById('sponsor_type').value = 'gold';
+*/
+const sampleName = getRandomSample();console.log(sampleName.randomNumber);
+document.getElementById('team_name').value = sampleName.team;
+document.getElementById('league_id').value = sampleName.randomNumber;
+document.getElementById('owner_name').value = sampleName.name;
+document.getElementById('owner_email').value = sampleName.email;
+document.getElementById('owner_phone').value = sampleName.mobile;
+document.getElementById('owner_password').value = '123';

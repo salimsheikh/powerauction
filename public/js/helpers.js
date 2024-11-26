@@ -251,19 +251,13 @@ function cleanForm(fields) {
    
     // Remove the invalid class and trim inputs
     fields.forEach((field) => {
-        
+
         ft = field.type;
-
-        if (ft === "text" || ft === "email" || ft === "select" || ft == 'select-one' || ft == 'file' || ft == 'date') {
-            field.value = '';
-        }
-
-        if(field.tagName === "TEXTAREA" || field.tagName === "textarea"){
-            field.value = "";
-        }
 
         if (ft === "color") {
             field.value = '#000001';
+        }else{
+            field.value = "";
         }
     });
 }
@@ -466,7 +460,7 @@ function renderTableRows(rows, columns, page) {
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
                         }else{
-                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}">`;
+                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
@@ -475,7 +469,17 @@ function renderTableRows(rows, columns, page) {
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
                         }else{
-                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}">`;
+                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
+                        }
+                    }
+                    break;
+                case "team_logo_thumb":
+                case "team_log":
+                    if(cell_value){
+                        if (cell_value.includes('http')) {
+                            cell_value = `<img src="${cell_value}">`;
+                        }else{
+                            cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
@@ -620,4 +624,32 @@ function nl2br (str, is_xhtml) {
     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 
+function getRandomSample() {
+    const firstNames = ["John", "Jane", "Chris", "Katie", "Michael", "Sarah", "David", "Emily", "Robert", "Laura"];
+    const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Lopez"];
+    const domains = ["example.com", "testmail.com", "sample.org", "mailinator.com", "fakemail.net"];
+    const teamNames = ["Team Alpha", "Team Beta", "Team Gamma", "Team Delta", "Team Omega"];
 
+    // Generate random first name, last name, email
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domain}`;
+
+    // Generate random 10-digit mobile number
+    const mobileNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+    // Generate random team name
+    const teamName = teamNames[Math.floor(Math.random() * teamNames.length)];
+
+    // Generate random number between 1 and 4
+    const randomNumber = Math.floor(Math.random() * 4) + 1;
+
+    return {
+        name: `${firstName} ${lastName}`,
+        email: email,
+        mobile: mobileNumber,
+        team: teamName,
+        randomNumber: randomNumber
+    };
+}

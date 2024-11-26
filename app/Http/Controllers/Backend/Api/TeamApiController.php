@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Backend\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 use App\Services\ImageUploadService;
 
@@ -30,14 +34,14 @@ class TeamApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['sr'] = __('Sr.');
-        $columns['uniq_id'] = __('Unique Id');
-        $columns['image'] = __('Profile');
-        $columns['team_nickname'] = __('Name');
-        $columns['profile_type_label'] = __('Profile Type');
-        $columns['type_label'] = __('Type');
-        $columns['style_label'] = __('Style');
-        $columns['age'] = __('Age');
-        $columns['category_name'] = __('Category');        
+        $columns['team_logo_thumb'] = __('Logo');
+        $columns['team_name'] = __('Team Name');
+        $columns['owner_name'] = __('Owner Name');
+        $columns['owner_email'] = __('Owner Email');
+        $columns['owner_phone'] = __('Owner Phone');
+        $columns['virtual_point'] = __('Virtual Point');
+        $columns['remaining_points'] = __('Remaining Points');
+        $columns['league_name'] = __('League');        
         $columns['view_actions'] = __('Actions');
 
         return $columns;
@@ -49,36 +53,43 @@ class TeamApiController extends Controller
         $query = $request->input('query', '');
 
         // Start the query builder for the Team model
-        $itemQuery = Team::with([]); // Eager load the Team relationship
+        $itemQuery = Team::query()
+            ->select(
+                'teams.*',
+                'users.email as owner_email',
+                'users.phone as owner_phone',
+                'users.name as owner_name'
+            )
+            ->join('users', 'teams.owner_id', '=', 'users.id') // Join with users table
+            ->with('league'); // Eager load the League relationship if needed
 
-        // If there is a search query, apply the filters
+        // Apply search filters if a query exists
         if ($query) {
             $itemQuery->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('team_name', 'like', '%' . $query . '%')
-                    ->orWhere('nickname', 'like', '%' . $query . '%')
-                    ->orWhere('email', 'like', '%' . $query . '%')
-                    ->orWhereHas('category', function ($categoryQuery) use ($query) {
-                        $categoryQuery->where('category_name', 'like', '%' . $query . '%');
+                    ->orWhereHas('league', function ($leagueQuery) use ($query) {
+                        $leagueQuery->where('league_name', 'like', '%' . $query . '%');
+                    })
+                    ->orWhere(function ($userQuery) use ($query) {
+                        // Since users table is joined, directly filter on its columns
+                        $userQuery->where('users.name', 'like', '%' . $query . '%')
+                            ->orWhere('users.email', 'like', '%' . $query . '%')
+                            ->orWhere('users.phone', 'like', '%' . $query . '%');
                     });
             });
         }
 
-        $itemQuery->where('status', 'publish');
-
-        // Order by category_name in ascending order
-        $itemQuery->orderBy('created_at', 'desc');
+        // Filter by status and sort by creation date
+        $itemQuery->where('teams.status', 'publish')
+            ->orderBy('teams.created_at', 'desc');
 
         // Paginate the results
         $items = $itemQuery->paginate(10);
-
+        
         foreach($items as $key => $item){
-            $items[$key]->category_name = '';
-            $items[$key]->age = '';
-            $items[$key]->team_nickname = '';
-            $items[$key]->profile_type_label = '';
-            $items[$key]->type_label = '';
-            $items[$key]->style_label = '';
+            $items[$key]->league_name = '';
         }
+            
 
         $columns = $this->get_columns();
 
@@ -92,18 +103,15 @@ class TeamApiController extends Controller
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
-            'team_name' => 'required|string|max:100',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'profile_type' => 'required|string',
-            'type' => 'required|string',
-            'style' => 'required|string|max:100',
-            'dob' => 'required|date',
-            'category_id' => 'required|integer|exists:categories,id',
-            'nickname' => 'required|string|max:100',
-            'last_played_league' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:teams,email',
+            'team_name' => 'required|string|max:100|unique:teams,team_name',
+            'team_logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'league_id' => 'required|integer|exists:league,id',
+            'owner_name' => 'required|string',
+            'owner_email' => 'required|string|max:100|unique:users,email',
+            'owner_phone' => 'required|string',
+            'owner_password' => 'required|string|max:100',
+        ],[
+            'team_logo' => 'Team Profile image is required.'
         ]);
     
         if ($validator->fails()) {
@@ -114,24 +122,38 @@ class TeamApiController extends Controller
             ], 422);
         }
 
-        $formData = $request->all();
+        $userData = [
+            'name' => $request->owner_name,
+            'email' => $request->owner_email,
+            'phone' => $request->owner_phone,
+            'role' => 'team',
+            'created_by' => Auth::id(),
+            'password' => Hash::make($request->owner_password),
+        ];
 
-        $dob = $request->input('dob', '');
+        $user = User::create($userData);
 
-        if ($request->hasFile('image')) {
-            $uploadedFile = $request->file('image');               
+        Log::info($userData);
+
+        event(new Registered($user));
+
+        $formData = $request->all();        
+
+        if ($request->hasFile('team_logo')) {
+            $uploadedFile = $request->file('team_logo');               
             $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'teams');
 
-            $formData['image'] = $filename;
-            $formData['image_thumb'] = $filename;
+            $formData['team_logo'] = $filename;
+            $formData['team_logo_thumb'] = $filename;
         }
 
-        if($dob){
-            $formData['dob'] = $this->get_formated_date($dob);
-        }
+        $formData['virtual_point'] = 0;
+        $formData['owner_id'] = $user->id;
         
         $formData['status'] = $request->input('status', 'publish');
         $formData['created_by'] = Auth::id();
+
+        Log::info($formData);
 
         try{
 
@@ -226,7 +248,8 @@ class TeamApiController extends Controller
         $res = $this->get_response();
 
         try {
-            $item = Team::select('uniq_id', 'team_name', 'nickname', 'mobile', 'email', 'category_id', 'dob', 'type', 'profile_type', 'style', 'last_played_league', 'address', 'city')
+            $item = Team::select('teams.team_name','teams.league_id','users.name as owner_name', 'users.email as owner_email', 'users.phone as owner_phone')
+                    ->join('users', 'teams.owner_id', '=', 'users.id')
                     ->find($id);
 
             if ($item) {
@@ -258,19 +281,20 @@ class TeamApiController extends Controller
     {
         $res = $this->get_response();
 
+        $item = Team::findOrFail($id);
+
+        $owner_id = $item->owner_id;
+
         $validator = Validator::make($request->all(), [
-            'team_name' => 'required|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'profile_type' => 'required|string',
-            'type' => 'required|string',
-            'style' => 'required|string|max:100',
-            'dob' => 'required|date',
-            'category_id' => 'required|integer|exists:categories,id',
-            'nickname' => 'required|string|max:100',
-            'last_played_league' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:teams,email,' . $id,
+            'team_name' => 'required|string|max:100|unique:teams,team_name,'.$id,
+            'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'league_id' => 'required|integer|exists:league,id',
+            'owner_name' => 'required|string',
+            'owner_email' => 'required|string|max:100|unique:users,email,'.$owner_id,
+            'owner_phone' => 'required|string',
+            'owner_password' => 'nullable|string|max:100',
+        ],[
+            'team_logo' => 'Team Profile image is required.'
         ]);
     
         if ($validator->fails()) {
@@ -282,26 +306,37 @@ class TeamApiController extends Controller
         }
 
         $item = Team::findOrFail($id);
+        $owner = User::findOrFail($owner_id);
+
+        $ownerData = [];
+
+        $ownerData['phone'] = $request->owner_phone;
+        $ownerData['name'] = $request->owner_name;
+
+        if($request->owner_password != ""){
+            $ownerData['password'] = Hash::make($request->owner_password);
+        }
+
+        $owner->update($ownerData);
 
         try {
 
-            $formData = $request->all();  
-            
-            $dob = $request->input('dob', '');
+            $formData = $request->all();             
+           
 
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('team_logo')) {
 
-                $image = $item->image;
+                $image = $item->team_logo;
 
-                $image_thumb = $item->image_thumb;
+                $image_thumb = $item->team_logo_thumb;
                 
                 $uploadedFile = $request->file('image');
 
                 $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'teams');              
 
-                $formData['image'] = $filename;
+                $formData['team_logo'] = $filename;
 
-                $formData['image_thumb'] = $filename;               
+                $formData['team_logo_thumb'] = $filename;               
                
                 if($image){
                     $this->imageService->deleteMainFile($image,'teams');
@@ -313,11 +348,7 @@ class TeamApiController extends Controller
             }else{
                 unset($formData['image']);
                 unset($formData['image_thumb']);
-            }
-
-            if ($dob) {
-                $formData['dob'] = $this->get_formated_date($dob);           
-            }           
+            }                    
             
             $formData['status'] = $request->input('status', 'publish');;
             $formData['updated_by'] = Auth::id(); // Current authenticated user ID
@@ -352,10 +383,10 @@ class TeamApiController extends Controller
     {
         $res = $this->get_response();
 
-        $item = Team::select('image')->find($id);
+        $item = Team::select('team_logo')->find($id);
 
         if ($item) {
-            $image = $item->image; // Access the 'image' value            
+            $image = $item->team_logo; // Access the 'image' value            
             $this->imageService->deleteSavedFile($image, 'teams');
         }
 

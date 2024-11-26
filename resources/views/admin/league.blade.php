@@ -19,7 +19,7 @@
     </x-popup-delete-item-model>
 
     <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update League')}}" formType="update" formID="popupUpdateForm" popupClasses="column-2" actionButtonLabel="{{__('Update League')}}">
+    <x-popup-update-item-model title="{{__('Update League')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update League')}}">
         <x-popup-form-input type="text" id="update_league_name" name="league_name" label="{{ __('League Name:') }}" class="focus_first league_name required"
             maxlength="50" value="" />
         <x-popup-form-input type="textarea" id="update_description" name="description" label="{{ __('Description:') }}" value=""

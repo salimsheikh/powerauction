@@ -11,13 +11,9 @@ use App\Http\Controllers\Backend\Api\CategoryApiController;
 use App\Http\Controllers\Backend\Api\PlayerApiController;
 use App\Http\Controllers\Backend\Api\LeagueApiController;
 use App\Http\Controllers\Backend\Api\SponsorApiController;
+use App\Http\Controllers\Backend\Api\TeamApiController;
 
-
-Route::middleware('auth:sanctum')->group(function () {
-    // Add your API routes here.
-});
-
-Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
 
     Route::get('/categories', [CategoryApiController::class, 'index']);
     Route::post('/categories/store', [CategoryApiController::class, 'store']);                
@@ -32,6 +28,12 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
     Route::get('/players/view/{id}', [PlayerApiController::class, 'view']);
 
+    Route::get('/teams', [TeamApiController::class, 'index']);
+    Route::post('/teams/store', [TeamApiController::class, 'store']);                
+    Route::get('/teams/edit/{id}', [TeamApiController::class, 'edit']);
+    Route::post('/teams/{id}', [TeamApiController::class, 'update']);
+    Route::delete('/teams/{id}', [TeamApiController::class, 'destroy']);
+
     Route::get('/leagues', [LeagueApiController::class, 'index']);
     Route::post('/leagues/store', [LeagueApiController::class, 'store']);                
     Route::get('/leagues/edit/{id}', [LeagueApiController::class, 'edit']);
@@ -43,5 +45,4 @@ Route::middleware(['auth:sanctum', 'throttle:100,6'])->prefix('backend')->group(
     Route::get('/sponsors/edit/{id}', [SponsorApiController::class, 'edit']);
     Route::post('/sponsors/{id}', [SponsorApiController::class, 'update']);
     Route::delete('/sponsors/{id}', [SponsorApiController::class, 'destroy']);
-
 });
