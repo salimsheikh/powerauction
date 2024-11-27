@@ -602,6 +602,32 @@ if (tableContainer) {
 }
 
 
+const planAmountEle = document.getElementById("plan_amount");
+if (planAmountEle) {
+     // If the value is 0, clear it when focused
+    planAmountEle.addEventListener("focus", function (event) {
+        event.preventDefault();        
+        if (event.target.value === "0") {
+            event.target.value = "";
+        }
+    });
+
+     // If the input is empty, set it to 0
+    planAmountEle.addEventListener("blur", function (event) {
+        event.preventDefault();
+        if (event.target.value === "") {
+            event.target.value = "0";
+        }
+    });
+
+    // Allow only numeric input (prevent non-numeric characters)
+    planAmountEle.addEventListener("input", function (event) {
+        event.preventDefault();
+        const value = event.target.value;
+        event.target.value = value.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
+    });
+}
+
 const plan_type = document.getElementById("plan_type");
 if (plan_type) {
     plan_type.addEventListener("change", function (event) {

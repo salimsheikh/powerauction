@@ -72,11 +72,8 @@
         <form id="popupBoosterForm" method="post" class="space-y-4" enctype="multipart/form-data">
             <div class="alert model-body-alert alert-hidden"></div>
             <div class="popup-fields">
-                <x-popup-form-input type="select" id="plan_type" name="plan_type" label="{{ __('Plan Type:') }}"
-                    class="focus_first plan_type required" value="" />
-                <x-popup-form-input type="text" id="plan_amount" name="plan_amount"
-                    label="{{ __('Virtual Point:') }}" class="focus_first plan_amount virtual_point required" maxlength="50"
-                    value="" />                    
+                <x-popup-form-input type="select" id="plan_type" name="plan_type" label="{{ __('Plan Type:') }}" class="focus_first plan_type required" value="" />
+                <x-popup-form-input type="text" id="plan_amount" name="plan_amount" label="{{ __('Virtual Point:') }}" class="plan_amount virtual_point required" value="" mexlength="10" />                    
             </div>
 
             <div class="modal-body-footer">
