@@ -10,13 +10,16 @@ class PopupViewItemModel extends Component
 {
     public $title = '';
     public $popupClasses = '';
+    public $popupId = '';
     /**
      * Create a new component instance.
      */
-    public function __construct($title = '', $popupClasses = '')
+    public function __construct($title = '', $popupClasses = '', $popupId = 'popupViewItemModal')
     {
         $this->title = $title;      
         $this->popupClasses = $popupClasses;
+        $this->popupId = $popupId;
+
     }
 
     /**

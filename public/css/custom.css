@@ -199,6 +199,7 @@ body::-webkit-scrollbar-track {
 }
 
 .custom-table .view-btn {
+    width: auto;
     --tw-bg-opacity: 1;
     background-color: rgb(108 43 217 / var(--tw-bg-opacity));
 }

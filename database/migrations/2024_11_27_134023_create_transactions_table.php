@@ -11,18 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plans', function (Blueprint $table) {
-            $table->id();
-            $table->string('slug',10)->unique();
-            $table->string('name',10)->unique();
-            $table->integer('amount',10)->default(0);
-            $table->string('status',15)->default('publish');
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->id(); // Primary Key
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->unsignedBigInteger('plan_id')->nullable();
+            $table->enum('type', ['credit']);
+            $table->integer('amount');
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
             $table->timestamps();
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+
+            // Foreign keys (assuming related tables exist)
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('set null');
+            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('set null');
         });
     }
 
@@ -31,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plans');
+        Schema::dropIfExists('transactions');
     }
 };

@@ -42,7 +42,7 @@ class TeamApiController extends Controller
         $columns['virtual_point'] = __('Virtual Point');
         $columns['remaining_points'] = __('Remaining Points');
         $columns['league_name'] = __('League');        
-        $columns['view_actions'] = __('Actions');
+        $columns['team_actions'] = __('Actions');
 
         return $columns;
     }

@@ -438,15 +438,23 @@ function renderTableRows(rows, columns, page) {
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-4.553m0 0L21 5.447m-1.447 1.553L10 15m5 0l-4.553 4.553m0 0L3 15" />
     </svg>`
 
+    const buttons = [];
+
     let i = 0;
-    rows.forEach(row => {        
-        id = row.id;        
+    rows.forEach(row => {
+        id = row.id;
+
+        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+        buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">Booster</button>`;
+        
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
             cell_value = "";
             cell_class = cn;
             cell_value = row[cn] == undefined ? '' : row[cn];
-            switch (cn) {
+            switch (cn) {                
                 case "sr":
                     cell_value = ((page.current_page - 1) * page.per_page) + i + 1;                    
                     i++;
@@ -484,15 +492,23 @@ function renderTableRows(rows, columns, page) {
                     break;
                 case "actions":                    
                     cell_value += "<div>";
-                    cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-                    cell_value += `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
                 case "view_actions":                    
                     cell_value += "<div>";
-                    cell_value += `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
-                    cell_value += `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-                    cell_value += `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+                    cell_value += buttons['view'];
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
+                    cell_value += "</div>";
+                    break;
+                case "team_actions":
+                    cell_class += " actions";
+                    cell_value += "<div>";
+                    cell_value += buttons['booster'];
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
                 case "description":

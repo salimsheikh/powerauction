@@ -564,6 +564,136 @@ if (tableContainer) {
     });
 }
 
+// Add event listener to dynamically created buttons
+if (tableContainer) {
+    tableContainer.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        if (e.target && e.target.classList.contains('booster-button')) {
+            selectedButton = e.target; // Store the clicked button
+
+            if (formProcessing) {
+                return false;
+            }            
+
+            edit_id = e.target.getAttribute('data-id');
+
+            const popupid = e.target.getAttribute('data-popupid');
+
+            popupTargetModel = document.getElementById(popupid);            
+
+            // Get all input and textarea elements
+            const fields = popupTargetModel.querySelectorAll("input, textarea, select");
+
+            cleanForm(fields);
+
+            fields.forEach((field) => {
+                field.classList.remove("invalid");
+            });
+
+            const focus_first = popupTargetModel.querySelector(".focus_first");
+
+            if(focus_first) focus_first.focus();
+
+            showPopupForm();
+
+            // Find the .alert element within the current form
+            const alertElement = popupTargetModel.querySelector(".alert");
+
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+
+            const sanctum_token = get_local_storage_token('sanctum_token');
+            if (!sanctum_token) {
+                alertElement.textContent = lang.something_wrong;
+                alertElement.classList.add("alert-danger");
+                return false;
+            }
+
+            const headers = get_ajax_header(false);
+
+            alertElement.textContent = lang.please_wait;
+            alertElement.classList.add("alert-info");            
+
+            const buttonText = selectedButton.querySelector(".buttonText");
+            const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
+
+            if(buttonText) buttonText.classList.add('hidden'); // Hide the text
+            if(loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
+           
+            formProcessing = true;
+
+            fetch(`${BASE_API_URL}/edit/${edit_id}`, {
+                method: 'get',
+                headers: headers
+            }).then((response) => {
+                console.log("response 1");
+                //do not delete
+                alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+                formProcessing = false;
+
+                buttonText.classList.remove('hidden'); // Hide the text
+                loadingSpinner.classList.add('hidden'); // Show the spinner
+
+                if (!response.ok) {
+                    return response.json().then((error) => {
+                        throw error;
+                    });
+                }
+
+                return response.json();
+            }).then((data) => {
+
+                alertElement.textContent = data.message;
+                alertElement.classList.add("alert-success");               
+
+                focus_first.focus();
+
+                // Select the form by its ID
+                const currentForm = document.getElementById('popupUpdateForm');
+
+                // Find the submit button within the form and disable it
+                if (currentForm) {
+                    const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false; // Disable the button
+                    }
+                }
+
+                setTimeout(function () {
+                    alertElement.classList.remove("alert-success");
+                    alertElement.classList.add('alert-hidden');
+                }, 500);
+
+                let formData = data.data;
+                let elem = null;
+                for (const key in formData) {
+                    if (formData.hasOwnProperty(key)) {
+                        if (formData[key] != "" && formData[key] != null) {                            
+                            elem = document.getElementById('update_' + key);
+                            if(elem){
+                                if(elem.type != 'file'){
+                                    elem.value = formData[key];
+                                }
+                            }                                      
+                        }
+                    }
+                }
+
+                elem = document.getElementById('update_image');
+                if(elem){
+                    elem.value = "";
+                }
+
+                
+
+            }).catch((error) => {
+                fatchResponseCatch(error, alertElement);
+            });
+
+        }
+    });
+}
+
 /*
 document.getElementById('player_name').value = 'Salim Shaikh';
 document.getElementById('profile_type').value = 'men';

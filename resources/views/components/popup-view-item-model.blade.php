@@ -1,5 +1,5 @@
 <!-- The Modal -->
-<div id="popupViewItemModal" class="custom-modal {{$popupClasses}}">
+<div id="{{ $popupId }}" class="custom-modal {{$popupClasses}}">
     <div class="modal-content-wraper">
         <!-- Modal content -->
         <div class="modal-content">

@@ -67,7 +67,7 @@
     </x-popup-update-item-model>
 
 
-    <x-popup-view-item-model title="{{__('View Player')}}" popupClasses="column-1">
+    <x-popup-view-item-model popupId="popupViewItemModal" title="{{__('View Player')}}" popupClasses="column-1">
         <div id="viewItems">
             <div class="alert model-body-alert alert-hidden">Player successfully found.</div>
             <div class="flex justify-center mb-4">

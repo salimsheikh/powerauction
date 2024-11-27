@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Player;
+use App\Models\Plan;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -27,5 +28,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PlayerSeeder::class);
         $this->call(CategorySeeder::class);
         $this->call(SponsorTypeSeeder::class);
+        $this->call(PlanSeeder::class);
     }
 }
