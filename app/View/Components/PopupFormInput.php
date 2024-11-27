@@ -22,11 +22,12 @@ class PopupFormInput extends Component
     public $mexlength = "";
     public $options = "";
     public $firstOption = "";
+    public $placeholder = "";
 
     /**
      * Create a new component instance.
      */
-    public function __construct($type = 'text', $name = 'inputname', $id = '', $label = 'label', $class = '', $value = '', $mexlength = '')
+    public function __construct($type = 'text', $name = 'inputname', $id = '', $label = 'label', $class = '', $value = '', $mexlength = '', $placeholder = "")
     {
         $id = $id == "" ? $name : $id;
 
@@ -36,7 +37,8 @@ class PopupFormInput extends Component
         $this->label = $label;
         $this->class = $class != "" ? $class : $id;
         $this->value = $value;
-        $this->mexlength = $mexlength > 0 ? $mexlength : 191;
+        $this->mexlength = ($mexlength == null || $mexlength < 0) ? 191 : $mexlength;
+        $this->placeholder = ($placeholder == null || $placeholder == "") ? str_replace(':', '', $label) : $placeholder ;
         $this->options = [];
         $this->firstOption = '';
 

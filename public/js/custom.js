@@ -564,6 +564,7 @@ if (tableContainer) {
     });
 }
 
+let team_id = "";
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
@@ -576,7 +577,7 @@ if (tableContainer) {
                 return false;
             }            
 
-            edit_id = e.target.getAttribute('data-id');
+            team_id = e.target.getAttribute('data-id');
 
             const popupid = e.target.getAttribute('data-popupid');
 
@@ -595,8 +596,17 @@ if (tableContainer) {
 
             if(focus_first) focus_first.focus();
 
-            showPopupForm();           
+            showPopupForm();
 
+            if(plan_type){
+                plan_type.value = "";
+                plan_type.focus();
+            }
+
+            if(planAmountEle){
+                planAmountEle.value = '';
+                planAmountEle.setAttribute("readonly", true);
+            }
         }
     });
 }
@@ -634,12 +644,14 @@ if (plan_type) {
 
         event.preventDefault();
 
-        const selectedId = parseInt(event.target.value); // Get selected dropdown value as integer
-        const planAmountEle = document.getElementById('plan_amount');
+        let selectedId = event.target.value; 
+        const planAmountEle = document.getElementById('plan_amount');       
+
         if(selectedId == ""){
             planAmountEle.value = '';
             planAmountEle.setAttribute("readonly", true);
         }else{
+            selectedId = parseInt(selectedId);// Get selected dropdown value as integer
             const plan = booster_plans.find(plan => plan.id === selectedId); // Find the matching plan by ID
             const amount = plan ? plan.amount : 0; // If plan exists, get the amount; otherwise, 0
 
@@ -669,19 +681,15 @@ if (popupBoosterForm) {
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
 
-        const body_content = currentForm.querySelector('.body-content');
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+
+        // Get all input and textarea elements
+        const fields = currentForm.querySelectorAll("input, textarea, select");
 
         const validForm = validateForm(currentForm, alertElement);
         if (!validForm) {
-            return false;
-        }
-
-        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
-
-        const planAmountEle = document.getElementById('plan_amount');
-        planAmountEle.value = ''; // Update the amount display
-        planAmountEle.setAttribute("readonly", true);
-            
+            //return false;
+        }     
 
         const sanctum_token = get_local_storage_token('sanctum_token');
         if (!sanctum_token) {
@@ -690,17 +698,26 @@ if (popupBoosterForm) {
             return false;
         }
 
-        const headers = get_ajax_header(false);
+        let headers = get_ajax_header(true);
+        let formData = getFormData(fields);
+        formData.append('team_id', team_id);
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
         
         formProcessing = true;
 
-        fetch(`${BASE_API_URL}/${delete_id}`, {
-            method: 'delete',
+        const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitButton) {
+            //submitButton.disabled = true; // Disable the button
+        }
+
+        console.log(`${TRANS_API_URL}/store`);
+
+        fetch(`${TRANS_API_URL}/store`, {
+            method: 'POST',
             headers: headers,
-            body: JSON.stringify([]),
+            body: formData,
         }).then((response) => {
             console.log("response 1");
             //do not delete
@@ -732,9 +749,17 @@ if (popupBoosterForm) {
 
             setTimeout(function () {
                 hideModal();
+
+                if (submitButton) {
+                    submitButton.disabled = false; // Disable the button
+                }
             }, 1000);
-        }).catch((error) => {
-            deleteButton.disabled = false;
+
+        }).catch((error) => { 
+            if (submitButton) {
+                submitButton.disabled = false; // Disable the button
+            }
+            console.log(error);
             fatchResponseCatch(error, alertElement);
         });
     });
@@ -761,6 +786,7 @@ document.getElementById('sponsor_description').value = 'batsman';
 document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
 document.getElementById('sponsor_type').value = 'gold';
 */
+/*
 const sampleName = getRandomSample();console.log(sampleName.randomNumber);
 document.getElementById('team_name').value = sampleName.team;
 document.getElementById('league_id').value = sampleName.randomNumber;
@@ -768,3 +794,4 @@ document.getElementById('owner_name').value = sampleName.name;
 document.getElementById('owner_email').value = sampleName.email;
 document.getElementById('owner_phone').value = sampleName.mobile;
 document.getElementById('owner_password').value = '123';
+*/

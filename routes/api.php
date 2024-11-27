@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\Api\PlayerApiController;
 use App\Http\Controllers\Backend\Api\LeagueApiController;
 use App\Http\Controllers\Backend\Api\SponsorApiController;
 use App\Http\Controllers\Backend\Api\TeamApiController;
+use App\Http\Controllers\Backend\Api\TransactionController;
 
 Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
 
@@ -33,6 +34,8 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::get('/teams/edit/{id}', [TeamApiController::class, 'edit']);
     Route::post('/teams/{id}', [TeamApiController::class, 'update']);
     Route::delete('/teams/{id}', [TeamApiController::class, 'destroy']);
+
+    Route::post('/transactions/store', [TransactionController::class, 'store']);
 
     Route::get('/leagues', [LeagueApiController::class, 'index']);
     Route::post('/leagues/store', [LeagueApiController::class, 'store']);                
