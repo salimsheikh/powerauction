@@ -253,10 +253,7 @@ if (tableContainer) {
                         if (formData[key] != "" && formData[key] != null) {                            
                             elem = document.getElementById('update_' + key);
                             if(elem){
-                                if(key == 'image'){                                    
-                                    elem.value = "";
-                                }else{
-                                    console.log(key);
+                                if(elem.type != 'file'){
                                     elem.value = formData[key];
                                 }
                             }                                      

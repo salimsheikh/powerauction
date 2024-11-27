@@ -439,8 +439,7 @@ function renderTableRows(rows, columns, page) {
     </svg>`
 
     let i = 0;
-    rows.forEach(row => {
-        
+    rows.forEach(row => {        
         id = row.id;        
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
@@ -449,7 +448,7 @@ function renderTableRows(rows, columns, page) {
             cell_value = row[cn] == undefined ? '' : row[cn];
             switch (cn) {
                 case "sr":
-                    cell_value = (page.current_page - 1) * page.per_page + i + 1;
+                    cell_value = ((page.current_page - 1) * page.per_page) + i + 1;                    
                     i++;
                     break;
                 case "color_code":                    

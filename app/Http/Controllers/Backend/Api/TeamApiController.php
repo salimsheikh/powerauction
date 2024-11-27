@@ -86,9 +86,7 @@ class TeamApiController extends Controller
         // Paginate the results
         $items = $itemQuery->paginate(10);
         
-        foreach($items as $key => $item){
-            $items[$key]->league_name = '';
-        }
+        
             
 
         $columns = $this->get_columns();
