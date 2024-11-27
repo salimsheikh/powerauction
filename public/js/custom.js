@@ -595,102 +595,122 @@ if (tableContainer) {
 
             if(focus_first) focus_first.focus();
 
-            showPopupForm();
-
-            // Find the .alert element within the current form
-            const alertElement = popupTargetModel.querySelector(".alert");
-
-            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
-
-            const sanctum_token = get_local_storage_token('sanctum_token');
-            if (!sanctum_token) {
-                alertElement.textContent = lang.something_wrong;
-                alertElement.classList.add("alert-danger");
-                return false;
-            }
-
-            const headers = get_ajax_header(false);
-
-            alertElement.textContent = lang.please_wait;
-            alertElement.classList.add("alert-info");            
-
-            const buttonText = selectedButton.querySelector(".buttonText");
-            const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
-
-            if(buttonText) buttonText.classList.add('hidden'); // Hide the text
-            if(loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
-           
-            formProcessing = true;
-
-            fetch(`${BASE_API_URL}/edit/${edit_id}`, {
-                method: 'get',
-                headers: headers
-            }).then((response) => {
-                console.log("response 1");
-                //do not delete
-                alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-                formProcessing = false;
-
-                buttonText.classList.remove('hidden'); // Hide the text
-                loadingSpinner.classList.add('hidden'); // Show the spinner
-
-                if (!response.ok) {
-                    return response.json().then((error) => {
-                        throw error;
-                    });
-                }
-
-                return response.json();
-            }).then((data) => {
-
-                alertElement.textContent = data.message;
-                alertElement.classList.add("alert-success");               
-
-                focus_first.focus();
-
-                // Select the form by its ID
-                const currentForm = document.getElementById('popupUpdateForm');
-
-                // Find the submit button within the form and disable it
-                if (currentForm) {
-                    const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
-                    if (submitButton) {
-                        submitButton.disabled = false; // Disable the button
-                    }
-                }
-
-                setTimeout(function () {
-                    alertElement.classList.remove("alert-success");
-                    alertElement.classList.add('alert-hidden');
-                }, 500);
-
-                let formData = data.data;
-                let elem = null;
-                for (const key in formData) {
-                    if (formData.hasOwnProperty(key)) {
-                        if (formData[key] != "" && formData[key] != null) {                            
-                            elem = document.getElementById('update_' + key);
-                            if(elem){
-                                if(elem.type != 'file'){
-                                    elem.value = formData[key];
-                                }
-                            }                                      
-                        }
-                    }
-                }
-
-                elem = document.getElementById('update_image');
-                if(elem){
-                    elem.value = "";
-                }
-
-                
-
-            }).catch((error) => {
-                fatchResponseCatch(error, alertElement);
-            });
+            showPopupForm();           
 
         }
+    });
+}
+
+
+const plan_type = document.getElementById("plan_type");
+if (plan_type) {
+    plan_type.addEventListener("change", function (event) {
+
+        event.preventDefault();
+
+        const selectedId = parseInt(event.target.value); // Get selected dropdown value as integer
+        const planAmountEle = document.getElementById('plan_amount');
+        if(selectedId == ""){
+            planAmountEle.value = '';
+            planAmountEle.setAttribute("readonly", true);
+        }else{
+            const plan = booster_plans.find(plan => plan.id === selectedId); // Find the matching plan by ID
+            const amount = plan ? plan.amount : 0; // If plan exists, get the amount; otherwise, 0
+
+            planAmountEle.value = amount; // Update the amount display
+            if(amount > 0){
+                planAmountEle.setAttribute("readonly", true);
+            }else{
+                planAmountEle.removeAttribute("readonly");
+            }            
+        }
+    });
+}
+
+const popupBoosterForm = document.getElementById("popupBoosterForm");
+if (popupBoosterForm) {
+    popupBoosterForm.addEventListener("submit", function (event) {
+
+        event.preventDefault(); // Prevent form submission
+
+        if (formProcessing) {
+            return false;
+        }
+
+        // Get the current form
+        const currentForm = event.target;
+
+        // Find the .alert element within the current form
+        const alertElement = currentForm.querySelector(".alert");
+
+        const body_content = currentForm.querySelector('.body-content');
+
+        const validForm = validateForm(currentForm, alertElement);
+        if (!validForm) {
+            return false;
+        }
+
+        alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
+
+        const planAmountEle = document.getElementById('plan_amount');
+        planAmountEle.value = ''; // Update the amount display
+        planAmountEle.setAttribute("readonly", true);
+            
+
+        const sanctum_token = get_local_storage_token('sanctum_token');
+        if (!sanctum_token) {
+            alertElement.textContent = lang.something_wrong;
+            alertElement.classList.add("alert-danger");
+            return false;
+        }
+
+        const headers = get_ajax_header(false);
+
+        alertElement.textContent = lang.please_wait;
+        alertElement.classList.add("alert-info");
+        
+        formProcessing = true;
+
+        fetch(`${BASE_API_URL}/${delete_id}`, {
+            method: 'delete',
+            headers: headers,
+            body: JSON.stringify([]),
+        }).then((response) => {
+            console.log("response 1");
+            //do not delete
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+            formProcessing = false;
+
+            if (!response.ok) {
+                return response.json().then((error) => {
+                    throw error;
+                });
+            }
+
+            return response.json();
+        }).then((data) => {
+            console.log("response 2", data);
+            alertElement.textContent = data.message;
+            alertElement.classList.add("alert-success");
+
+            const table_body = document.getElementById('table-body');
+
+             // Get all <tr> elements inside the table
+            const rows = document.querySelectorAll('#table-body tr').length;           
+
+            if(rows <=1){
+                current_page = current_page >= 1 ?  current_page - 1 : current_page;
+            }
+          
+            fetchAndRender(current_page);
+
+            setTimeout(function () {
+                hideModal();
+            }, 1000);
+        }).catch((error) => {
+            deleteButton.disabled = false;
+            fatchResponseCatch(error, alertElement);
+        });
     });
 }
 

@@ -75,9 +75,9 @@
                 <x-popup-form-input type="select" id="plan_type" name="plan_type" label="{{ __('Plan Type:') }}"
                     class="focus_first plan_type required" value="" />
                 <x-popup-form-input type="text" id="plan_amount" name="plan_amount"
-                    label="{{ __('Virtual Point:') }}" class="focus_first plan_amount required" maxlength="50"
-                    value="" />
-            </div> <!-- Team Profile:-->
+                    label="{{ __('Virtual Point:') }}" class="focus_first plan_amount virtual_point required" maxlength="50"
+                    value="" />                    
+            </div>
 
             <div class="modal-body-footer">
                 <button type="button" class="popupCloseModel px-4 py-2 bg-gray-600 text-gray-200 rounded hover:bg-gray-700">{{ __('Close') }}</button>
@@ -160,5 +160,6 @@
         const lang = @json(getJSLang('team'));
         const BASE_API_URL = "{{ url('/api/backend/teams/') }}";
         const image_url = "{{ url('/storage') }}";
+        const booster_plans = @json($plans);
     </script>
 </x-app-layout>

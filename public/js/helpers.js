@@ -217,13 +217,19 @@ function validateForm(currentForm, alertElement) {
             }
         }
 
-        if (field.classList.contains("price_validate") && field.value !== "") {
+        if (field.classList.contains("virtual_point") && field.value !== "") {
             // Validate if it's a valid number with one decimal place
-            const regex = /^[0-9]+(\.[0-9]{1,2})?$/;
+            const regex = /^[0-9]+$/;
             if (!regex.test(field.value)) {
                 field.classList.add("invalid");
                 if (!firstInvalidField) firstInvalidField = field;
                 validData = false;
+            }else{
+                if(field.value <= 0){
+                    field.classList.add("invalid");
+                    if (!firstInvalidField) firstInvalidField = field;
+                    validData = false;
+                }
             }
         }
     });

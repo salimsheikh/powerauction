@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Style;
 use App\Models\SponsorType;
 use App\Models\League;
+use App\Models\Plan;
 
 class PopupFormInput extends Component
 {
@@ -43,7 +44,7 @@ class PopupFormInput extends Component
             switch($name){
                 case "category_id":
                     $this->firstOption = __('Select Category');
-                    $items = Category::where('status', 'publish')->orderBy('category_name', 'ASC')->get();               
+                    $items = Category::select('id','category_name')->where('status', 'publish')->orderBy('category_name', 'ASC')->get();               
                     foreach($items as $item){
                         $this->options[$item->id] = $item->category_name;
                     }
@@ -81,7 +82,7 @@ class PopupFormInput extends Component
                     break;
                 case "sponsor_type":
                     $this->firstOption = __('Select Type');
-                    $items = SponsorType::orderBy('order', 'ASC')->get();               
+                    $items = SponsorType::select('slug','name')->orderBy('order', 'ASC')->get();               
                     foreach($items as $item){
                         $this->options[$item->slug] = $item->name;
                     }
@@ -94,9 +95,16 @@ class PopupFormInput extends Component
                     break;
                 case "league_id":
                     $this->firstOption = __('Select League');
-                    $items = League::orderBy('league_name', 'ASC')->get();               
+                    $items = League::select('id','league_name')->where('status', '1')->orderBy('league_name', 'ASC')->get();               
                     foreach($items as $item){
                         $this->options[$item->id] = $item->league_name;
+                    }
+                    break;
+                case "plan_type":
+                    $this->firstOption = __('Select plan');
+                    $items = Plan::select('id','name')->where('status', 'publish')->orderBy('order', 'ASC')->get();
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->name;
                     }
                     break;
             }

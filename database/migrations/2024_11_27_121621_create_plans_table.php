@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('slug',10)->unique();
             $table->string('name',10)->unique();
             $table->integer('amount',10)->default(0);
+            $table->integer('order',5)->default(0);
             $table->string('status',15)->default('publish');
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
