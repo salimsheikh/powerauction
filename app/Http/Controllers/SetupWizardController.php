@@ -11,6 +11,7 @@ class SetupWizardController extends Controller
 {
     public function show()
     {
+       
         // Check if an admin already exists to prevent access to the wizard
         if (User::where('role', 'administrator')->exists()) {
             return redirect('/'); // Redirect to home if admin exists

@@ -18,7 +18,7 @@ class CheckAdminExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $path = $request->path();
+        $path = $request->path();        
         // Check if the current route is not 'setup-wizard'
         if (($path == 'login' || $path == 'register') && $path !== 'setup-wizard') {
             // Check if an admin user exists

@@ -13,8 +13,8 @@ class SponsorTypeSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            ['slug' => 'premium', 'name' => __('Premium'), "order" => 1, 'status'=>'publish','created_by'=>1],
-            ['slug' => 'gold', 'name' => __('Gold'), "order" => 2, 'status'=>'publish','created_by'=>1],
+            ['slug' => 'premium', 'name' => __('Premium'), "order" => '1', 'status'=>'publish','created_by'=>1],
+            ['slug' => 'gold', 'name' => __('Gold'), "order" => '2', 'status'=>'publish','created_by'=>1],
         ];
 
         foreach ($types as $type) {

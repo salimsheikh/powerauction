@@ -20,7 +20,7 @@ class CustomThrottleHandler
             return $next($request);
         } catch (ThrottleRequestsException $e) {
             return response()->json([
-                'message' => 'आपने बहुत ज्यादा रिक्वेस्ट्स की हैं। कृपया कुछ समय बाद पुनः प्रयास करें।'
+                'message' => 'Please wait a few minutes before you try again'
             ], 429);
         }
     }

@@ -96,7 +96,7 @@ class CategoryApiController extends Controller
                     'errors' => [
                         'category_name' => [__('The category name has already been taken.')]
                     ]
-                ], 409);  // 409 Conflict - used when the request could not be completed due to a conflict.
+                ], 422);
             }
         }
 
@@ -121,27 +121,23 @@ class CategoryApiController extends Controller
 
         $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
 
-        try {
-
-            $status = $request->input('status', 'publish');
+        try {           
 
             // Current authenticated user ID
             $userId = Auth::id();
 
-            $result = Category::create([
-                'category_name' => $request->category_name,
-                'base_price' => $request->base_price,
-                'description' => $request->description,
-                'color_code' => $color_code,
-                'status' => $status,
-                'created_by' => $userId,
-            ]);
+            $formData = $request->all();
+
+            $formData['status'] = $request->input('status', 'publish');
+            $formData['created_by'] = Auth::id();
+
+            $result = Category::create($formData);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Category updated successfully.',
-                'category' => array(),
-            ]);
+                'message' => 'Category created successfully.',
+                'data' => $formData,
+            ],201);
         } catch (Exception $e) {
 
             return response()->json([
@@ -266,7 +262,7 @@ class CategoryApiController extends Controller
             $category->delete(); // Delete the category if found
             $res['success'] = true;
             $res['message'] = __('Category deleted successfully');
-            $res['statusCode'] = 201;
+            $res['statusCode'] = 200;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
             $res['errors'] = ['Category not found' => [$e->getMessage()]];

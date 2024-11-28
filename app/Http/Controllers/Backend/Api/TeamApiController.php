@@ -128,7 +128,7 @@ class TeamApiController extends Controller
 
         $user = User::create($userData);
 
-        Log::info($userData);
+     
 
         event(new Registered($user));
 

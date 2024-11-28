@@ -22,6 +22,9 @@ Route::fallback(function () {
     abort(404);
 });
 
+Route::get('/setup-wizard', [SetupWizardController::class, 'show'])->name('setup.wizard');
+Route::post('/setup-wizard', [SetupWizardController::class, 'store'])->name('setup.wizard.store');
+
 Route::get('/', function () {
     //return view('welcome');
     if (Auth::check()) {
@@ -29,9 +32,6 @@ Route::get('/', function () {
     }
     return redirect()->route('login');
 });
-
-Route::get('/setup-wizard', [SetupWizardController::class, 'show'])->name('setup.wizard');
-Route::post('/setup-wizard', [SetupWizardController::class, 'store'])->name('setup.wizard.store');
 
 Route::get('/admin/dashboard', function () {
     return view('dashboard');

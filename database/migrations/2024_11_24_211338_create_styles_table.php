@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('style',100)->unique();
             $table->string('name',100);
-            $table->integer('order',0);
+            $table->integer('order')->default(0);
 
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user

@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Support\Str;
 use App\Models\Category;
 use App\Models\Style;
 use App\Models\SponsorType;
@@ -38,7 +39,7 @@ class PopupFormInput extends Component
         $this->class = $class != "" ? $class : $id;
         $this->value = $value;
         $this->mexlength = ($mexlength == null || $mexlength < 0) ? 191 : $mexlength;
-        $this->placeholder = ($placeholder == null || $placeholder == "") ? str_replace(':', '', $label) : $placeholder ;
+        $this->placeholder = ($placeholder == null || $placeholder == "") ? Str::replaceLast(':', '', $label) : $placeholder ;
         $this->options = [];
         $this->firstOption = '';
 
