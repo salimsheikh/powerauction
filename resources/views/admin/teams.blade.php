@@ -41,7 +41,7 @@
         <x-popup-form-input type="text" id="update_owner_name" name="owner_name" label="{{ __('Owner Name:') }}"
             value="" class="required" />
         <x-popup-form-input type="text" id="update_owner_email" name="owner_email" label="{{ __('Owner Email:') }}"
-            value="" class="required" />
+            value="" class="required" readOnly="readonly" />
         <x-popup-form-input type="text" id="update_owner_phone" name="owner_phone" label="{{ __('Owner Phone:') }}"
             value="" class="required" />
         <x-popup-form-input type="password" id="update_owner_password" name="owner_password"
@@ -83,6 +83,19 @@
                 </button>
             </div>
         </form>
+
+        <table id="transactionTable" class="custom-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically appended here -->
+            </tbody>
+        </table>
     </x-popup-view-item-model>
 
     <div class="py-12">

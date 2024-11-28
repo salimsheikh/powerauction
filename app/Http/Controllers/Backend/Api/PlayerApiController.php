@@ -161,9 +161,7 @@ class PlayerApiController extends Controller
                     'error' => [$e->getMessage()]
                 ]
             ], 409);
-        }
-
-        return response()->json(['message' => 'No image uploaded'], 400);
+        }        
     }
 
     public function view(Request $request, $id){

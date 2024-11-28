@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::post('/teams/{id}', [TeamApiController::class, 'update']);
     Route::delete('/teams/{id}', [TeamApiController::class, 'destroy']);
 
+    Route::get('/transactions/{team_id}', [TransactionController::class, 'index']);
     Route::post('/transactions/store', [TransactionController::class, 'store']);
 
     Route::get('/leagues', [LeagueApiController::class, 'index']);

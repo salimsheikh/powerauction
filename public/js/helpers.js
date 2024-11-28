@@ -674,3 +674,33 @@ function getRandomSample() {
         randomNumber: randomNumber
     };
 }
+
+// Function to append transactions to the table
+function populateTableTransactions(transactions) {
+    const tableBody = document.querySelector("#transactionTable tbody");
+
+    // Clear existing rows
+    tableBody.innerHTML = "";
+
+    // Loop through transactions and create table rows
+    transactions.forEach(transaction => {
+        const row = document.createElement("tr");
+
+        // Create and append cells for each property
+        const nameCell = document.createElement("td");
+        nameCell.textContent = transaction.name;
+        row.appendChild(nameCell);
+
+        const amountCell = document.createElement("td");
+        amountCell.textContent = transaction.amount;
+        row.appendChild(amountCell);
+
+        const createdAtCell = document.createElement("td");
+        createdAtCell.textContent = new Date(transaction.created_at).toLocaleString(); // Format date
+        row.appendChild(createdAtCell);
+
+        // Append the row to the table body
+        tableBody.appendChild(row);
+    });
+}
+

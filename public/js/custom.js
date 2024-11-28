@@ -607,6 +607,29 @@ if (tableContainer) {
                 planAmountEle.value = '';
                 planAmountEle.setAttribute("readonly", true);
             }
+
+
+            let headers = get_ajax_header(true);
+
+            console.log(`${TRANS_API_URL}/${team_id}`);
+
+            fetch(`${TRANS_API_URL}/${team_id}`, {
+                method: 'POST',
+                headers: headers,
+            }).then((response) => {
+                if (!response.ok) {
+                    return response.json().then((error) => {
+                        throw error;
+                    });
+                }
+                return response.json();
+            }).then((data) => {
+                // Populate the table with the transactions
+                populateTableTransactions(data.transactions);
+            }).catch((error) => {
+                console.log(error);
+                // fatchResponseCatch(error, alertElement);
+            });
         }
     });
 }
@@ -710,9 +733,7 @@ if (popupBoosterForm) {
         const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
         if (submitButton) {
             //submitButton.disabled = true; // Disable the button
-        }
-
-        console.log(`${TRANS_API_URL}/store`);
+        }    
 
         fetch(`${TRANS_API_URL}/store`, {
             method: 'POST',
@@ -735,8 +756,9 @@ if (popupBoosterForm) {
             console.log("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
-
-            const table_body = document.getElementById('table-body');
+            
+            // Populate the table with the transactions
+            populateTableTransactions(data.transactions);
 
              // Get all <tr> elements inside the table
             const rows = document.querySelectorAll('#table-body tr').length;           

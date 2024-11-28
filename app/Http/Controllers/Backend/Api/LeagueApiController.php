@@ -18,7 +18,7 @@ class LeagueApiController extends Controller
         $columns['sr'] = __('Sr.');
         $columns['league_name'] = __('Name');
         $columns['description'] = __('Description');
-        $columns['actions'] = __('Actions');
+        $columns['league_actions'] = __('Actions');
 
         return $columns;
     }
