@@ -5,30 +5,44 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 
 class CustomAuthController extends Controller
 {
     public function login(Request $request)
     {
-        
-        $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'succes' => false,
+                'message' => __('Invalid credentials.'),
+                'errors' => ['error' => $validator->errors()],
+            ], 422);
+        }        
+
         try {
 
             $credentials = $request->only('email', 'password');
+
             $remember = $request->boolean('remember');
 
             // Attempt login
             if (!Auth::attempt($credentials, $remember)) {
-                return response()->json(['message' => __('Invalid credentials')], 401);
+                return response()->json([
+                    'message' => __('Invalid credentials.'),
+                    'errors' => ['error' => $validator->errors()],
+                ], 401);
             }
 
             // Update last_login timestamp
             $user = Auth::user();
+
             $user->update(['last_login' => now()]);
             
             $token = $user->createToken('API-Token')->plainTextToken;

@@ -46,7 +46,7 @@ if (loginForm) {
             console.log(response);
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-            formProcessing = false;
+            formProcessing = false;            
 
             if (!response.ok) {
                 return response.json().then((error) => {
@@ -75,12 +75,11 @@ if (loginForm) {
             console.log("response 3");
             console.log(error);
 
+            alertElement.classList.add("alert-danger");
             if (error.message) {
-                alertElement.textContent = error.message;
-                alertElement.classList.add("alert-danger");
+                alertElement.textContent = error.message;                
             } else {
-                alertElement.textContent = error;
-                alertElement.classList.add("alert-danger");
+                alertElement.textContent = 'The server returned an invalid response. Please try again later.';
             }
         });
 
