@@ -40,10 +40,10 @@ if (buttonPopupShowAddItemModel) {
 
         fields.forEach((field) => {
             field.classList.remove("invalid");
-        });    
+        });
 
         //cleanForm(fields);
-        
+
     }
 }
 
@@ -70,7 +70,7 @@ if (popupAddForm) {
 
         if (formProcessing) {
             return false;
-        }        
+        }
 
         // Get the current form
         const currentForm = e.target;
@@ -80,14 +80,14 @@ if (popupAddForm) {
 
         // Get all input and textarea elements
         const fields = currentForm.querySelectorAll("input, textarea, select");
-       
+
         alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
 
         const validForm = validateForm(currentForm, alertElement);
         if (!validForm) {
             return false;
         }
-        
+
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
 
@@ -101,7 +101,7 @@ if (popupAddForm) {
             submitButton.disabled = true; // Disable the button
         }
 
-        const response = await  fetch(`${BASE_API_URL}/store`, {
+        const response = await fetch(`${BASE_API_URL}/store`, {
             method: 'POST',
             headers: headers,
             body: formData,
@@ -158,11 +158,11 @@ if (tableContainer) {
 
             if (formProcessing) {
                 return false;
-            }            
+            }
 
             edit_id = e.target.getAttribute('data-id');
 
-            popupTargetModel = popupUpdateItemModal;            
+            popupTargetModel = popupUpdateItemModal;
 
             // Get all input and textarea elements
             const fields = popupTargetModel.querySelectorAll("input, textarea, select");
@@ -171,7 +171,7 @@ if (tableContainer) {
 
             fields.forEach((field) => {
                 field.classList.remove("invalid");
-            });    
+            });
 
             cleanForm(fields);
 
@@ -194,14 +194,14 @@ if (tableContainer) {
             const headers = get_ajax_header(false);
 
             alertElement.textContent = lang.please_wait;
-            alertElement.classList.add("alert-info");            
+            alertElement.classList.add("alert-info");
 
             const buttonText = selectedButton.querySelector(".buttonText");
             const loadingSpinner = selectedButton.querySelector(".loadingSpinner");
 
-            if(buttonText) buttonText.classList.add('hidden'); // Hide the text
-            if(loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
-           
+            if (buttonText) buttonText.classList.add('hidden'); // Hide the text
+            if (loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
+
             formProcessing = true;
 
             fetch(`${BASE_API_URL}/edit/${edit_id}`, {
@@ -226,7 +226,7 @@ if (tableContainer) {
             }).then((data) => {
 
                 alertElement.textContent = data.message;
-                alertElement.classList.add("alert-success");               
+                alertElement.classList.add("alert-success");
 
                 focus_first.focus();
 
@@ -250,19 +250,19 @@ if (tableContainer) {
                 let elem = null;
                 for (const key in formData) {
                     if (formData.hasOwnProperty(key)) {
-                        if (formData[key] != "" && formData[key] != null) {                            
+                        if (formData[key] != "" && formData[key] != null) {
                             elem = document.getElementById('update_' + key);
-                            if(elem){
-                                if(elem.type != 'file'){
+                            if (elem) {
+                                if (elem.type != 'file') {
                                     elem.value = formData[key];
                                 }
-                            }                                      
+                            }
                         }
                     }
                 }
 
                 elem = document.getElementById('update_image');
-                if(elem){
+                if (elem) {
                     elem.value = "";
                 }
 
@@ -334,10 +334,10 @@ if (popupUpdateForm) {
         }).then((data) => {
             console.log("response 2");
             alertElement.textContent = data.message;
-            alertElement.classList.add("alert-success");           
+            alertElement.classList.add("alert-success");
 
             fetchAndRender(current_page);
-            
+
             setTimeout(function () {
                 hideModal();
                 formProcessing = false;
@@ -377,7 +377,7 @@ if (tableContainer) {
             const deleteButton = document.getElementById('btnPopupDelete');
             deleteButton.disabled = false;
             deleteButton.focus();
-            
+
         }
     });
 }
@@ -444,13 +444,13 @@ if (popupDeleteForm) {
 
             const table_body = document.getElementById('table-body');
 
-             // Get all <tr> elements inside the table
-            const rows = document.querySelectorAll('#table-body tr').length;           
+            // Get all <tr> elements inside the table
+            const rows = document.querySelectorAll('#table-body tr').length;
 
-            if(rows <=1){
-                current_page = current_page >= 1 ?  current_page - 1 : current_page;
+            if (rows <= 1) {
+                current_page = current_page >= 1 ? current_page - 1 : current_page;
             }
-          
+
             fetchAndRender(current_page);
 
             setTimeout(function () {
@@ -472,15 +472,15 @@ if (formSearch) {
 
         if (formProcessing) {
             return false;
-        }       
+        }
 
         fetchAndRender();
     });
 }
 
 const tableSearch = document.getElementById('table-search');
-if(tableSearch){
-    tableSearch.addEventListener('keydown', function(event) {
+if (tableSearch) {
+    tableSearch.addEventListener('keydown', function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
             fetchAndRender();
@@ -495,7 +495,7 @@ if (btnSearchText) {
 
         if (formProcessing) {
             return false;
-        }       
+        }
 
         fetchAndRender();
     });
@@ -511,21 +511,21 @@ if (tableContainer) {
 
             if (formProcessing) {
                 return false;
-            }            
+            }
 
-            edit_id = e.target.getAttribute('data-id');            
+            edit_id = e.target.getAttribute('data-id');
 
             popupTargetModel = document.getElementById('popupViewItemModal');
 
             // Find the .alert element within the current form
             const alertElement = popupTargetModel.querySelector(".alert");
-            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");           
+            alertElement.classList.remove("alert-danger", "alert-info", "alert-success", "alert-hidden");
 
             alertElement.textContent = lang.please_wait;
             alertElement.classList.add("alert-info");
-           
+
             const headers = get_ajax_header(false);
-           
+
             formProcessing = true;
 
             fetch(`${BASE_API_URL}/view/${edit_id}`, {
@@ -549,7 +549,7 @@ if (tableContainer) {
                 alertElement.classList.add("alert-success");
 
                 let formData = data.data;
-                let rows = data.rows;                
+                let rows = data.rows;
                 createPlayerProfile(rows, formData);
                 showPopupForm();
 
@@ -565,6 +565,8 @@ if (tableContainer) {
 }
 
 let team_id = "";
+let ttd_storage_key = "team_transactions_data_" + team_id;
+
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
@@ -575,13 +577,15 @@ if (tableContainer) {
 
             if (formProcessing) {
                 return false;
-            }            
+            }
 
             team_id = e.target.getAttribute('data-id');
 
+            ttd_storage_key = "team_transactions_data_" + team_id;
+
             const popupid = e.target.getAttribute('data-popupid');
 
-            popupTargetModel = document.getElementById(popupid);            
+            popupTargetModel = document.getElementById(popupid);
 
             // Get all input and textarea elements
             const fields = popupTargetModel.querySelectorAll("input, textarea, select");
@@ -594,27 +598,33 @@ if (tableContainer) {
 
             const focus_first = popupTargetModel.querySelector(".focus_first");
 
-            if(focus_first) focus_first.focus();
+            if (focus_first) focus_first.focus();
 
             showPopupForm();
 
-            if(plan_type){
+            if (plan_type) {
                 plan_type.value = "";
                 plan_type.focus();
             }
 
-            if(planAmountEle){
+            if (planAmountEle) {
                 planAmountEle.value = '';
                 planAmountEle.setAttribute("readonly", true);
             }
 
+            populateTableTransactions([]);
+
+            // Retrieve the array from localStorage
+            let team_transactions_data = JSON.parse(localStorage.getItem(ttd_storage_key)) || [];
+            if (team_transactions_data.length > 0) {
+                populateTableTransactions(team_transactions_data);
+                return false;
+            }
 
             let headers = get_ajax_header(true);
 
-            console.log(`${TRANS_API_URL}/${team_id}`);
-
             fetch(`${TRANS_API_URL}/${team_id}`, {
-                method: 'POST',
+                method: 'get',
                 headers: headers,
             }).then((response) => {
                 if (!response.ok) {
@@ -624,8 +634,16 @@ if (tableContainer) {
                 }
                 return response.json();
             }).then((data) => {
+
+                team_transactions_data = data.data;
+
+                // Save the updated array back to localStorage
+                localStorage.setItem(ttd_storage_key, JSON.stringify(team_transactions_data));
+
                 // Populate the table with the transactions
-                populateTableTransactions(data.transactions);
+                populateTableTransactions(team_transactions_data);
+
+
             }).catch((error) => {
                 console.log(error);
                 // fatchResponseCatch(error, alertElement);
@@ -637,15 +655,15 @@ if (tableContainer) {
 
 const planAmountEle = document.getElementById("plan_amount");
 if (planAmountEle) {
-     // If the value is 0, clear it when focused
+    // If the value is 0, clear it when focused
     planAmountEle.addEventListener("focus", function (event) {
-        event.preventDefault();        
+        event.preventDefault();
         if (event.target.value === "0") {
             event.target.value = "";
         }
     });
 
-     // If the input is empty, set it to 0
+    // If the input is empty, set it to 0
     planAmountEle.addEventListener("blur", function (event) {
         event.preventDefault();
         if (event.target.value === "") {
@@ -667,23 +685,23 @@ if (plan_type) {
 
         event.preventDefault();
 
-        let selectedId = event.target.value; 
-        const planAmountEle = document.getElementById('plan_amount');       
+        let selectedId = event.target.value;
+        const planAmountEle = document.getElementById('plan_amount');
 
-        if(selectedId == ""){
+        if (selectedId == "") {
             planAmountEle.value = '';
             planAmountEle.setAttribute("readonly", true);
-        }else{
+        } else {
             selectedId = parseInt(selectedId);// Get selected dropdown value as integer
             const plan = booster_plans.find(plan => plan.id === selectedId); // Find the matching plan by ID
             const amount = plan ? plan.amount : 0; // If plan exists, get the amount; otherwise, 0
 
             planAmountEle.value = amount; // Update the amount display
-            if(amount > 0){
+            if (amount > 0) {
                 planAmountEle.setAttribute("readonly", true);
-            }else{
+            } else {
                 planAmountEle.removeAttribute("readonly");
-            }            
+            }
         }
     });
 }
@@ -711,8 +729,8 @@ if (popupBoosterForm) {
 
         const validForm = validateForm(currentForm, alertElement);
         if (!validForm) {
-            //return false;
-        }     
+            return false;
+        }
 
         const sanctum_token = get_local_storage_token('sanctum_token');
         if (!sanctum_token) {
@@ -721,19 +739,21 @@ if (popupBoosterForm) {
             return false;
         }
 
+        ttd_storage_key = "team_transactions_data_" + team_id;
+
         let headers = get_ajax_header(true);
         let formData = getFormData(fields);
         formData.append('team_id', team_id);
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
-        
+
         formProcessing = true;
 
         const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
         if (submitButton) {
             //submitButton.disabled = true; // Disable the button
-        }    
+        }
 
         fetch(`${TRANS_API_URL}/store`, {
             method: 'POST',
@@ -756,17 +776,22 @@ if (popupBoosterForm) {
             console.log("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
-            
+
+            team_transactions_data = data.transactions;
+
+            // Save the updated array back to localStorage
+            localStorage.setItem(ttd_storage_key, JSON.stringify(team_transactions_data));
+
             // Populate the table with the transactions
-            populateTableTransactions(data.transactions);
+            populateTableTransactions(team_transactions_data);            
 
-             // Get all <tr> elements inside the table
-            const rows = document.querySelectorAll('#table-body tr').length;           
+            // Get all <tr> elements inside the table
+            const rows = document.querySelectorAll('#table-body tr').length;
 
-            if(rows <=1){
-                current_page = current_page >= 1 ?  current_page - 1 : current_page;
+            if (rows <= 1) {
+                current_page = current_page >= 1 ? current_page - 1 : current_page;
             }
-          
+
             fetchAndRender(current_page);
 
             setTimeout(function () {
@@ -777,7 +802,7 @@ if (popupBoosterForm) {
                 }
             }, 1000);
 
-        }).catch((error) => { 
+        }).catch((error) => {
             if (submitButton) {
                 submitButton.disabled = false; // Disable the button
             }

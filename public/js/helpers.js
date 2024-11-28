@@ -450,8 +450,13 @@ function renderTableRows(rows, columns, page) {
     rows.forEach(row => {
         id = row.id;
 
-        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-        buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+        if(id<= 1 && rows.length <= 1){
+            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
+        }else{
+            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+        }        
+
+        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;        
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
         buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">Booster</button>`;
         
@@ -496,13 +501,16 @@ function renderTableRows(rows, columns, page) {
                         }
                     }
                     break;
-                case "actions":                    
+                case "league_actions":
+                case "actions":
+                    cell_class += " actions";
                     cell_value += "<div>";
                     cell_value += buttons['edit'];
                     cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
-                case "view_actions":                    
+                case "view_actions":
+                    cell_class += " actions";
                     cell_value += "<div>";
                     cell_value += buttons['view'];
                     cell_value += buttons['edit'];

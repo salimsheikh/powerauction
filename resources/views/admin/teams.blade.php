@@ -84,18 +84,20 @@
             </div>
         </form>
 
-        <table id="transactionTable" class="custom-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Amount</th>
-                    <th>Created At</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows will be dynamically appended here -->
-            </tbody>
-        </table>
+        <div class="vscorll">
+            <table id="transactionTable" class="custom-table">
+                <thead>
+                    <tr>
+                        <th>{{ __('Name') }}</th>
+                        <th>{{ __('Amount') }}</th>
+                        <th>{{ __('Created At') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be dynamically appended here -->
+                </tbody>
+            </table>
+        </div>
     </x-popup-view-item-model>
 
     <div class="py-12">

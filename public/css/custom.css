@@ -89,6 +89,31 @@ body::-webkit-scrollbar-track {
     margin: 0;
 }
 
+.vscorll{
+    overflow-y:auto;
+    max-height: 200px;
+}
+
+/* width */
+.vscorll::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  /* Track */
+.vscorll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+  /* Handle */
+.vscorll::-webkit-scrollbar-thumb {
+    background: #292929;
+}
+  
+  /* Handle on hover */
+.vscorll::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 /* Table Styling with Rounded Corners */
 .custom-table {
     width: 100%;
@@ -122,14 +147,16 @@ body::-webkit-scrollbar-track {
 
 .custom-table thead th.actions,
 .custom-table thead th.view_actions,
-.custom-table thead th.team_actions{
+.custom-table thead th.team_actions,
+.custom-table thead th.league_actions{
     text-align: center;
     vertical-align: middle;
 }
 
 .custom-table tbody td.actions div,
 .custom-table tbody td.view_actions div,
-.custom-table tbody td.team_actions div{
+.custom-table tbody td.team_actions div,
+.custom-table tbody td.league_actions div{
     text-align: center;
     white-space: nowrap;
     display: flex;
@@ -220,6 +247,14 @@ body::-webkit-scrollbar-track {
 .custom-table .delete-btn:hover {
     background-color: var(--delete-btn-hover-bg-color);
 }
+
+.custom-table .btn[disabled],
+.custom-table .btn[disabled]:hover {   
+    --tw-bg-opacity: 1;
+    background-color: rgb(156 163 175 / var(--tw-bg-opacity));
+}
+
+
 
 .custom-table button{
     padding: 0;

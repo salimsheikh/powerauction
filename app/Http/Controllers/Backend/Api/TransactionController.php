@@ -27,12 +27,14 @@ class TransactionController extends Controller
 
     public function index(Request $request, $team_id)
     {
+        Log::info($team_id);
+
+        $data = $this->getList($team_id);
         return response()->json([
             'success' => true,
-            'message' => 'Transaction data.',
-            'data' => array(),
-            'transactions' => $this->getList($team_id)
-        ]);
+            'message' => 'Transaction data.',            
+            'data' => $data
+        ],200);
     }
 
     function getList($team_id){
