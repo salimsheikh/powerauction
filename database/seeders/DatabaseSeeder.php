@@ -23,11 +23,14 @@ class DatabaseSeeder extends Seeder
 
         // Call your specific seeder
         // $this->call(SettingsTableSeeder::class);
-        // $this->call(PlayerSeeder::class);
+        
 
-        $this->call(PlayerSeeder::class);
         $this->call(CategorySeeder::class);
-        $this->call(SponsorTypeSeeder::class);
+        $this->call(LeagueSeeder::class);
         $this->call(PlanSeeder::class);
+        $this->call(PlayerSeeder::class);
+        $this->call(SponsorTypeSeeder::class);
+        $this->call(StyleSeeder::class);
+        $this->call(TeamSeeder::class);
     }
 }

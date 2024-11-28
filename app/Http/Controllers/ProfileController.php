@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -42,6 +43,15 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $id = Auth::id();
+        // Find the user to delete
+        $user = User::findOrFail($id);
+
+        // Check if the user is an admin
+        if ($user->role == 'administrator') {
+            return redirect()->route('profile.edit')->with('error', 'Cannot delete admin user.');
+        }
+
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current_password'],
         ]);

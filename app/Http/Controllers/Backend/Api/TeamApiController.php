@@ -325,7 +325,7 @@ class TeamApiController extends Controller
 
                 $image_thumb = $item->team_logo_thumb;
                 
-                $uploadedFile = $request->file('image');
+                $uploadedFile = $request->file('team_logo');
 
                 $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'teams');              
 
