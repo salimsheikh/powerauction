@@ -1,3 +1,5 @@
+"use strict"
+
 // Event listener for closing the modal with the Escape key
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' || event.keyCode === 27) { // Check for 'Escape' key
@@ -134,50 +136,52 @@ function showPopupForm() {
 
     // Find the .alert element within the current form
     const alertElement = popupTargetModel.querySelector(".alert");
-    if(alertElement){
+    if (alertElement) {
         alertElement.classList.add("alert-hidden");
     }
 
     const body_content = popupTargetModel.querySelector('.body-content');
-    if (body_content) body_content.style.display = "block";
+    if (body_content) {
+        body_content.style.display = "block";
+    }
 }
 
 function fatchResponseCatch(error, alertElement) {
 
-    console.log("response 3");
+    logConsole("response 3");
     if (error.errors) {
         let errorMessage = '';
         let firstInvalidField = false;
         for (const field_name in error.errors) {
-            errorMessage += `${error.errors[field_name].join(', ')}`+"<br>";
+            errorMessage += `${error.errors[field_name].join(', ')}` + "<br>";
 
             // Select the input element by its name attribute
-            const errorInput = document.querySelector('[name="'+field_name+'"]');
-            if(errorInput){
+            const errorInput = document.querySelector('[name="' + field_name + '"]');
+            if (errorInput) {
                 errorInput.classList.add('invalid'); // Replace 'your-class-name' with the desired class
-                if(!firstInvalidField){
+                if (!firstInvalidField) {
                     firstInvalidField = true;
                     errorInput.focus();
                 }
             }
         }
 
-        if(alertElement){
+        if (alertElement) {
             alertElement.classList.add("alert-danger");
             alertElement.classList.remove("alert-hidden");
             alertElement.innerHTML = errorMessage;
-        } 
+        }
     } else {
-        console.log('Error:', error);
-        if(alertElement){
+        logConsole('Error:', error);
+        if (alertElement) {
             alertElement.classList.add("alert-danger");
             alertElement.classList.remove("alert-hidden");
             alertElement.textContent = 'The server returned an invalid response. Please try again later.';
-        }        
+        }
     }
 }
 
-function validateForm(currentForm, alertElement) {   
+function validateForm(currentForm, alertElement) {
 
     // Get all input and textarea elements
     const fields = currentForm.querySelectorAll("input, textarea, select");
@@ -198,13 +202,15 @@ function validateForm(currentForm, alertElement) {
     let formdata = []
     fields.forEach((field) => {
         formdata[field.name] = field.value;
-    });    
+    });
 
     // Validate fields
     fields.forEach((field) => {
         if (field.classList.contains("required") && field.value === "") {
             field.classList.add("invalid");
-            if (!firstInvalidField) firstInvalidField = field;
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
             requiredData = true;
         }
 
@@ -212,7 +218,9 @@ function validateForm(currentForm, alertElement) {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(field.value)) {
                 field.classList.add("invalid");
-                if (!firstInvalidField) firstInvalidField = field;
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
                 validData = false;
             }
         }
@@ -222,12 +230,16 @@ function validateForm(currentForm, alertElement) {
             const regex = /^[0-9]+$/;
             if (!regex.test(field.value)) {
                 field.classList.add("invalid");
-                if (!firstInvalidField) firstInvalidField = field;
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
                 validData = false;
-            }else{
-                if(field.value <= 0){
+            } else {
+                if (field.value <= 0) {
                     field.classList.add("invalid");
-                    if (!firstInvalidField) firstInvalidField = field;
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
                     validData = false;
                 }
             }
@@ -254,7 +266,7 @@ function validateForm(currentForm, alertElement) {
 
 function cleanForm(fields) {
     let ft = '';
-   
+
     // Remove the invalid class and trim inputs
     fields.forEach((field) => {
 
@@ -262,20 +274,20 @@ function cleanForm(fields) {
 
         if (ft === "color") {
             field.value = '#000001';
-        }else{
+        } else {
             field.value = "";
         }
     });
 }
 
-function getFormData(fields){
+function getFormData(fields) {
     let formData = new FormData();
     fields.forEach((field) => {
-        if(field.type == 'file'){
-            if(field.files.length > 0){
+        if (field.type == 'file') {
+            if (field.files.length > 0) {
                 formData.append(field.name, field.files[0]);
             }
-        }else{
+        } else {
             formData.append(field.name, field.value.trim());
         }
     });
@@ -298,7 +310,7 @@ function get_ajax_header(isFileUpload) {
         //'Content-Type': 'application/json',
         'Authorization': `Bearer ${sanctum_token}`,
         'X-CSRF-TOKEN': csrf_token,
-    } 
+    }
 
     // Example dynamic logic to set Content-Type
     if (!isFileUpload) {
@@ -334,7 +346,7 @@ const get_token = async function () {
             if (data.token) {
                 // Store the token in localStorage
                 localStorage.setItem('sanctum_token', data.token);
-                console.log('Token saved to localStorage');
+                logConsole('Token saved to localStorage');
                 return data.token;
             } else {
                 console.error('No token received');
@@ -405,14 +417,14 @@ function renderTableHeader(columns) {
     document.getElementById('table-head').innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
 }
 // Render table rows
-function renderTable(data) {    
+function renderTable(data) {
 
     const columns = data.columns;
 
     const items = data.items.data;
 
     const totalItems = data.items.total;
-    
+
     const tbody = document.getElementById('table-body');
 
     if (totalItems > 0) {
@@ -450,53 +462,53 @@ function renderTableRows(rows, columns, page) {
     rows.forEach(row => {
         id = row.id;
 
-        if(id<= 1 && rows.length <= 1){
+        if (id <= 1 && rows.length <= 1) {
             buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
-        }else{
+        } else {
             buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
-        }        
+        }
 
-        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;        
+        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
         buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">Booster</button>`;
-        
+
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
             cell_value = "";
             cell_class = cn;
             cell_value = row[cn] == undefined ? '' : row[cn];
-            switch (cn) {                
+            switch (cn) {
                 case "sr":
-                    cell_value = ((page.current_page - 1) * page.per_page) + i + 1;                    
+                    cell_value = ((page.current_page - 1) * page.per_page) + i + 1;
                     i++;
                     break;
-                case "color_code":                    
+                case "color_code":
                     cell_value = cell_value == null ? '' : `<span class="color-code" style="background-color: ${cell_value};">${cell_value}</span>`;
                     break;
-                case "image":                    
-                    if(cell_value){
+                case "image":
+                    if (cell_value) {
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
-                        }else{
+                        } else {
                             cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
-                case "sponsor_logo":                    
-                    if(cell_value){
+                case "sponsor_logo":
+                    if (cell_value) {
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
-                        }else{
+                        } else {
                             cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
                 case "team_logo_thumb":
                 case "team_log":
-                    if(cell_value){
+                    if (cell_value) {
                         if (cell_value.includes('http')) {
                             cell_value = `<img src="${cell_value}">`;
-                        }else{
+                        } else {
                             cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
                         }
                     }
@@ -529,7 +541,7 @@ function renderTableRows(rows, columns, page) {
                 case "sponsor_description":
                     cell_value = nl2br(cell_value);
                     break;
-                
+
             }
             output += `<td class="${cell_class}">${cell_value}</td>`;
 
@@ -602,20 +614,20 @@ function setTextColorBasedOnBg(element) {
     element.style.color = luminance > 0.5 ? "black" : "white";
 }
 
-function createPlayerProfile(rows,formData){
+function createPlayerProfile(rows, formData) {
 
     const tbody = popupTargetModel.querySelector("table tbody");
-    
+
     const img = popupTargetModel.querySelector("img");
 
-    if(formData == null){
+    if (formData == null) {
         img.display = 'none';
         return false;
     }
-    
+
 
     tbody.innerHTML = "";
-    if(formData.image_thumb){
+    if (formData.image_thumb) {
         const url = `${image_url}/players/thumbs/${formData.image_thumb}`;
         img.src = url;
         img.display = 'block';
@@ -645,7 +657,7 @@ function createPlayerProfile(rows,formData){
     }
 }
 
-function nl2br (str, is_xhtml) {
+function nl2br(str, is_xhtml) {
     if (typeof str === 'undefined' || str === null) {
         return '';
     }
@@ -690,25 +702,109 @@ function populateTableTransactions(transactions) {
     // Clear existing rows
     tableBody.innerHTML = "";
 
-    // Loop through transactions and create table rows
-    transactions.forEach(transaction => {
-        const row = document.createElement("tr");
+    if (transactions.length <= 0) {
 
-        // Create and append cells for each property
-        const nameCell = document.createElement("td");
-        nameCell.textContent = transaction.name;
-        row.appendChild(nameCell);
+        logConsole("transactions(1): " + transactions.length);
 
-        const amountCell = document.createElement("td");
-        amountCell.textContent = transaction.amount;
-        row.appendChild(amountCell);
+        document.getElementById("teamTransaction").style.display = 'none';
+    } else {
+        // Loop through transactions and create table rows
+        transactions.forEach(transaction => {
+            const row = document.createElement("tr");
 
-        const createdAtCell = document.createElement("td");
-        createdAtCell.textContent = new Date(transaction.created_at).toLocaleString(); // Format date
-        row.appendChild(createdAtCell);
+            // Create and append cells for each property
+            const nameCell = document.createElement("td");
+            nameCell.textContent = transaction.name;
+            row.appendChild(nameCell);
 
-        // Append the row to the table body
-        tableBody.appendChild(row);
-    });
+            const amountCell = document.createElement("td");
+            amountCell.textContent = transaction.amount;
+            row.appendChild(amountCell);
+
+            const createdAtCell = document.createElement("td");
+            createdAtCell.textContent = new Date(transaction.created_at).toLocaleString(); // Format date
+            row.appendChild(createdAtCell);
+
+            // Append the row to the table body
+            tableBody.appendChild(row);
+        });
+
+        logConsole("transactions(1): " + transactions.length);
+
+        document.getElementById("teamTransaction").style.display = 'block';
+    }
 }
 
+function setLocalStorage(StorageKey, StorageValue, stringify = false) {
+    // Save the updated array back to localStorage
+    if (stringify == true) {
+        localStorage.setItem(StorageKey, JSON.stringify(StorageValue));
+    } else {
+        localStorage.setItem(StorageKey, StorageValue);
+    }
+}
+
+function getLocalStorage(StorageKey, stringify = false) {
+    // Save the updated array back to localStorage
+    if (stringify == true) {
+        return JSON.parse(localStorage.getItem(StorageKey)) || [];
+    } else {
+        return localStorage.getItem(StorageKey) || '';
+    }
+}
+
+
+// Function to create toaster notifications
+function showToast(message, type = 'info') {
+    // Create a container if it doesn't exist
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    // Create a toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+
+    // Append the toast to the container
+    container.appendChild(toast);
+
+    // Remove the toast after 3 seconds
+    setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+/*
+showToast('This is a success message!', 'success');
+showToast('This is an error message!', 'error');
+showToast('This is a warning message!', 'warning');
+showToast('This is an info message!', 'info');
+*/
+
+const displayLog = true;
+
+// Function to log messages with any number of parameters
+function logConsole(...args) {
+    if (displayLog) {
+        const error = new Error();
+        const stackLine = error.stack?.split("\n")[2] || "";
+        const match = stackLine.match(/\((.*):(\d+):(\d+)\)/);
+
+        if (match) {
+            const fileName = match[1];
+            const lineNumber = match[2];
+            console.log(`[${fileName}:${lineNumber}]`, ...args);
+        } else {
+            console.log(...args);
+        }
+    }
+}
+
+//logConsole('Test message', { key: 'value' }, [1, 2, 3]);

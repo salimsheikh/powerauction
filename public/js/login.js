@@ -1,3 +1,5 @@
+"use strict"
+
 const loginForm = document.getElementById('loginForm');
 
 let formProcessing = false;
@@ -42,8 +44,8 @@ if (loginForm) {
             headers: header,
             body: JSON.stringify(formValues),
         }).then((response) => {
-            console.log("response 1");
-            console.log(response);
+            logConsole("response 1");
+            logConsole(response);
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;            
@@ -55,7 +57,7 @@ if (loginForm) {
             }
             return response.json();
         }).then((data) => {
-            console.log("response 2");
+            logConsole("response 2");
 
             if (data.access_token != "") {
 
@@ -72,8 +74,8 @@ if (loginForm) {
                 alertElement.classList.add("alert-success");
             }
         }).catch((error) => {
-            console.log("response 3");
-            console.log(error);
+            logConsole("response 3");
+            logConsole(error);
 
             alertElement.classList.add("alert-danger");
             if (error.message) {

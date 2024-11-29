@@ -84,7 +84,7 @@
             </div>
         </form>
 
-        <div class="vscorll">
+        <div class="vscorll" id="teamTransaction">
             <table id="transactionTable" class="custom-table">
                 <thead>
                     <tr>

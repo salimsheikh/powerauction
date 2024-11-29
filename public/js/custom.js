@@ -1,4 +1,4 @@
-"use strick";
+"use strict";
 
 var formProcessing = false;
 
@@ -106,7 +106,7 @@ if (popupAddForm) {
             headers: headers,
             body: formData,
         }).then((response) => {
-            console.log("response 1");
+            logConsole("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             if (!response.ok) {
@@ -117,7 +117,7 @@ if (popupAddForm) {
 
             return response.json();
         }).then((data) => {
-            console.log("response 2");
+            logConsole("response 2");
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
 
@@ -208,7 +208,7 @@ if (tableContainer) {
                 method: 'get',
                 headers: headers
             }).then((response) => {
-                console.log("response 1");
+                logConsole("response 1");
                 //do not delete
                 alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 formProcessing = false;
@@ -319,7 +319,7 @@ if (popupUpdateForm) {
             headers: headers,
             body: formData,
         }).then((response) => {
-            console.log("response 1");
+            logConsole("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;
@@ -332,7 +332,7 @@ if (popupUpdateForm) {
 
             return response.json();
         }).then((data) => {
-            console.log("response 2");
+            logConsole("response 2");
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
 
@@ -425,7 +425,7 @@ if (popupDeleteForm) {
             headers: headers,
             body: JSON.stringify([]),
         }).then((response) => {
-            console.log("response 1");
+            logConsole("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;
@@ -438,7 +438,7 @@ if (popupDeleteForm) {
 
             return response.json();
         }).then((data) => {
-            console.log("response 2", data);
+            logConsole("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
 
@@ -532,7 +532,7 @@ if (tableContainer) {
                 method: 'get',
                 headers: headers
             }).then((response) => {
-                console.log("response 1");
+                logConsole("response 1");
                 formProcessing = false;
                 alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
                 if (!response.ok) {
@@ -554,7 +554,7 @@ if (tableContainer) {
                 showPopupForm();
 
             }).catch((error) => {
-                console.log(error);
+                logConsole(error);
                 createPlayerProfile(null, null);
                 showPopupForm();
                 fatchResponseCatch(error, alertElement);
@@ -612,14 +612,14 @@ if (tableContainer) {
                 planAmountEle.setAttribute("readonly", true);
             }
 
-            populateTableTransactions([]);
-
             // Retrieve the array from localStorage
-            let team_transactions_data = JSON.parse(localStorage.getItem(ttd_storage_key)) || [];
+            let team_transactions_data = getLocalStorage(ttd_storage_key,true);
             if (team_transactions_data.length > 0) {
                 populateTableTransactions(team_transactions_data);
                 return false;
             }
+
+            populateTableTransactions([]);
 
             let headers = get_ajax_header(true);
 
@@ -636,16 +636,15 @@ if (tableContainer) {
             }).then((data) => {
 
                 team_transactions_data = data.data;
-
-                // Save the updated array back to localStorage
-                localStorage.setItem(ttd_storage_key, JSON.stringify(team_transactions_data));
+                                
+                setLocalStorage(ttd_storage_key, data.data, true)
 
                 // Populate the table with the transactions
                 populateTableTransactions(team_transactions_data);
 
 
             }).catch((error) => {
-                console.log(error);
+                logConsole(error);
                 // fatchResponseCatch(error, alertElement);
             });
         }
@@ -752,15 +751,17 @@ if (popupBoosterForm) {
 
         const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
         if (submitButton) {
-            //submitButton.disabled = true; // Disable the button
+            submitButton.disabled = true; // Disable the button
         }
+
+        showToast(lang.please_wait, 'info');
 
         fetch(`${TRANS_API_URL}/store`, {
             method: 'POST',
             headers: headers,
             body: formData,
         }).then((response) => {
-            console.log("response 1");
+            logConsole("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;
@@ -773,7 +774,7 @@ if (popupBoosterForm) {
 
             return response.json();
         }).then((data) => {
-            console.log("response 2", data);
+            logConsole("response 2", data);
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
 
@@ -806,7 +807,7 @@ if (popupBoosterForm) {
             if (submitButton) {
                 submitButton.disabled = false; // Disable the button
             }
-            console.log(error);
+            logConsole(error);
             fatchResponseCatch(error, alertElement);
         });
     });
@@ -834,7 +835,7 @@ document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
 document.getElementById('sponsor_type').value = 'gold';
 */
 /*
-const sampleName = getRandomSample();console.log(sampleName.randomNumber);
+const sampleName = getRandomSample();logConsole(sampleName.randomNumber);
 document.getElementById('team_name').value = sampleName.team;
 document.getElementById('league_id').value = sampleName.randomNumber;
 document.getElementById('owner_name').value = sampleName.name;
