@@ -403,14 +403,16 @@ async function fetchAndRender(page = 1) {
 
     const items = data.items;
 
-    renderTableHeader(columns);
+    renderTableHeader(columns);    
 
     renderTable(data);
 
     renderPagination(items.links, items.current_page, items.last_page, items.total);
 
     // Apply to all elements with class "dynamic-box"
-    document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
+    if ("color_code" in columns){
+        document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);    
+    }    
 
     formProcessing = false;
 }
@@ -418,6 +420,7 @@ async function fetchAndRender(page = 1) {
 function renderTableHeader(columns) {
     document.getElementById('table-head').innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
 }
+
 // Render table rows
 function renderTable(data) {
 
@@ -462,9 +465,7 @@ function renderTableRows(rows, columns, page) {
 
     let i = 0;
     rows.forEach(row => {
-        id = row.id;
-
-        
+        id = row.id;        
 
         if (id <= 1 && rows.length <= 1) {
             buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
@@ -475,9 +476,6 @@ function renderTableRows(rows, columns, page) {
         buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
         buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
-
-        
-        
 
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {

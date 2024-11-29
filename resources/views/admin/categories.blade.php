@@ -1,9 +1,10 @@
+@section('title', __('Categories'))
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
             {{ __('Category') }}
         </h2>
-    </x-slot>
+    </x-slot>    
 
     <!-- Add Item Popup -->
     <x-popup-add-item-model title="{{__('Add new Category')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add Category')}}">    

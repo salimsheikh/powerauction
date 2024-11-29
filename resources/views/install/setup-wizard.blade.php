@@ -1,3 +1,4 @@
+@section('title', __('Setup Wizard'))
 <x-guest-layout>
     {{-- <h2 class="mb-4">Setup Wizard - Create Admin Account</h2> --}}
     <form action="{{ route('setup.wizard.store') }}" method="POST">

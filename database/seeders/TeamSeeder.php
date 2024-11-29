@@ -33,8 +33,8 @@ class TeamSeeder extends Seeder
         // Insert sample data into the league table
         DB::table('teams')->insert([            
                 'team_name' => __('Nexgeno Team'),
-                'team_logo' => 'teams_1.jpg',
-                'team_logo_thumb' => 'teams_1_thumb.jpg',                
+                'team_logo' => 'team_1.jpg',
+                'team_logo_thumb' => 'team_1.jpg',                
                 'virtual_point' => '0',
                 'league_id' => '4',
                 'owner_id' => $insertedId,
