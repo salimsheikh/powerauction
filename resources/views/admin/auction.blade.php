@@ -9,30 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="admin-page">
                 <div class="p-6 text-gray-900">
-                    <div class="table-header-search">
-                        <div>
-                            <button id="buttonPopupShowAddItemModel"
-                                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                {{ __('Add Category') }}
-                            </button>
-                        </div>
-                        <div class="search-input">
-                            <label for="table-search" class="sr-only">{{ __('Search') }}</label>
-                            <div class="relative">
-                                <form id="formSearch" method="GET">
-                                    <div id="btnSearchText" class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 cursor-pointer outline-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path>
-                                        </svg>
-                                    </div>
-                                    <input type="text" id="table-search"
-                                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="{{ __('Search for items') }}">                                    
-                                <form>
-                            </div>
-                        </div>
+                    
+                    <div class="auction_header flex justify-between items-center mb-3 dark:text-white text-lg ">
+                        <h2>{{ __('messages.auction_league', ['league_name' => $leagueName]) }}</h2>
+                        
+                            <x-popup-form-input type="select" id="auction_category_id" name="category_id" label="{{ __('Category Name:') }}" />
+                        
                     </div>                   
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">

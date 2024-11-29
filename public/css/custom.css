@@ -876,3 +876,11 @@ select.inputbox.invalid,
         max-width: 100%;
     }
 }
+
+/** Bid Page*/
+.auction_header .inputblock{
+    gap: 50px;
+}
+.auction_header label[for='auction_category_id']{
+    white-space: nowrap;  
+}

@@ -39,7 +39,7 @@ class LeagueApiController extends Controller
             });
         }
 
-        $itemQuery->where('status', '1');
+        // $itemQuery->where('status', '1');
 
         // Order by category_name in ascending order
         $itemQuery->orderBy('created_at', 'desc');
