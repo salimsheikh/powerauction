@@ -474,6 +474,8 @@ function renderTableRows(rows, columns, page) {
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
         buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">Booster</button>`;
 
+        buttons['auction'] = `<a href="" class="btn view-btn booster-button hover:bg-purple-800" title="${lang.view}">Auction</a>`;
+
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
             cell_value = "";
@@ -516,11 +518,18 @@ function renderTableRows(rows, columns, page) {
                     }
                     break;
                 case "league_actions":
+                    cell_class += " actions";
+                    cell_value += "<div>";
+                    cell_value += buttons['auction'];
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
+                    cell_value += "</div>";
+                    break;
                 case "actions":
                     cell_class += " actions";
                     cell_value += "<div>";
-                    cell_value += buttons['edit'];
-                    cell_value += buttons['delete'];
+                        cell_value += buttons['edit'];
+                        cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
                 case "view_actions":

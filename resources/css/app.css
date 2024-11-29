@@ -5,6 +5,6 @@
 
 @layer components {
     .admin-page {
-        @apply bg-white overflow-hidden shadow-sm sm:rounded-lg bg-opacity-30 dark:bg-slate-800 dark:border-gray-600 dark:bg-opacity-30
+        @apply bg-white overflow-hidden shadow-sm sm:rounded-lg bg-opacity-70 dark:bg-slate-800 dark:border-gray-600 dark:bg-opacity-70
     }
-  }
+}

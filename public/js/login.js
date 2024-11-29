@@ -39,13 +39,13 @@ if (loginForm) {
             'X-CSRF-TOKEN': csrf_token,
         }       
 
-        fetch(`csutom-login`, {
+        fetch(`custom-login`, {
             method: 'POST',
             headers: header,
             body: JSON.stringify(formValues),
         }).then((response) => {
-            logConsole("response 1");
-            logConsole(response);
+            console.log("response 1");
+            console.log(response);
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
             formProcessing = false;            
@@ -57,7 +57,7 @@ if (loginForm) {
             }
             return response.json();
         }).then((data) => {
-            logConsole("response 2");
+            console.log("response 2");
 
             if (data.access_token != "") {
 
@@ -74,8 +74,8 @@ if (loginForm) {
                 alertElement.classList.add("alert-success");
             }
         }).catch((error) => {
-            logConsole("response 3");
-            logConsole(error);
+            console.log("response 3");
+            console.log(error);
 
             alertElement.classList.add("alert-danger");
             if (error.message) {

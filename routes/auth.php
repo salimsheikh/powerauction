@@ -29,7 +29,7 @@ Route::middleware(['guest','throttle:100,6'])->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
 
-    Route::post('csutom-login', [CustomAuthController::class, 'login']);    
+    Route::post('custom-login', [CustomAuthController::class, 'login']);    
     
 });
 
