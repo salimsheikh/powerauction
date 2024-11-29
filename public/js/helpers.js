@@ -464,6 +464,8 @@ function renderTableRows(rows, columns, page) {
     rows.forEach(row => {
         id = row.id;
 
+        
+
         if (id <= 1 && rows.length <= 1) {
             buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
         } else {
@@ -472,9 +474,10 @@ function renderTableRows(rows, columns, page) {
 
         buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
-        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">Booster</button>`;
+        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
 
-        buttons['auction'] = `<a href="" class="btn view-btn booster-button hover:bg-purple-800" title="${lang.view}">Auction</a>`;
+        
+        
 
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
@@ -518,9 +521,10 @@ function renderTableRows(rows, columns, page) {
                     }
                     break;
                 case "league_actions":
+                    buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
                     cell_class += " actions";
-                    cell_value += "<div>";
-                    cell_value += buttons['auction'];
+                    cell_value += "<div>";                    
+                    cell_value += buttons['auction'].replace("#leagueid#", id);
                     cell_value += buttons['edit'];
                     cell_value += buttons['delete'];
                     cell_value += "</div>";

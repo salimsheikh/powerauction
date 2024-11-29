@@ -3,12 +3,13 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SetupWizardController;
+use App\Http\Controllers\Backend\AuctionController;
 use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\PlayerController;
-use App\Http\Controllers\Backend\TeamController;
 use App\Http\Controllers\Backend\LeagueController;
+use App\Http\Controllers\Backend\PlayerController;
+use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\SponsorController;
+use App\Http\Controllers\Backend\TeamController;
 
 Route::fallback(function () {
     $currentPath = request()->path();
@@ -49,6 +50,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get("/players",[PlayerController::class, 'index'])->name('players.index');
     Route::get("/teams",[TeamController::class, 'index'])->name('teams.index');
     Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
+    
+    Route::get("/auction",[AuctionController::class, 'index'])->name('auction.index');
+    Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
+
     Route::get("/sponsors",[SponsorController::class, 'index'])->name('sponsors.index');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

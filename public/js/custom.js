@@ -151,9 +151,8 @@ let edit_id = 0;
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
-        e.preventDefault();
-
         if (e.target && e.target.classList.contains('edit-button')) {
+            e.preventDefault();
             selectedButton = e.target; // Store the clicked button
 
             if (formProcessing) {
@@ -363,9 +362,8 @@ let delete_id = 0;
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
-        e.preventDefault();
-
         if (e.target && e.target.classList.contains('delete-button')) {
+            e.preventDefault();
             selectedButton = e.target; // Store the clicked button
 
             delete_id = selectedButton.getAttribute('data-id');
@@ -504,9 +502,8 @@ if (btnSearchText) {
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
-        e.preventDefault();
-
         if (e.target && e.target.classList.contains('view-button')) {
+            e.preventDefault();
             selectedButton = e.target; // Store the clicked button
 
             if (formProcessing) {
@@ -571,9 +568,8 @@ let ttd_storage_key = "team_transactions_data_" + team_id;
 // Add event listener to dynamically created buttons
 if (tableContainer) {
     tableContainer.addEventListener('click', function (e) {
-        e.preventDefault();
-
         if (e.target && e.target.classList.contains('booster-button')) {
+            e.preventDefault();
             selectedButton = e.target; // Store the clicked button
 
             if (formProcessing) {

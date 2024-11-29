@@ -41,10 +41,15 @@ if (!function_exists('getJSLang')) {
         $lang['something_wrong'] = __('Some thing is wrong.');
         $lang['enter_required_fields'] = __("Please enter the required fields.");
 
+        $lang['auction_url'] = route('auction.index');
+        //$lang['set_league_id_url'] = route('set.league.id');
+
         $lang['view'] = __("View");
         $lang['edit'] = __("Edit");
         $lang['delete'] = __("Delete");
         $lang['trash'] = __("Trash");
+        $lang['auction'] = __("Auction");
+        $lang['booster'] = __("Booster");        
         $lang['not_found'] = __('Item not found.');
 
         switch($page){

@@ -1,30 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
-            {{ __('Leagues') }}
+            {{ __('Auction') }}
         </h2>
-    </x-slot>
-
-    <!-- Add Item Popup -->
-    <x-popup-add-item-model title="{{__('Add new League')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add League')}}">
-        <x-popup-form-input type="text" id="league_name" name="league_name" label="{{ __('League Name:') }}" class="focus_first league_name required"
-            maxlength="50" value="" />
-        <x-popup-form-input type="textarea" id="description" name="description" label="{{ __('Description:') }}" value=""
-            class="required" />
-    </x-popup-add-item-model>
-
-    <!-- Add Item Popup -->
-    <x-popup-delete-item-model title="{{__('Delete League')}}">
-        {{ __('Do you want to delete League?') }}
-    </x-popup-delete-item-model>
-
-    <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update League')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update League')}}">
-        <x-popup-form-input type="text" id="update_league_name" name="league_name" label="{{ __('League Name:') }}" class="focus_first league_name required"
-            maxlength="50" value="" />
-        <x-popup-form-input type="textarea" id="update_description" name="description" label="{{ __('Description:') }}" value=""
-            class="required" />
-    </x-popup-update-item-model>
+    </x-slot>    
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -34,7 +13,7 @@
                         <div>
                             <button id="buttonPopupShowAddItemModel"
                                 class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                {{ __('Add League') }}
+                                {{ __('Add Category') }}
                             </button>
                         </div>
                         <div class="search-input">
@@ -61,15 +40,17 @@
                             <table class="custom-table">
                                 <thead id="table-head">
                                     <tr>
-                                        <th>{{ __('Sr.') }}</th>
-                                        <th>{{ __('Name') }}</th>
+                                        <th>{{ __('#ID') }}</th>
+                                        <th>{{ __('Category Name') }}</th>
+                                        <th>{{ __('Base Price') }}</th>
+                                        <th>{{ __('Color Code') }}</th>
                                         <th>{{ __('Description') }}</th>
-                                        <th class="view_actions">{{ __('Actions') }}</th>
+                                        <th class="actions">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-body">
                                     <tr>
-                                        <td colspan="4">
+                                        <td colspan="6">
                                             <p class="text-center text-gray-800 dark:text-white">{{__('Please wait! loading table.')}}</p>
                                         </td>
                                     </tr>
@@ -86,9 +67,7 @@
         </div>
     </div>
     <script>
-        const lang = @json(getJSLang('leagues'));
-        const BASE_API_URL = "{{ url('/api/backend/leagues/') }}";
-        const image_url = "{{ url('/storage') }}";
-        const set_league_id_url = "{{ route('set.league.id','#leagueid#')}}"
+        const lang = @json(getJSLang('category'));
+        const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
     </script>
 </x-app-layout>
