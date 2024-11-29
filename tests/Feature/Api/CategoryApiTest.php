@@ -7,10 +7,13 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Category;
+use Tests\UserLogin;
 
 
 class CategoryApiTest extends TestCase
 {
+    use UserLogin;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -22,11 +25,7 @@ class CategoryApiTest extends TestCase
     // Test for storing a category successfully
     public function test_store_category_success()
     {
-        // Arrange: Create a user
-        $user = User::factory()->create();
-
-        // Generate token if using Sanctum
-        $token = $user->createToken('API Token')->plainTextToken;
+        $token = $this->getUserToken();
 
         // Define valid category data
         $data = [
@@ -39,7 +38,7 @@ class CategoryApiTest extends TestCase
         // Act: Make the request with the token
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->postJson('/api/backend/categories/store', $data);
+        ])->postJson(route('category.api.store'), $data);
 
         // Assert: Check if the category was created and response status is 201 (Created)
         $response->assertStatus(201);
@@ -52,16 +51,12 @@ class CategoryApiTest extends TestCase
     // Test for validation errors when required fields are missing
     public function test_store_category_validation_fail()
     {
-       // Arrange: Create a user
-       $user = User::factory()->create();
-
-       // Generate token if using Sanctum
-       $token = $user->createToken('API Token')->plainTextToken;
+        $token = $this->getUserToken();
 
         // Act: Make the request with the token
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-         ])->postJson('/api/backend/categories/store', [
+         ])->postJson(route('category.api.store'), [
                              'base_price' => 100.0,
                              'description' => 'This is a test category',
                          ]);
@@ -73,12 +68,8 @@ class CategoryApiTest extends TestCase
 
     // Test for duplicate category_name
     public function test_store_category_duplicate_name()
-    {
-       // Arrange: Create a user
-       $user = User::factory()->create();
-
-       // Generate token if using Sanctum
-       $token = $user->createToken('API Token')->plainTextToken;
+    {       
+        $token = $this->getUserToken();
 
         // First create a category
         Category::create([
@@ -87,14 +78,14 @@ class CategoryApiTest extends TestCase
             'description' => 'This is an existing category',
             'color_code' => '#FF0000',
             'status' => 'publish',
-            'created_by' => $user->id,
+            'created_by' => $this->user->id,
         ]);
        
 
         // Act: Make the request with the token
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-         ])->postJson('/api/backend/categories/store', [
+         ])->postJson(route('category.api.store'), [
                              'category_name' => 'Existing Category',  // Duplicate name
                              'base_price' => 200.0,
                              'description' => 'This is a duplicate category',
@@ -106,12 +97,10 @@ class CategoryApiTest extends TestCase
         $response->assertJsonValidationErrors(['category_name']);
     }
 
-    // Test for Delete
-    public function test_delete_category_success()
-    {
-        // Arrange: Create a user and generate a token
-        $user = User::factory()->create();
-        $token = $user->createToken('API Token')->plainTextToken;
+    public function test_update_category_success(){
+
+        // Generate token
+        $token = $this->getUserToken();
 
         // Create a category to delete
         $category = Category::factory()->create();
@@ -119,7 +108,61 @@ class CategoryApiTest extends TestCase
         // Act: Make the DELETE request with the token
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->deleteJson('/api/backend/categories/' . $category->id);
+        ])->postJson(route('category.api.update',$category->id),[
+            'category_name' => 'Update Category',  // update name
+            'base_price' => 200.0,
+            'description' => 'This is a duplicate category',
+            'color_code' => '#00FF00',
+        ]);
+
+        $response->assertStatus(200);
+
+        // Assert the category name is updated
+        $this->assertDatabaseHas('categories', [
+            'category_name' => 'Update Category',
+        ]);
+
+        // Optional: Check that the old name no longer exists
+        $this->assertDatabaseMissing('categories', [
+            'category_name' => $category->category_name,
+        ]);
+    }
+
+    public function test_category_update_duplicate_name(){
+
+        // Generate token
+        $token = $this->getUserToken();
+
+        // Create a category to delete
+        $category1 = Category::factory()->create();
+
+        $category2 = Category::factory()->create();
+
+        // Act: Make the DELETE request with the token
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->postJson(route('category.api.update',$category2->id),[
+            'category_name' => $category1->category_name,  // update name
+            'base_price' => 200.0,
+            'description' => 'This is a duplicate category',
+            'color_code' => '#00FF00',
+        ]);
+
+        $response->assertStatus(409);
+    }
+
+    // Test for Delete
+    public function test_delete_category_success()
+    {
+        $token = $this->getUserToken();
+
+        // Create a category to delete
+        $category = Category::factory()->create();
+
+        // Act: Make the DELETE request with the token
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->deleteJson(route('category.api.destroy',$category->id));
 
         // Assert: Check if the category was successfully deleted
         $response->assertStatus(200); // Expecting 200 for successful deletion

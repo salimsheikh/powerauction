@@ -16,11 +16,11 @@ use App\Http\Controllers\Backend\Api\TransactionController;
 
 Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
 
-    Route::get('/categories', [CategoryApiController::class, 'index']);
-    Route::post('/categories/store', [CategoryApiController::class, 'store']);                
-    Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit']);
-    Route::post('/categories/{id}', [CategoryApiController::class, 'update']);
-    Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy']);
+    Route::get('/categories', [CategoryApiController::class, 'index'])->name('category.api.index');
+    Route::post('/categories/store', [CategoryApiController::class, 'store'])->name('category.api.store');
+    Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit'])->name('category.api.edit');
+    Route::post('/categories/{id}', [CategoryApiController::class, 'update'])->name('category.api.update');
+    Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy'])->name('category.api.destroy');
 
     Route::get('/players', [PlayerApiController::class, 'index']);
     Route::post('/players/store', [PlayerApiController::class, 'store']);                

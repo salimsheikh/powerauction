@@ -564,6 +564,7 @@ if (tableContainer) {
     });
 }
 
+let team_transactions_data = [];
 let team_id = "";
 let ttd_storage_key = "team_transactions_data_" + team_id;
 

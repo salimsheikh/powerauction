@@ -390,6 +390,8 @@ async function fetchAndRender(page = 1) {
 
     const headers = get_ajax_header(false);
 
+    // showToast(lang.please_wait, 'info');
+
     const response = await fetch(url, {
         method: 'get',
         headers: headers
@@ -488,18 +490,18 @@ function renderTableRows(rows, columns, page) {
                 case "image":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
                 case "sponsor_logo":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
@@ -507,9 +509,9 @@ function renderTableRows(rows, columns, page) {
                 case "team_log":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         }
                     }
                     break;
