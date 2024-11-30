@@ -877,10 +877,205 @@ select.inputbox.invalid,
     }
 }
 
-/** Bid Page*/
+/** Auction Page*/
 .auction_header .inputblock{
     gap: 50px;
 }
 .auction_header label[for='auction_category_id']{
     white-space: nowrap;  
+}
+
+/* Dark and Light Mode */
+.auction_container{
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #cccccc;
+    --highlight-color: #007bff;
+    --info-text-color: #555;
+    --row-bg-color: #f9f9f9;
+}
+
+.dark .auction_container {
+    --background-color: #2b2b2b;
+    --text-color: #ffffff;
+    --border-color: #444444;
+    --highlight-color: #1e90ff;
+    --info-text-color: #cccccc;
+    --row-bg-color: #3a3a3a;
+}
+
+.auction_container {
+    display: flex;
+    justify-content: space-between;
+    /* border: 1px solid var(--border-color); */
+    /* border-radius: 8px; */
+    /* padding: 16px; */
+    /* background-color: var(--background-color); */
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+
+    width: 100%;
+    padding: 0 40px;
+}
+
+.auction_container .column {
+    /* padding: 10px; */
+    /* flex: 1; */
+}
+
+/* First Column */
+.auction_container .column:first-child {
+    /*
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--border-color);
+    */
+}
+
+.auction_container  .image-container {
+    position: relative;
+    max-width: 100%;
+    text-align: center;
+}
+
+.auction_container .image-container img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.auction_container .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+}
+
+.auction_container .badge.sold {
+    background-color: #4caf50;
+}
+
+.auction_container .badge.unsold {
+    background-color: #f44336;
+}
+
+.auction_container .badge.star {
+    background-color: #ffcc00;
+    color: #000;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 50%;
+    border: 2px solid #ff9800;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Second Column */
+.auction_container .column:nth-child(2) {
+    /* border-right: 1px solid var(--border-color); */
+    display: flex;
+    flex-direction: column;
+}
+
+.auction_container .player-name {
+    font-size: 22px;
+    /* padding-left: 20px; */
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: left;
+    text-transform: uppercase;
+    /* color: var(--highlight-color, #ffffff); */
+}
+
+.auction_container .info-row {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: var(--info-text-color, #555);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: var(--row-bg-color, #f9f9f9);
+    border-radius: 6px;
+    /* box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1); */
+    min-width: 270px;
+}
+
+.auction_container .info-row span {
+    font-weight: bold;
+    color: var(--highlight-color, #007bff);
+}
+
+/* Third Column */
+.auction_container .column:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.auction_container .info-row span {
+    font-weight: bold;
+    color: var(--highlight-color, #007bff);
+}
+
+
+/* Slider Styles */
+.slider {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+}
+
+.slider-item {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.slider-arrow {
+    background-color: var(--highlight-color, #007bff);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.slider-arrow:hover,
+.dark .slider-arrow:hover {
+    background-color: var(--text-color, #000);
+}
+
+.dark .slider-arrow {
+    background-color: #4d4d4d;
 }

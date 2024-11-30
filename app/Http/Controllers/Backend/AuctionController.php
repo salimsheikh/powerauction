@@ -10,20 +10,42 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
 
 use App\Models\League;
+use App\Models\Player;
 
 class AuctionController extends Controller
 {
-    public function index(){
+    public function index(Request $request)
+    {
+        
+
         $leagueId = Session::get('league_id');
 
-        // Retrieve the league name by ID
-        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');       
+        $categoryId = Session::get('category_id');
 
         if(empty($leagueId) || $leagueId <= 0){
             return redirect()->route('leagues.index');
         }
 
-        return view('admin.auction', ['leagueName' => 'Premier League']);
+        // Retrieve the league name by ID
+        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+
+        // Check if a category_id is provided in the query parameters
+        if ($request->isMethod('post') && $request->has('category_id')) {
+            Session::put('category_id', $request->category_id);
+            $categoryId = $request->category_id;
+        }
+        
+        if($categoryId > 0){
+            // Filter players by the selected category_id
+            $players = Player::with('category')->where('category_id', $categoryId)->get();
+        }else{
+            // If no category is selected, display all players
+            $players = Player::with('category')->get(); 
+        }
+            
+            
+
+        return view('admin.auction', compact('leagueName','players','leagueId','categoryId'));
     }
 
     public function setLeagueId(Request $requst, $id){

@@ -19,8 +19,8 @@
         <select id="{{ $id }}" name="{{ $name }}"
             class="{{ $name }} {{ $class }} inputbox">
             <option value="">{{ $firstOption }}</option>
-            @foreach ($options as $option_name => $value)
-                <option value="{{ $option_name }}">{{ $value }}</option>
+            @foreach ($options as $option_name => $option_value)
+                <option value="{{ $option_name }}" {{ (request($name) == $option_name || $value == $option_name) ? 'selected' : '' }}>{{ $option_value }}</option>
             @endforeach
         </select>
     @else

@@ -10,13 +10,14 @@ class PlayerFactory extends Factory
 
     public function definition()
     {
+        ////UPDATE players SET category_id = FLOOR(1 + (RAND() * 4)) -- Random category_id between 1 and 4 WHERE category_id > 4;
         return [
             'uniq_id' => "SPL/".$this->faker->randomNumber(1,100),
             'player_name' => $this->faker->name(),
             'nickname' => $this->faker->word(),
             'mobile' => $this->faker->numerify('##########'),
             'email' => $this->faker->unique()->safeEmail(),
-            'category_id' => $this->faker->numberBetween(1,10),
+            'category_id' => $this->faker->numberBetween(1,4),
             'dob' => $this->faker->date('Y-m-d'),
             'image' => $this->faker->imageUrl(80, 80, 'sports'),
             'image_thumb' => $this->faker->imageUrl(100, 100, 'sports'),

@@ -51,7 +51,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get("/teams",[TeamController::class, 'index'])->name('teams.index');
     Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
     
-    Route::get("/auction",[AuctionController::class, 'index'])->name('auction.index');
+    Route::post("/auction", [AuctionController::class, 'index'])->name('auction.index');
+    Route::get("/auction", [AuctionController::class, 'index'])->name('auction.index'); // To handle GET request for first load
+
     Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
 
     Route::get("/sponsors",[SponsorController::class, 'index'])->name('sponsors.index');
