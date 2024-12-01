@@ -156,13 +156,17 @@ function fatchResponseCatch(error, alertElement) {
             errorMessage += `${error.errors[field_name].join(', ')}` + "<br>";
 
             // Select the input element by its name attribute
-            const errorInput = document.querySelector('[name="' + field_name + '"]');
-            if (errorInput) {
-                errorInput.classList.add('invalid'); // Replace 'your-class-name' with the desired class
-                if (!firstInvalidField) {
-                    firstInvalidField = true;
-                    errorInput.focus();
+            if (popupTargetModel) {
+                const errorInput = popupTargetModel.querySelector('[name="' + field_name + '"]');
+
+                if (errorInput) {
+                    errorInput.classList.add('invalid'); // Replace 'your-class-name' with the desired class
+                    if (!firstInvalidField) {
+                        firstInvalidField = true;
+                        errorInput.focus();
+                    }
                 }
+
             }
         }
 
@@ -403,16 +407,16 @@ async function fetchAndRender(page = 1) {
 
     const items = data.items;
 
-    renderTableHeader(columns);    
+    renderTableHeader(columns);
 
     renderTable(data);
 
     renderPagination(items.links, items.current_page, items.last_page, items.total);
 
     // Apply to all elements with class "dynamic-box"
-    if ("color_code" in columns){
-        document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);    
-    }    
+    if ("color_code" in columns) {
+        document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
+    }
 
     formProcessing = false;
 }
@@ -465,7 +469,7 @@ function renderTableRows(rows, columns, page) {
 
     let i = 0;
     rows.forEach(row => {
-        id = row.id;        
+        id = row.id;
 
         if (id <= 1 && rows.length <= 1) {
             buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
@@ -521,7 +525,7 @@ function renderTableRows(rows, columns, page) {
                 case "league_actions":
                     buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
                     cell_class += " actions";
-                    cell_value += "<div>";                    
+                    cell_value += "<div>";
                     cell_value += buttons['auction'].replace("#leagueid#", id);
                     cell_value += buttons['edit'];
                     cell_value += buttons['delete'];
@@ -530,8 +534,8 @@ function renderTableRows(rows, columns, page) {
                 case "actions":
                     cell_class += " actions";
                     cell_value += "<div>";
-                        cell_value += buttons['edit'];
-                        cell_value += buttons['delete'];
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
                 case "view_actions":

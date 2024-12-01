@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('team_logo', 250)->nullable();
             $table->string('team_logo_thumb', 250)->nullable();
             $table->string('virtual_point', 50)->nullable();
-            $table->integer('league_id')->nullable();
-            $table->integer('owner_id')->nullable();
+            $table->unsignedBigInteger('league_id')->nullable();
+            $table->unsignedBigInteger('owner_id')->nullable();
             $table->string('status',15)->default('publish');
             $table->unsignedBigInteger('created_by')->default(0); // Created by user
             $table->unsignedBigInteger('updated_by')->nullable(); // Updated by user
@@ -26,6 +26,8 @@ return new class extends Migration
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('league_id')->references('id')->on('league')->onDelete('restrict');
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('restrict');
         });
     }
 

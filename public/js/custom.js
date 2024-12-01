@@ -159,7 +159,9 @@ if (tableContainer) {
                 return false;
             }
 
-            edit_id = e.target.getAttribute('data-id');
+            edit_id = e.target.getAttribute('data-id');            
+
+            document.getElementById('update_id').value = edit_id;
 
             popupTargetModel = popupUpdateItemModal;
 
@@ -285,7 +287,7 @@ if (popupUpdateForm) {
         }
 
         // Get the current form
-        const currentForm = document.getElementById('popupUpdateForm');
+        const currentForm = document.getElementById('popupUpdateForm');        
 
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
@@ -302,6 +304,8 @@ if (popupUpdateForm) {
 
         alertElement.textContent = lang.please_wait;
         alertElement.classList.add("alert-info");
+
+        document.getElementById('update_id').value = edit_id;
 
         let headers = get_ajax_header(true);
         let formData = getFormData(fields);

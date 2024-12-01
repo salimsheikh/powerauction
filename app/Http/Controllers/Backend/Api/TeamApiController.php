@@ -1,24 +1,23 @@
 <?php
 
 namespace App\Http\Controllers\Backend\Api;
-
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
+
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 
 use App\Services\ImageUploadService;
+use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Requests\TeamRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
 
 class TeamApiController extends Controller
 {
@@ -29,23 +28,7 @@ class TeamApiController extends Controller
         $this->imageService = $imageService;
     }
 
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        $columns['sr'] = __('Sr.');
-        $columns['team_logo_thumb'] = __('Logo');
-        $columns['team_name'] = __('Team Name');
-        $columns['owner_name'] = __('Owner Name');
-        $columns['owner_email'] = __('Owner Email');
-        $columns['owner_phone'] = __('Owner Phone');
-        $columns['virtual_point'] = __('Virtual Point');
-        $columns['remaining_points'] = __('Remaining Points');
-        $columns['league_name'] = __('League');        
-        $columns['team_actions'] = __('Actions');
-
-        return $columns;
-    }
+    
 
     public function index(Request $request)
     {
@@ -95,27 +78,9 @@ class TeamApiController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(TeamRequest $request){        
 
-        $validator = Validator::make($request->all(), [
-            'team_name' => 'required|string|max:100|unique:teams,team_name',
-            'team_logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'league_id' => 'required|integer|exists:league,id',
-            'owner_name' => 'required|string',
-            'owner_email' => 'required|string|max:100|unique:users,email',
-            'owner_phone' => 'required|string',
-            'owner_password' => 'required|string|max:100',
-        ],[
-            'team_logo' => 'Team Profile image is required.'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $userData = [
             'name' => $request->owner_name,
@@ -126,9 +91,7 @@ class TeamApiController extends Controller
             'password' => Hash::make($request->owner_password),
         ];
 
-        $user = User::create($userData);
-
-     
+        $user = User::create($userData);     
 
         event(new Registered($user));
 
@@ -148,7 +111,7 @@ class TeamApiController extends Controller
         $formData['status'] = $request->input('status', 'publish');
         $formData['created_by'] = Auth::id();
 
-        Log::info($formData);
+    
 
         try{
 
@@ -270,9 +233,11 @@ class TeamApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(TeamRequest $request, $id)
     {
         $res = $this->get_response();
+
+        $request->validated();
 
         $item = Team::findOrFail($id);
 
@@ -403,7 +368,25 @@ class TeamApiController extends Controller
         }
     }
 
-    function get_response()
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        $columns['sr'] = __('Sr.');
+        $columns['team_logo_thumb'] = __('Logo');
+        $columns['team_name'] = __('Team Name');
+        $columns['owner_name'] = __('Owner Name');
+        $columns['owner_email'] = __('Owner Email');
+        $columns['owner_phone'] = __('Owner Phone');
+        $columns['virtual_point'] = __('Virtual Point');
+        $columns['remaining_points'] = __('Remaining Points');
+        $columns['league_name'] = __('League');        
+        $columns['team_actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
     {
         $res = [];
         $res['success'] = false;
@@ -413,7 +396,7 @@ class TeamApiController extends Controller
         return $res;
     }
 
-    function get_formated_date($dateInput = ''){
+    private function get_formated_date($dateInput = ''){
         if($dateInput != ""){
             // Replace the first '-' with a character that splits day, month, and year
             $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'

@@ -113,21 +113,5 @@ class Player extends Model
     {
         return self::$styles[$this->style] ?? $this->style;
     }
-
-    
-
-    public function ___style()
-    {
-        return $this->belongsTo(Style::class, 'style');
-    }
-
-    // Accessor for style_name column
-    public function     __getStyleNameAttribute()
-    {
-
-        \Log::info(print_r($this->style,false));
-        return $this->style ? $this->style?->name : null;
-    }
-
     
 }

@@ -33,7 +33,6 @@ class Category extends Model
         if ($this->players()->exists()) {
             throw new \Exception('This category cannot be deleted because it is associated with players.');
         }
-
         parent::delete();
     }
 }

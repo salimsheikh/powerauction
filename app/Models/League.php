@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Team;
 
 class League extends Model
 {
@@ -29,4 +31,19 @@ class League extends Model
         'created_by',
         'updated_by',
     ];
+
+    // One-to-Many relationship with Player
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class,'league_id');
+    }
+
+    // Override the delete method
+    public function delete()
+    {
+        if ($this->teams()->exists()) {
+            throw new \Exception('This league cannot be deleted because it is associated with team.');
+        }
+        parent::delete();
+    }
 }

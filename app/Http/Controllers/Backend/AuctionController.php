@@ -16,8 +16,6 @@ class AuctionController extends Controller
 {
     public function index(Request $request)
     {
-        
-
         $leagueId = Session::get('league_id');
 
         $categoryId = Session::get('category_id');
@@ -41,9 +39,7 @@ class AuctionController extends Controller
         }else{
             // If no category is selected, display all players
             $players = Player::with('category')->get(); 
-        }
-            
-            
+        }   
 
         return view('admin.auction', compact('leagueName','players','leagueId','categoryId'));
     }

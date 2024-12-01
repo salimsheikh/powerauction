@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\League;
 
 class Team extends Model
 {
@@ -23,7 +24,11 @@ class Team extends Model
         'status',
         'created_by',
         'updated_by',
-    ];
+    ];   
+
+    function users(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 
     function league(){
         return $this->belongsTo(League::class, 'league_id');

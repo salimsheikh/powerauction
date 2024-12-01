@@ -3,29 +3,18 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Sponsor;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 use App\Services\ImageUploadService;
 
-class SponsorApiController extends Controller
-{
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        $columns['sr'] = __('Sr.');
-        $columns['sponsor_logo'] = __('Logo');
-        $columns['sponsor_name'] = __('Name');        
-        $columns['sponsor_description'] = __('Description');
-        $columns['sponsor_type_name'] = __('Type');
-        $columns['actions'] = __('Actions');
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Requests\SponsorRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
-        return $columns;
-    }
+class SponsorApiController extends Controller
+{   
 
     public function __construct(ImageUploadService $imageService)
     {
@@ -78,23 +67,9 @@ class SponsorApiController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(SponsorRequest $request){
 
-        $validator = Validator::make($request->all(), [
-            'sponsor_name' => 'required|string|max:100|unique:sponsors,sponsor_name',
-            'sponsor_logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',      
-            'sponsor_description' => 'required|string|max:500',
-            'sponsor_website_url' => 'required|string|max:200',
-            'sponsor_type' => 'required|string|max:10'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $formData = $request->all();        
 
@@ -163,25 +138,11 @@ class SponsorApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(SponsorRequest $request, $id)
     {
         $res = $this->get_response();
 
-        $validator = Validator::make($request->all(), [
-            'sponsor_name' => 'required|string|max:100|unique:sponsors,sponsor_name,'.$id,
-            'sponsor_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',      
-            'sponsor_description' => 'required|string|max:500',
-            'sponsor_website_url' => 'required|string|max:200',
-            'sponsor_type' => 'required|string|max:10'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $item = Sponsor::findOrFail($id);
 
@@ -259,7 +220,21 @@ class SponsorApiController extends Controller
         }
     }
 
-    function get_response()
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        $columns['sr'] = __('Sr.');
+        $columns['sponsor_logo'] = __('Logo');
+        $columns['sponsor_name'] = __('Name');        
+        $columns['sponsor_description'] = __('Description');
+        $columns['sponsor_type_name'] = __('Type');
+        $columns['actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
     {
         $res = [];
         $res['success'] = false;
@@ -267,15 +242,5 @@ class SponsorApiController extends Controller
         $res['errors'] = false;
         $res['statusCode'] = false;
         return $res;
-    }
-
-    function get_formated_date($dateInput = ''){
-        if($dateInput != ""){
-            // Replace the first '-' with a character that splits day, month, and year
-            $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
-            $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'  
-            return $formattedDate;
-        }
-        return $dateInput;
     }
 }

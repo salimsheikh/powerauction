@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Player;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 use App\Services\ImageUploadService;
+use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Requests\PlayerRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
 
 class PlayerApiController extends Controller
 {
@@ -23,25 +22,7 @@ class PlayerApiController extends Controller
     public function __construct(ImageUploadService $imageService)
     {
         $this->imageService = $imageService;
-    }
-
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        $columns['sr'] = __('Sr.');
-        $columns['uniq_id'] = __('Unique Id');
-        $columns['image'] = __('Profile');
-        $columns['player_nickname'] = __('Name');
-        $columns['profile_type_label'] = __('Profile Type');
-        $columns['type_label'] = __('Type');
-        $columns['style_label'] = __('Style');
-        $columns['age'] = __('Age');
-        $columns['category_name'] = __('Category');        
-        $columns['view_actions'] = __('Actions');
-
-        return $columns;
-    }
+    }    
 
     public function index(Request $request)
     {
@@ -89,30 +70,9 @@ class PlayerApiController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(PlayerRequest $request){
 
-        $validator = Validator::make($request->all(), [
-            'player_name' => 'required|string|max:100',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'profile_type' => 'required|string',
-            'type' => 'required|string',
-            'style' => 'required|string|max:100',
-            'dob' => 'required|date',
-            'category_id' => 'required|integer|exists:categories,id',
-            'nickname' => 'required|string|max:100',
-            'last_played_league' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:players,email',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $formData = $request->all();
 
@@ -252,32 +212,11 @@ class PlayerApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(PlayerRequest $request, $id)
     {
         $res = $this->get_response();
 
-        $validator = Validator::make($request->all(), [
-            'player_name' => 'required|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'profile_type' => 'required|string',
-            'type' => 'required|string',
-            'style' => 'required|string|max:100',
-            'dob' => 'required|date',
-            'category_id' => 'required|integer|exists:categories,id',
-            'nickname' => 'required|string|max:100',
-            'last_played_league' => 'required|string|max:100',
-            'address' => 'required|string|max:500',
-            'city' => 'required|string|max:100',
-            'email' => 'required|email|max:100|unique:players,email,' . $id,
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $item = Player::findOrFail($id);
 
@@ -350,16 +289,19 @@ class PlayerApiController extends Controller
     {
         $res = $this->get_response();
 
-        $item = Player::select('image')->find($id);
-
-        if ($item) {
-            $image = $item->image; // Access the 'image' value            
-            $this->imageService->deleteSavedFile($image, 'players');
-        }
-
         try {
             $item = Player::findOrFail($id); // Attempt to find the category by ID
-            $item->delete(); // Delete the category if found
+            $deleted = $item->delete(); // Delete the category if found
+
+            if($deleted){
+                $item = Player::select('image')->find($id);
+
+                if ($item) {
+                    $image = $item->image; // Access the 'image' value            
+                    $this->imageService->deleteSavedFile($image, 'players');
+                }
+            }
+            
             $res['success'] = true;
             $res['message'] = __('Player deleted successfully');
             $res['statusCode'] = 201;
@@ -377,7 +319,25 @@ class PlayerApiController extends Controller
         }
     }
 
-    function get_response()
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        $columns['sr'] = __('Sr.');
+        $columns['uniq_id'] = __('Unique Id');
+        $columns['image'] = __('Profile');
+        $columns['player_nickname'] = __('Name');
+        $columns['profile_type_label'] = __('Profile Type');
+        $columns['type_label'] = __('Type');
+        $columns['style_label'] = __('Style');
+        $columns['age'] = __('Age');
+        $columns['category_name'] = __('Category');        
+        $columns['view_actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
     {
         $res = [];
         $res['success'] = false;
@@ -387,7 +347,7 @@ class PlayerApiController extends Controller
         return $res;
     }
 
-    function get_formated_date($dateInput = ''){
+    private function get_formated_date($dateInput = ''){
         if($dateInput != ""){
             // Replace the first '-' with a character that splits day, month, and year
             $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'

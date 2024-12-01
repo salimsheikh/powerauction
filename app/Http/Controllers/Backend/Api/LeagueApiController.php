@@ -3,26 +3,16 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\League;
-use Illuminate\Support\Facades\Log;
+
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use App\Http\Requests\LeagueRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 class LeagueApiController extends Controller
 {
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        $columns['sr'] = __('Sr.');
-        $columns['league_name'] = __('Name');
-        $columns['description'] = __('Description');
-        $columns['league_actions'] = __('Actions');
-
-        return $columns;
-    }
-
     public function index(Request $request)
     {
         // Get the search query from the request
@@ -56,24 +46,12 @@ class LeagueApiController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(LeagueRequest $request){
 
-        $validator = Validator::make($request->all(), [
-            'league_name' => 'required|string|max:100|unique:league,league_name',      
-            'description' => 'required|string'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $request->validated();
 
         $formData = $request->all();
-        
-        $formData['status'] = $request->input('status', '1');
+                
         $formData['created_by'] = Auth::id();       
 
         try{
@@ -132,22 +110,9 @@ class LeagueApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(LeagueRequest $request, $id)
     {
-        $res = $this->get_response();
-
-        $validator = Validator::make($request->all(), [
-            'league_name' => 'required|string|max:100|unique:league,league_name,' . $id,
-            'description' => 'required|string'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $res = $this->get_response();        
 
         $item = League::findOrFail($id);
 
@@ -155,7 +120,7 @@ class LeagueApiController extends Controller
 
             $formData = $request->all();            
             
-            $formData['status'] = $request->input('status', '1');;
+            $formData['status'] = $request->input('status', '1');
             $formData['updated_by'] = Auth::id(); // Current authenticated user ID
 
             // Update the record
@@ -208,7 +173,19 @@ class LeagueApiController extends Controller
         }
     }
 
-    function get_response()
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        $columns['sr'] = __('Sr.');
+        $columns['league_name'] = __('Name');
+        $columns['description'] = __('Description');
+        $columns['league_actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
     {
         $res = [];
         $res['success'] = false;
@@ -216,15 +193,5 @@ class LeagueApiController extends Controller
         $res['errors'] = false;
         $res['statusCode'] = false;
         return $res;
-    }
-
-    function get_formated_date($dateInput = ''){
-        if($dateInput != ""){
-            // Replace the first '-' with a character that splits day, month, and year
-            $formattedDate = Str::replaceFirst('-', '', $dateInput); // e.g., '251124' becomes '25-11-2024'
-            $formattedDate = Str::replaceFirst('-', '', $formattedDate); // transforms to '2024-11-25'  
-            return $formattedDate;
-        }
-        return $dateInput;
     }
 }

@@ -3,43 +3,20 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+
 use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Support\Facades\Log;
-
+use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Validator;
 use Exception;
 
 class CategoryApiController extends Controller
 {
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        //$columns['id'] = __('ID');
-        $columns['sr'] = __('Sr.');
-        $columns['category_name'] = __('Category Name');
-        $columns['base_price'] = __('Base Price');
-        $columns['color_code'] = __('Color Code');
-        $columns['description'] = __('Description');
-        $columns['actions'] = __('Actions');
-
-        return $columns;
-    }
-
     public function index(Request $request)
     {
-        //\Log::info('Request Object:', ['data' => json_encode($request)]);
-
-        //$categories = Category::select('id','category_name','color_code','base_price', 'description')->paginate(10);
-
         // Get the search query from the request
-        $query = $request->input('query', '');
-
-        // \Log::info('Request Object:', ['data' => $query]);
+        $query = $request->input('query', '');        
 
         // Start the query builder for the Category model
         $itemQuery = Category::query();
@@ -57,19 +34,10 @@ class CategoryApiController extends Controller
         $itemQuery->where('status', 'publish');
 
         // Order by category_name in ascending order
-        $itemQuery->orderBy('category_name', 'asc');
-        //$categoriesQuery->orderBy('id', 'desc');
+        $itemQuery->orderBy('category_name', 'asc');        
 
         // Paginate the results
         $items = $itemQuery->paginate(10);
-
-
-        // Output the SQL query and bindings
-        //$sql = $itemQuery->toSql();
-        //$bindings = $itemQuery->getBindings();
-
-        //\Log::info('Generated SQL Query: ' . $sql);
-        //\Log::info('Bindings: ' . implode(', ', $bindings));
 
         $columns = $this->get_columns();
 
@@ -80,62 +48,27 @@ class CategoryApiController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-
-        $category_name = $request->category_name;
-
-        if (!empty($category_name)) {
-            // Check if the category already exists manually (Optional if you want to customize the message further)
-            $existingCategory = Category::where('category_name', $request->category_name)->first();
-            if ($existingCategory) {
-                // Return a custom error response for duplicate category_name
-                return response()->json([
-                    'success' => false,
-                    'message' => __('Category name already exists.'),
-                    'errors' => [
-                        'category_name' => [__('The category name has already been taken.')]
-                    ]
-                ], 422);
-            }
-        }
-
-        // Validate the request
-        $validator = Validator::make($request->all(), [
-            'category_name' => 'required|string|max:150|unique:categories,category_name',
-            'base_price' => 'required|numeric',
-            'description' => 'required|string|max:255',
-            'color_code' => 'nullable|string|max:10',
-        ], [
-            'category_name.required' => 'Category name is required!',
-            'category_name.unique' => 'This category name is already taken!',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+    public function store(CategoryRequest $request)
+    {       
+        $request->validated();
 
         $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
 
         try {           
-
             // Current authenticated user ID
             $userId = Auth::id();
 
             $formData = $request->all();
 
-            $formData['status'] = $request->input('status', 'publish');
+            $formData['color_code'] = $color_code;
+            
             $formData['created_by'] = Auth::id();
 
             $result = Category::create($formData);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Category created successfully.',
+                'message' => __('Category created successfully.'),
                 'data' => $formData,
             ],201);
         } catch (Exception $e) {
@@ -158,6 +91,7 @@ class CategoryApiController extends Controller
         try {
 
             $category = Category::select('category_name', 'color_code', 'base_price', 'description')->find($id);
+
             if ($category) {
                 return response()->json([
                     'success' => true,
@@ -183,49 +117,26 @@ class CategoryApiController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
-        $res = $this->get_response();
-
-        $category_name = $request->category_name;
-
-        if (!empty($category_name)) {
-            // Check if the category already exists manually (Optional if you want to customize the message further)
-            $existingCategory = Category::where('category_name', $request->category_name)
-                ->where('id', '!=', $id) // Exclude the given ID
-                ->first();
-            if ($existingCategory) {
-                // Return a custom error response for duplicate category_name
-                return response()->json([
-                    'success' => false,
-                    'message' => __('Category name already exists.'),
-                    'errors' => [
-                        'category_name' => [__('The category name has already been taken.')]
-                    ]
-                ], 409);  // 409 Conflict - used when the request could not be completed due to a conflict.
-            }
-        }
-
-        $category = Category::findOrFail($id);
-
-        $request->validate([
-            'category_name' => 'required|string|max:150',
-            'base_price' => 'required|numeric',
-            'description' => 'required|string|max:255',
-            'color_code' => 'nullable|string|max:10',
-        ]);
+        $res = $this->get_response(); 
+        
+        $request->validated();
 
         try {
 
-            $data = $request->all();
-            // Current authenticated user ID
+            $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
 
-            $data['status'] = $request->input('status', 'publish');
+            $data = $request->all();
 
             $userId = Auth::id();
 
+            $data['color_code'] = $color_code;
+
             // Update modified_by field
             $data['updated_by'] = $userId;
+
+            $category = Category::find($id);
 
             // Update the record
             $category->update($data);
@@ -233,7 +144,7 @@ class CategoryApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Category updated successfully.',
-                'category' => $category,
+                'category' => $data,
             ]);
 
             $res['success'] = true;
@@ -277,7 +188,22 @@ class CategoryApiController extends Controller
         }
     }
 
-    function get_response()
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        //$columns['id'] = __('ID');
+        $columns['sr'] = __('Sr.');
+        $columns['category_name'] = __('Category Name');
+        $columns['base_price'] = __('Base Price');
+        $columns['color_code'] = __('Color Code');
+        $columns['description'] = __('Description');
+        $columns['actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
     {
         $res = [];
         $res['success'] = false;

@@ -18,7 +18,7 @@
         <x-popup-form-input type="text" id="owner_name" name="owner_name" label="{{ __('Owner Name:') }}"
             value="" class="required" />
         <x-popup-form-input type="text" id="owner_email" name="owner_email" label="{{ __('Owner Email:') }}"
-            value="" class="required" />
+            value="" class="required email_validate" />
         <x-popup-form-input type="text" id="owner_phone" name="owner_phone" label="{{ __('Owner Phone:') }}"
             value="" class="required" />
         <x-popup-form-input type="password" id="owner_password" name="owner_password"
@@ -42,7 +42,7 @@
         <x-popup-form-input type="text" id="update_owner_name" name="owner_name" label="{{ __('Owner Name:') }}"
             value="" class="required" />
         <x-popup-form-input type="text" id="update_owner_email" name="owner_email" label="{{ __('Owner Email:') }}"
-            value="" class="required" readOnly="readonly" />
+            value="" class="required email_validate" readOnly="readonly" />
         <x-popup-form-input type="text" id="update_owner_phone" name="owner_phone" label="{{ __('Owner Phone:') }}"
             value="" class="required" />
         <x-popup-form-input type="password" id="update_owner_password" name="owner_password"

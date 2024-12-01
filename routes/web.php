@@ -14,6 +14,8 @@ use App\Http\Controllers\Backend\TeamController;
 Route::fallback(function () {
     $currentPath = request()->path();
 
+    dd($currentPath);
+
     // Check if the path starts with "admin"
     if (str_starts_with($currentPath, 'admin')) {
         return redirect()->route('dashboard');
@@ -51,8 +53,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get("/teams",[TeamController::class, 'index'])->name('teams.index');
     Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
     
-    Route::post("/auction", [AuctionController::class, 'index'])->name('auction.index');
-    Route::get("/auction", [AuctionController::class, 'index'])->name('auction.index'); // To handle GET request for first load
+    // Handling both GET and POST requests on the same route
+    Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');
 
     Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
 

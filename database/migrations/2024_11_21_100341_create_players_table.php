@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('nickname', 100)->nullable();
             $table->string('mobile', 50)->nullable();
             $table->string('email', 100)->nullable();
-            $table->string('category_id', 10)->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->date('dob')->nullable();
             $table->string('image', 250)->nullable();
             $table->string('image_thumb', 250)->nullable();
@@ -42,7 +42,8 @@ return new class extends Migration
 
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');            
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('restrict');
         });
     }
 
