@@ -69,6 +69,10 @@ class TeamApiController extends Controller
         // Paginate the results
         $items = $itemQuery->paginate(10);
 
+        foreach($items as $item){
+            $item->league_name = '';            
+        }
+
         $columns = $this->get_columns();
 
         // Return the columns and items data in JSON format
@@ -241,27 +245,7 @@ class TeamApiController extends Controller
 
         $item = Team::findOrFail($id);
 
-        $owner_id = $item->owner_id;
-
-        $validator = Validator::make($request->all(), [
-            'team_name' => 'required|string|max:100|unique:teams,team_name,'.$id,
-            'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'league_id' => 'required|integer|exists:league,id',
-            'owner_name' => 'required|string',
-            'owner_email' => 'required|string|max:100|unique:users,email,'.$owner_id,
-            'owner_phone' => 'required|string',
-            'owner_password' => 'nullable|string|max:100',
-        ],[
-            'team_logo' => 'Team Profile image is required.'
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'succes' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $owner_id = $item->owner_id;       
 
         $item = Team::findOrFail($id);
         $owner = User::findOrFail($owner_id);

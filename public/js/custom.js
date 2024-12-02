@@ -159,7 +159,7 @@ if (tableContainer) {
                 return false;
             }
 
-            edit_id = e.target.getAttribute('data-id');            
+            edit_id = e.target.getAttribute('data-id');
 
             document.getElementById('update_id').value = edit_id;
 
@@ -287,7 +287,7 @@ if (popupUpdateForm) {
         }
 
         // Get the current form
-        const currentForm = document.getElementById('popupUpdateForm');        
+        const currentForm = document.getElementById('popupUpdateForm');
 
         // Find the .alert element within the current form
         const alertElement = currentForm.querySelector(".alert");
@@ -614,7 +614,7 @@ if (tableContainer) {
             }
 
             // Retrieve the array from localStorage
-            let team_transactions_data = getLocalStorage(ttd_storage_key,true);
+            let team_transactions_data = getLocalStorage(ttd_storage_key, true);
             if (team_transactions_data.length > 0) {
                 populateTableTransactions(team_transactions_data);
                 return false;
@@ -637,7 +637,7 @@ if (tableContainer) {
             }).then((data) => {
 
                 team_transactions_data = data.data;
-                                
+
                 setLocalStorage(ttd_storage_key, data.data, true)
 
                 // Populate the table with the transactions
@@ -785,7 +785,7 @@ if (popupBoosterForm) {
             localStorage.setItem(ttd_storage_key, JSON.stringify(team_transactions_data));
 
             // Populate the table with the transactions
-            populateTableTransactions(team_transactions_data);            
+            populateTableTransactions(team_transactions_data);
 
             // Get all <tr> elements inside the table
             const rows = document.querySelectorAll('#table-body tr').length;
@@ -844,3 +844,4 @@ document.getElementById('owner_email').value = sampleName.email;
 document.getElementById('owner_phone').value = sampleName.mobile;
 document.getElementById('owner_password').value = '123';
 */
+

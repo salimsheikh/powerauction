@@ -93,24 +93,35 @@ body::-webkit-scrollbar-track {
     overflow-y:auto;
     max-height: 200px;
 }
+.hscorll{
+    overflow-x:auto;
+}
 
 /* width */
-.vscorll::-webkit-scrollbar {
+.vscorll::-webkit-scrollbar{
     width: 4px;
-  }
+}
+
+/* height */
+.hscorll::-webkit-scrollbar {
+    height: 8px;
+}
   
   /* Track */
-.vscorll::-webkit-scrollbar-track {
+.vscorll::-webkit-scrollbar-track,
+.hscorll::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
   
   /* Handle */
-.vscorll::-webkit-scrollbar-thumb {
+.vscorll::-webkit-scrollbar-thumb,
+.hscorll::-webkit-scrollbar-thumb {
     background: #292929;
 }
   
   /* Handle on hover */
-.vscorll::-webkit-scrollbar-thumb:hover {
+.vscorll::-webkit-scrollbar-thumb:hover,
+.hscorll::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
@@ -283,7 +294,7 @@ body::-webkit-scrollbar-track {
 .custom-table .delete-btn {
     background-color: var(--delete-btn-bg-color);
     color: var(--btn-text-color);
-    padding: 8px;
+    /* padding: 8px; */
 }
 
 .custom-table .delete-btn:hover {
@@ -907,41 +918,28 @@ select.inputbox.invalid,
 .auction_container {
     display: flex;
     justify-content: space-between;
-    /* border: 1px solid var(--border-color); */
-    /* border-radius: 8px; */
-    /* padding: 16px; */
-    /* background-color: var(--background-color); */
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
-
     width: 100%;
     padding: 0 40px;
+    gap: 20px;
 }
 
-.auction_container .column {
-    /* padding: 10px; */
-    /* flex: 1; */
-}
-
-/* First Column */
-.auction_container .column:first-child {
-    /*
-    flex: 1.5;
+.image-container-wrap{
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    border-right: 1px solid var(--border-color);
-    */
-}
-
-.auction_container  .image-container {
-    position: relative;
-    max-width: 100%;
     text-align: center;
 }
 
-.auction_container .image-container img {
+.auction_container  .image-container {
+    display: flex;
+    align-items: center;
+    position: relative;    
+    text-align: center;
+}
+
+.auction_container  .image-container  img{
+    height: 100%;
     max-width: 100%;
     border-radius: 8px;
 }
@@ -979,13 +977,6 @@ select.inputbox.invalid,
     font-weight: bold;
 }
 
-/* Second Column */
-.auction_container .column:nth-child(2) {
-    /* border-right: 1px solid var(--border-color); */
-    display: flex;
-    flex-direction: column;
-}
-
 .auction_container .player-name {
     font-size: 22px;
     /* padding-left: 20px; */
@@ -1015,15 +1006,60 @@ select.inputbox.invalid,
     color: var(--highlight-color, #007bff);
 }
 
-/* Third Column */
-.auction_container .column:last-child {
-    display: flex;
-    flex-direction: column;
-}
-
 .auction_container .info-row span {
     font-weight: bold;
     color: var(--highlight-color, #007bff);
+}
+
+
+@media screen and (max-width:1000px){
+    .auction_header {
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .auction_container {
+        flex-direction: column;
+    }
+
+    .auction_container  .image-container {
+        margin: auto;
+        text-align: center;
+        width: 200px;      
+    }
+
+    .auction_container .flex.items-center{
+        margin: auto;
+    }    
+}
+
+@media screen and (max-width:767px){
+    .auction_header  h2{
+        text-align: center;
+    }
+    .auction_container .player-details{
+        flex-direction: column;
+    }
+
+    .auction_header form div.flex-col{
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .auction_header .inputblock {
+        gap: 10px;
+    }    
+}
+
+@media screen and (max-width:450px){
+    .auction_container .column{
+        width: 100%;
+    }
+    .auction_container .info-row {
+        width: 100%;
+        min-width: 100%;
+        text-align: center;
+    }
 }
 
 
@@ -1079,3 +1115,27 @@ select.inputbox.invalid,
 .dark .slider-arrow {
     background-color: #4d4d4d;
 }
+
+.ripple-btn{
+    position: relative;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: ripple-animation 0.6s linear;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes ripple-animation {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+}
+
+  .custom-table.view th{
+    text-align: left;
+    padding-left: 10px;
+  }

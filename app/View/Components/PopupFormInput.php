@@ -99,8 +99,9 @@ class PopupFormInput extends Component
                     */
                     break;
                 case "league_id":
+                    //->where('status', '1')
                     $this->firstOption = __('Select League');
-                    $items = League::select('id','league_name')->where('status', '1')->orderBy('league_name', 'ASC')->get();               
+                    $items = League::select('id','league_name')->orderBy('league_name', 'ASC')->get();               
                     foreach($items as $item){
                         $this->options[$item->id] = $item->league_name;
                     }

@@ -9,6 +9,31 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+document.addEventListener('click', function (e) {
+    const button = e.target.closest('.ripple-btn');
+    
+    if (button) {
+        e.preventDefault();
+        const rect = button.getBoundingClientRect();
+        const ripple = document.createElement('span');
+
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        ripple.className = 'ripple';
+
+        button.appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 600); // Match the animation duration
+    }
+});
+
 var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
 var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
@@ -472,14 +497,14 @@ function renderTableRows(rows, columns, page) {
         id = row.id;
 
         if (id <= 1 && rows.length <= 1) {
-            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}" disabled>delete</button>`;
+            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons ripple-btn" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
         } else {
-            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons" data-id="${id}" title="${lang.delete}">delete</button>`;
+            buttons['delete'] = `<button class="btn delete-btn delete-button ripple-btn" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
         }
 
-        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
-        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
+        buttons['edit'] = `<button class="btn edit-btn edit-button ripple-btn" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 ripple-btn" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 ripple-btn" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
 
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {

@@ -64,6 +64,14 @@ if (loginForm) {
                 alertElement.textContent = data.message;
                 alertElement.classList.add("alert-success");
 
+                // Get all keys matching the prefix 'team_transactions_data_'
+                const matchingKeys = Object.keys(localStorage).filter(key => 
+                    key.startsWith('team_transactions_data_')
+                );
+
+                //delete all matching keys:
+                matchingKeys.forEach(key => localStorage.removeItem(key));
+
                 localStorage.setItem('sanctum_token', data.access_token);
                 setTimeout(function () {
                     window.location = redirect_url;

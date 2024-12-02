@@ -76,7 +76,7 @@
             </div>            
             <table class="custom-table view"><tbody></tbody></table>
             <div class="flex justify-around mt-4">
-                <button class="popupCloseModel px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                <button class="popupCloseModel ripple-btn px-4 py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
                 {{ __('Close') }}
                 </button>
             </div>
@@ -114,7 +114,7 @@
                     </div>                   
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <div class="table-container" id="tableContainer">
+                        <div class="table-container hscorll" id="tableContainer">
                             <table class="custom-table">
                                 <thead id="table-head">
                                     <tr>

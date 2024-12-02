@@ -22,7 +22,7 @@
                     <div class="slider">
                         <div class="slider-track">
                             @foreach ($players as $player)
-                                <div class="slider-item">
+                                <div class="slider-item" data-id="{{ $player->id  }}">                                    
                                     <x-player-slide :player="$player" />
                                 </div>    
                             @endforeach                            
@@ -31,13 +31,21 @@
                             <div><button class="slider-arrow" id="prev">❮</button></div>
                             <div><button class="slider-arrow" id="next">❯</button></div>
                         </div>
-                    </div>
-                    
-                    
+                    </div>                    
 
-                    
+                    <div class="auction-form text-center mt-10">
+                        <form class="start_bidding" method="POST">
+                            <input type="hidden" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
+							<input type="hidden" name="players_id" id="players_id" value="">
+
+                            <button class="ripple-btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
+                                {{ __('Start Bidding') }}
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
     <script>

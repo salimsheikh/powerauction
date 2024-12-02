@@ -58,7 +58,7 @@
                     </div>                   
 
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                        <div class="table-container" id="tableContainer">
+                        <div class="table-container hscorll" id="tableContainer">
                             <table class="custom-table">
                                 <thead id="table-head">
                                     <tr>

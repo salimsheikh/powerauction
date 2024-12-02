@@ -10,8 +10,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalSlides = sliderItems.length;
 
     const updateSliderPosition = () => {
+
         const offset = -currentIndex * 100; // 100% per slide
         sliderTrack.style.transform = `translateX(${offset}%)`;
+
+        // Get data-id of the current slider-item
+        const currentSlide = sliderItems[currentIndex];
+        const dataId = currentSlide.getAttribute("data-id");
+        // console.log("Current Slide data-id:", dataId);
+        document.getElementById('players_id').value = dataId;
 
         // Show/Hide navigation buttons based on the current index
         prevButton.style.display = currentIndex === 0 ? "none" : "flex";
@@ -46,3 +53,13 @@ if (auction_category_id) {
     });
 }
 
+
+const start_bidding = document.getElementById('start_bidding');
+if(start_bidding){
+    start_bidding.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        
+
+    });
+}
