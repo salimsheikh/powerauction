@@ -45,7 +45,6 @@ class AuctionController extends Controller
     }
 
     public function setLeagueId(Request $requst, $id){
-
         
         // Step 1: Set a session value
         Session::put('league_id', $id);

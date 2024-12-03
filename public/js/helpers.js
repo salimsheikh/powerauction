@@ -13,7 +13,7 @@ document.addEventListener('click', function (e) {
     const button = e.target.closest('.ripple-btn');
     
     if (button) {
-        e.preventDefault();
+        // e.preventDefault();
         const rect = button.getBoundingClientRect();
         const ripple = document.createElement('span');
 

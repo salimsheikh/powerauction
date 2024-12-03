@@ -59,7 +59,62 @@ if(start_bidding){
     start_bidding.addEventListener('submit', function(e){
         e.preventDefault();
 
-        
+        console.log(formProcessing);
 
+        if (formProcessing) {
+            return false;
+        }
+
+        console.log(formProcessing);
+
+        // Get the current form
+        const currentForm = e.target;
+
+        // Get all input and textarea elements
+        const fields = currentForm.querySelectorAll("input, textarea, select");
+
+        const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+
+        let headers = get_ajax_header(true);
+        let formData = getFormData(fields);
+
+        submitButton.disabled = true; // Disable the button
+
+        showToast('This is an info message!', 'info');
+        
+        fetch(`${BASE_API_URL}/store`, {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+        }).then((response) => {
+            logConsole("response 1");
+            
+            
+            if (!response.ok) {
+                return response.json().then((error) => {
+                    throw error;
+                });
+            }
+
+            return response.json();
+        }).then((data) => {
+            logConsole("response 2");           
+            submitButton.disabled = false; // Disable the button
+
+            setTimeout(function () {
+                formProcessing = false;
+            }, 1500);
+
+        }).catch((error) => {
+            if (submitButton) {
+                setTimeout(function () {
+                    submitButton.disabled = false; // Disable the button
+                }, 1000);
+            }
+            formProcessing = false;
+            fatchResponseCatch(error, alertElement);
+        });
+
+        return false;
     });
 }

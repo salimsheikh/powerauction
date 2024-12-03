@@ -38,7 +38,7 @@
                             <input type="hidden" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
 							<input type="hidden" name="players_id" id="players_id" value="">
 
-                            <button class="ripple-btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
+                            <button type="submit" class="ripple--btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
                                 {{ __('Start Bidding') }}
                             </button>
                         </form>
@@ -49,8 +49,8 @@
         </div>
     </div>
     <script>
-        const lang = @json(getJSLang('category'));
-        const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
+        const lang = @json(getJSLang('bidding'));
+        const BASE_API_URL = "{{ url('/api/backend/bidding/') }}";
     </script>
     <script src="{{ asset('js/auction.js') }}"></script>
 </x-app-layout>
