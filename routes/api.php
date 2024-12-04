@@ -14,9 +14,10 @@ use App\Http\Controllers\Backend\Api\SponsorApiController;
 use App\Http\Controllers\Backend\Api\TeamApiController;
 use App\Http\Controllers\Backend\Api\TransactionController;
 use App\Http\Controllers\Backend\Api\BiddingApiController;
+use App\Http\Controllers\Backend\Api\TeamPlayerApiController;
 
 Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
-
+    
     Route::get('/categories', [CategoryApiController::class, 'index'])->name('category.api.index');
     Route::post('/categories/store', [CategoryApiController::class, 'store'])->name('category.api.store');
     Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit'])->name('category.api.edit');
@@ -50,6 +51,10 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::get('/sponsors/edit/{id}', [SponsorApiController::class, 'edit']);
     Route::post('/sponsors/{id}', [SponsorApiController::class, 'update']);
     Route::delete('/sponsors/{id}', [SponsorApiController::class, 'destroy']);
+
+    Route::get('/team/players', [TeamPlayerApiController::class, 'index']);
+    Route::post('/team/players/store', [TeamPlayerApiController::class, 'store']);
+    Route::delete('/team/players/{id}', [TeamPlayerApiController::class, 'destroy']);
 
     Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding']);
     //->name('bidding.api.start-bidding');

@@ -22,7 +22,9 @@ if (buttonPopupShowAddItemModel) {
 
         const focus_first = popupTargetModel.querySelector(".focus_first");
 
-        focus_first.focus();
+        if(focus_first){
+            focus_first.focus();
+        }        
 
         // Select the form by its ID
         const currentForm = document.getElementById('popupAddForm');

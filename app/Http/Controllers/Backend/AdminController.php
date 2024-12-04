@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
-    public function teamPlayers(){
-        return view('admin.team-players');
+    public function teamPlayers(Request $request, $id){
+        Session::put('view_team_id',$id);
+        return view('admin.team-players',['team_id'=>$id]);
     }
 
     public function categories(){

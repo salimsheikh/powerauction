@@ -304,7 +304,9 @@ function cleanForm(fields) {
         if (ft === "color") {
             field.value = '#000001';
         } else {
-            field.value = "";
+            if(ft != 'hidden'){
+                field.value = "";
+            }            
         }
     });
 }
@@ -417,10 +419,16 @@ async function fetchAndRender(page = 1) {
 
     url += tableSearch != "" ? "&query=" + encodeURIComponent(tableSearch) : "";
 
+    if (typeof master_id !== 'undefined') {
+        url += master_id != "" ? "&master_id=" + master_id : "";
+
+        console.log(url);
+    }
+
     const headers = get_ajax_header(false);
 
     // showToast(lang.please_wait, 'info');
-
+    
     const response = await fetch(url, {
         method: 'get',
         headers: headers
@@ -581,6 +589,12 @@ function renderTableRows(rows, columns, page) {
                     cell_value += buttons['booster'];
                     cell_value += buttons['edit'];
                     cell_value += buttons['delete'];
+                    cell_value += "</div>";
+                    break;
+                case "team_player_actions":
+                    cell_class += " actions";
+                    cell_value += "<div>";                    
+                    cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.delete}</button>`;
                     cell_value += "</div>";
                     break;
                 case "description":

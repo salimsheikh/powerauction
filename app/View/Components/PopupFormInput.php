@@ -11,6 +11,7 @@ use App\Models\Style;
 use App\Models\SponsorType;
 use App\Models\League;
 use App\Models\Plan;
+use App\Models\Player;
 
 class PopupFormInput extends Component
 {
@@ -106,11 +107,11 @@ class PopupFormInput extends Component
                         $this->options[$item->id] = $item->league_name;
                     }
                     break;
-                case "plan_type":
-                    $this->firstOption = __('Select plan');
-                    $items = Plan::select('id','name')->where('status', 'publish')->orderBy('order', 'ASC')->get();
+                case "player_id":
+                    $this->firstOption = __('Select player');
+                    $items = Player::select('id','player_name')->where('status', 'publish')->orderBy('player_name', 'ASC')->get();
                     foreach($items as $item){
-                        $this->options[$item->id] = $item->name;
+                        $this->options[$item->id] = $item->player_name;
                     }
                     break;
             }

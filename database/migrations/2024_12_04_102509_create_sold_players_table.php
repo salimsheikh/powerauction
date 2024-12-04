@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('team_id')->nullable();
             $table->unsignedBigInteger('league_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('sold_price', 200); // Required field
+            $table->decimal('sold_price', 10, 2)->default(0); // Sold price
             $table->timestamps();
 
             $table->foreign('league_id')->references('id')->on('league')->onDelete('restrict');

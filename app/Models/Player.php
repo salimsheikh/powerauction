@@ -113,5 +113,10 @@ class Player extends Model
     {
         return self::$styles[$this->style] ?? $this->style;
     }
+
+    public function soldPlayer()
+    {
+        return $this->hasOne(SoldPlayer::class, 'player_id', 'id');
+    }
     
 }
