@@ -12,7 +12,13 @@ class BidSession extends Model
 
     protected $table = 'bid_sessions';
 
-    protected $primaryKey = 'session_id';
+    protected $primaryKey = 'id';
+    
+    public $incrementing = true; // Ensure auto-incrementing
+
+    protected $keyType = 'int'; // Ensure the primary key type matches your database
+
+    public $timestamps = true;
 
     protected $fillable = [
         'league_id',

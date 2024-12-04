@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentSlide = sliderItems[currentIndex];
         const dataId = currentSlide.getAttribute("data-id");
         // console.log("Current Slide data-id:", dataId);
-        document.getElementById('players_id').value = dataId;
+        document.getElementById('player_id').value = dataId;
 
         // Show/Hide navigation buttons based on the current index
         prevButton.style.display = currentIndex === 0 ? "none" : "flex";
@@ -80,39 +80,45 @@ if(start_bidding){
 
         submitButton.disabled = true; // Disable the button
 
-        showToast('This is an info message!', 'info');
+        showToast(lang.please_wait, 'info');
         
-        fetch(`${BASE_API_URL}/store`, {
+        fetch(`${BASE_API_URL}/start-bidding`, {
             method: 'POST',
             headers: headers,
             body: formData,
         }).then((response) => {
             logConsole("response 1");
-            
-            
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
                 });
             }
-
             return response.json();
         }).then((data) => {
             logConsole("response 2");           
-            submitButton.disabled = false; // Disable the button
+            
+            showToast('Successfully Edited!', 'success');
 
-            setTimeout(function () {
-                formProcessing = false;
-            }, 1500);
+            if(data.bid_id > 0){
+                setTimeout(function() {
+                    if(data.url){
+                        window.location.href = data.url;
+                    }                    
+                    formProcessing = false;
+                }, 3000);
+            }
+
+            console.log(data);
 
         }).catch((error) => {
+            showToast('Cancelled', 'error');
+            console.log("response 3", error);        
             if (submitButton) {
                 setTimeout(function () {
                     submitButton.disabled = false; // Disable the button
                 }, 1000);
             }
             formProcessing = false;
-            fatchResponseCatch(error, alertElement);
         });
 
         return false;

@@ -10,17 +10,14 @@ use App\Http\Controllers\Backend\PlayerController;
 use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\SponsorController;
 use App\Http\Controllers\Backend\TeamController;
+use App\Http\Controllers\Backend\AdminController;
 
 Route::fallback(function () {
     $currentPath = request()->path();
-
-    dd($currentPath);
-
     // Check if the path starts with "admin"
     if (str_starts_with($currentPath, 'admin')) {
         return redirect()->route('dashboard');
     }
-
     // Return a 404 response for non-admin unmatched routes
     abort(404);
 });
@@ -48,20 +45,24 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-    Route::get("/players",[PlayerController::class, 'index'])->name('players.index');
-    Route::get("/teams",[TeamController::class, 'index'])->name('teams.index');
-    Route::get("/leagues",[LeagueController::class, 'index'])->name('leagues.index');
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
+    Route::get("/players",[AdminController::class, 'players'])->name('players.index');
+    Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index');
+    Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index');
+    Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index');
+    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index');    
     
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');
-
     Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
+    Route::get('/bidding/start/{id}', [AuctionController::class, 'started'])->name('bidding.started');
 
-    Route::get("/sponsors",[SponsorController::class, 'index'])->name('sponsors.index');
+    
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
+
+    
 });
 
 require __DIR__.'/auth.php';

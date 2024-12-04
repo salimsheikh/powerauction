@@ -6,13 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BidSession;
 use Carbon\Carbon;
+use Log;
 
 use Illuminate\Support\Facades\Auth;
 
 class BiddingApiController extends Controller
 {
-    public function start_bidding(Request $request){
-
+    public function startBidding(Request $request){
         $userId = Auth::id();
 
         $data = [];
@@ -23,20 +23,38 @@ class BiddingApiController extends Controller
         $data['status'] = 'active';
         $data['created_by'] = $userId;       
 
-        try {    
-                   
+        try {
+            $url = "";
             $result = BidSession::create($data);
+            if($result){
+                $newInsertId = $result->id;
 
-            return response()->json([
-                'success' => true,
-                'message' => __('Bid Session created successfully.'),
-                'data' => $formData,
-            ],201);
+                $url = route('bidding.started',$newInsertId);
+
+                Log::info($url);
+
+                return response()->json([
+                    'success' => true,
+                    'status' => 'success',
+                    'message' => __('Successfully Edited!.'),
+                    'data' => $data,
+                    'bid_id' => $result->id,
+                    'url' => $url,
+                ],201);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Bid Cancelled.'),
+                    'errors' => [
+                        'error' => [$e->getMessage()]
+                    ]
+                ], 409);
+            }
+            
         } catch (Exception $e) {
-
             return response()->json([
                 'success' => false,
-                'message' => __('Bid Session already exists.'),
+                'message' => __('Bid Cancelled.'),
                 'errors' => [
                     'error' => [$e->getMessage()]
                 ]

@@ -51,5 +51,6 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::post('/sponsors/{id}', [SponsorApiController::class, 'update']);
     Route::delete('/sponsors/{id}', [SponsorApiController::class, 'destroy']);
 
-    Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding'])->name('bidding.api.start-bidding');
+    Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding']);
+    //->name('bidding.api.start-bidding');
 });

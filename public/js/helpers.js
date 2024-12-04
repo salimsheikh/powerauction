@@ -497,14 +497,14 @@ function renderTableRows(rows, columns, page) {
         id = row.id;
 
         if (id <= 1 && rows.length <= 1) {
-            buttons['delete'] = `<button class="btn delete-btn delete-button material-icons ripple-btn" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
+            buttons['delete'] = `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
         } else {
-            buttons['delete'] = `<button class="btn delete-btn delete-button ripple-btn" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+            buttons['delete'] = `<button class="btn delete-btn delete-button r" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
         }
 
-        buttons['edit'] = `<button class="btn edit-btn edit-button ripple-btn" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
-        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 ripple-btn" data-id="${id}" title="${lang.view}">${lang.view}</button>`;
-        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 ripple-btn" data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
+        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 " data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
 
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
@@ -546,6 +546,10 @@ function renderTableRows(rows, columns, page) {
                             cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
                         }
                     }
+                    break;
+                case "team_players":
+                    let team_player_url = team_players.replace('#teamid#', id);
+                    cell_value = `<a href="${team_player_url}" class="btn view-btn view-team-button hover:bg-purple-800" title="${lang.view}">${lang.view}</a>`;
                     break;
                 case "league_actions":
                     buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
@@ -820,7 +824,7 @@ function showToast(message, type = 'info') {
         setTimeout(() => {
             toast.remove();
         }, 300);
-    }, 3000);
+    }, 1500);
 }
 
 /*

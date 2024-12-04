@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Lang;
 
 use App\Models\League;
 use App\Models\Player;
+use App\Models\BidSession;
 
 class AuctionController extends Controller
 {
@@ -44,7 +45,8 @@ class AuctionController extends Controller
         return view('admin.auction', compact('leagueName','players','leagueId','categoryId'));
     }
 
-    public function setLeagueId(Request $requst, $id){
+    public function setLeagueId(Request $requst, $id)
+    {
         
         // Step 1: Set a session value
         Session::put('league_id', $id);
@@ -59,5 +61,39 @@ class AuctionController extends Controller
 
         // Redirect to the route named 'auction.index'
         return redirect()->route('auction.index');
+    }
+
+    public function started(Request $request, $id){
+
+        $team_id = 0;
+        $session_id = $id;
+        $sessions = BidSession::select('status', 'end_time')->find($session_id);
+
+        $leagueId = Session::get('league_id');
+
+        $categoryId = Session::get('category_id');
+
+        if(empty($leagueId) || $leagueId <= 0){
+            return redirect()->route('leagues.index');
+        }
+
+        // Retrieve the league name by ID
+        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+
+        // Check if a category_id is provided in the query parameters
+        if ($request->isMethod('post') && $request->has('category_id')) {
+            Session::put('category_id', $request->category_id);
+            $categoryId = $request->category_id;
+        }
+        
+        if($categoryId > 0){
+            // Filter players by the selected category_id
+            $players = Player::with('category')->where('category_id', $categoryId)->get();
+        }else{
+            // If no category is selected, display all players
+            $players = Player::with('category')->get(); 
+        }   
+
+        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id'));
     }
 }
