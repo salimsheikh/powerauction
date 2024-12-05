@@ -436,9 +436,13 @@ async function fetchAndRender(page = 1) {
 
     const data = await response.json();
 
+    
+
     const columns = data.columns;
 
     const items = data.items;
+
+    console.log(items.data);
 
     renderTableHeader(columns);
 

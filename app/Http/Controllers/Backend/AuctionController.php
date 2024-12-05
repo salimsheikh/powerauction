@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Lang;
 use App\Models\League;
 use App\Models\Player;
 use App\Models\BidSession;
+use App\Models\UnsoldPlayer;
+use App\Models\Bid;
 
 class AuctionController extends Controller
 {
@@ -68,7 +70,7 @@ class AuctionController extends Controller
         $team_id = 0;
         $session_id = $id;
         $current_time =now();
-        $session = BidSession::select('id','league_id','start_time','end_time','status')->find($session_id);
+        $session = BidSession::select('id','league_id','player_id','start_time','end_time','status')->find($session_id);
         
         if(!$session){
             return redirect()->route('dashboard');
@@ -83,88 +85,89 @@ class AuctionController extends Controller
                 $league = League::find($league_id); // Find the record by ID
                 $league->increment('auction_view'); // Increment the column by 1
 
-                dd("case 1");
-            }else{
-                //$bid_data = $this->db->where('session_id', $para2)->order_by('amount', 'DESC')->limit(1)->get('bids')->row_array();
-              
-                $bid_data = \App\Models\Bid::where('session_id', $session_id)
-                ->orderBy('amount', 'DESC')
-                ->first(); // Use first() to get only the highest bid
-     
-                \Log::info($bid_data);
+                $player_data = Player::get();
+                $player_data = $player_data ? $player_data->toArray() : null;
 
-                
+               
+                $unsoldplayer = array_column($player_data, 'players_id');
+
+               
+
+
+               return $this->getBiddingPage($request);
+            }else{
+                $bid_data = Bid::where('session_id', $session_id)->orderBy('amount', 'DESC')->first(); // Use first() to get only the highest bid
 
                 if (!empty($bid_data)) {
-                    // Get bid session and player data
-                    $bid_session = BidSession::where('id',$bid_data->session_id)->toArray();                    
-                    \Log::info($bid_session);
-                    
-                    //$player_data = $this->db->select('category_id')->where('players_id', $bid_session['player_id'])->get('players')->row_array();
-                    // Prepare data for inserting into soldplayers table
-                    //$data = ['players_id' => $bid_session['player_id'], 'category_id' => $player_data['category_id'], 'teams_id' => $bid_data['team_id'], 'league_id' => $bid_session['league_id'], 'sold_price' => $bid_data['amount']];
-                    // Insert data into soldplayers table and check if successful
-                   // if ($this->db->insert('soldplayers', $data)) {
-                        // Update bid_sessions status to 'closed'
-                        //$this->db->where('session_id', $bid_session['session_id'])->update('bid_sessions', ['status' => 'closed']);
-                        // Update bids table to set is_winner for the highest bid
-                        //$this->db->where('id', $bid_data['id'])->update('bids', ['is_winner' => 1]);
-                        // Prepare success response
-                       // $response = ['status' => 'success', 'message' => 'Successfully added the bid!'];
-                    //} else {
-                        // Prepare error response if insertion failed
-                       // $response = ['status' => 'error', 'message' => 'Cancelled'];
-                    //}
-                    // Return response as JSON
-                    //redirect(base_url('index.php/admin/bidding'));
-                } else {
-                    // If no bid data found, handle as unsold
-                    // Get bid session and player data
+                    $session_id = $bid_data->session_id;
+                    $player_id = $bid_data->player_id;
 
+                    // Get bid session and player data
                     $bid_session = BidSession::where('id',$session_id)->first();                   
                     $bid_session = $bid_session ? $bid_session->toArray() : null;
-                    $player_id = $bid_session != null ? $bid_session['player_id'] : 0;
+                    $player_id = $bid_session != null ? $bid_session['player_id'] : 0;                    
 
                     $player_data = Player::select('category_id')->where('id',$player_id)->first();
                     $player_data = $player_data ? $player_data->toArray() : null;
-                    $categoryId = $player_data != null ? $player_data['category_id'] : 0;
+                    $category_id = $player_data != null ? $player_data['category_id'] : 0;                    
                     
-                    
-                    $result = Unsold::create(['players_id' => $player_id, 'category_id' => $categoryId]);
+                    $data = ['players_id' => $bid_session['player_id'], 'category_id' => $player_data['category_id'], 'teams_id' => $bid_data['team_id'], 'league_id' => $bid_session['league_id'], 'sold_price' => $bid_data['amount']];
+                    $result = SoldPlayer::create($data);
+                    if($result){
+                        // Update bid_sessions status to 'closed'
+                        $updateBidSession = BidSession::find($bid_session['session_id']);
+                        $updateBidSession->update(['status' => 'closed']);
 
-                    dd($player_data);
+                        // Update bids table to set is_winner for the highest bid
+                        $updateBid = Bid::find($bid_session['session_id']);
+                        $updateBid->update(['is_winner' => 1]);
 
-                   
-                    
-                    // Prepare data for inserting into unsold table
-                   // $data = ['players_id' => $bid_session['player_id'], 'category_id' => $player_data['category_id']];
-                    // Insert data into unsold table and check if successful
-                   // if ($this->db->insert('unsold', $data)) {
-                        //$this->db->where('session_id', $bid_session['session_id'])->update('bid_sessions', ['status' => 'closed']);
                         // Prepare success response
-                       // $response = ['status' => 'success', 'message' => 'Successfully added the bid!'];
-                  //  } else {
+                        $response = ['status' => 'success', 'message' => 'Successfully added the bid!'];
+                    }else {
                         // Prepare error response if insertion failed
-                        //$response = ['status' => 'error', 'message' => 'Cancelled'];
-                    //}
-                    // Return response as JSON
-                    //redirect(base_url('index.php/admin/bidding'));
-                }
-            }
-        }
+                        $response = ['status' => 'error', 'message' => 'Cancelled'];
+                    }
+                } else {
 
-        echo "<br>";
-        echo $session->end_time;
-        echo "<br>";
-        echo $session->status;
-        echo "<br>";
-        echo json_encode($session);
-        die;
-       
-        
+                    // Get bid session and player data
+                    $bid_session = BidSession::where('id',$session_id)->first();                   
+                    $bid_session = $bid_session ? $bid_session->toArray() : null;
+                    $player_id = $bid_session != null ? $bid_session['player_id'] : 0;                    
+
+                    $player_data = Player::select('category_id')->where('id',$player_id)->first();
+                    $player_data = $player_data ? $player_data->toArray() : null;
+                    $category_id = $player_data != null ? $player_data['category_id'] : 0;    
+                    // If no bid data found, handle as unsold
+                    // Get bid session and player data
+
+                    $data = ['player_id' => $player_id, 'category_id' => $category_id];
+
+                     // Insert data into unsold table and check if successful
+                    $result = UnsoldPlayer::create($data);
+                    if($result){
+                        $bidSessionObj = BidSession::find($session_id);
+                        $bidSessionObj->update(['status' => 'closed']);
+                        $response = ['status' => 'success', 'message' => 'Successfully added the bid!'];
+                    } else {
+                        // Prepare error response if insertion failed
+                        $response = ['status' => 'error', 'message' => 'Cancelled'];
+                    }
+                }
+                return redirect()->route('admin.bidding');
+            }            
+        }
+        return redirect()->route('dashboard');
+    }
+
+    function getBiddingPage($request){
         $leagueId = Session::get('league_id');
 
         $categoryId = Session::get('category_id');
+
+        $session_id = Session::get('session_id');
+
+        $team_id = Session::get('team_id');
 
         if(empty($leagueId) || $leagueId <= 0){
             return redirect()->route('leagues.index');
@@ -188,5 +191,10 @@ class AuctionController extends Controller
         }   
 
         return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id'));
+    }
+
+    function biddingList(){
+        return view('admin.bidding');
+
     }
 }

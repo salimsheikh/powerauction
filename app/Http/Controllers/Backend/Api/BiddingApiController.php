@@ -6,18 +6,70 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BidSession;
 use Carbon\Carbon;
-use Log;
 
 use Illuminate\Support\Facades\Auth;
 
 class BiddingApiController extends Controller
 {
+    public function index(Request $request){
+        // Get the search query from the request
+        $query = $request->input('query', '');        
+
+        // Start the query builder for the Category model
+        $itemQuery = BidSession::query()->with(['league','players']);
+
+        // If there is a search query, apply the filters
+        if ($query) {
+            $itemQuery->where(function ($queryBuilder) use ($query) {
+
+                $queryBuilder->where('start_time', 'like', '%' . $query . '%')
+                    ->orWhere('end_time', 'like', '%' . $query . '%')
+                    ->orWhere('status', 'like', '%' . $query . '%');
+
+                $queryBuilder->orWhereHas('league', function ($subQuery) use ($query) {
+                    $subQuery->where('league_name', 'like', '%' . $query . '%');
+                });
+
+                $queryBuilder->orWhereHas('players', function ($subQuery) use ($query) {
+                    $subQuery->where('player_name', 'like', '%' . $query . '%');
+                });
+            });
+        }
+
+        // $itemQuery->where('status', 'publish');
+
+        // Order by category_name in ascending order
+        $itemQuery->orderBy('created_at', 'desc');
+
+        // Paginate the results
+        $items = $itemQuery->paginate(10);
+        
+    
+        foreach($items as $key => $item){
+            $items[$key]->league_name = $item->league?->league_name;
+            $items[$key]->player_name = $item->players?->player_name;
+
+            $items[$key]->formatted_start_time = $item->formatted_start_time;
+            $items[$key]->formatted_end_time = $item->formatted_end_time;      
+            $items[$key]->formatted_status = "";
+            
+            
+        }
+
+        $columns = $this->get_columns();
+
+        // Return the columns and items data in JSON format
+        return response()->json([
+            'columns' => $columns,
+            'items' => $items
+        ]);
+    }
+
     public function startBidding(Request $request){
         $userId = Auth::id();
 
         $expire_minutes = intval(config('app.auction_expire_minutes', 2));
-        Log::info($expire_minutes);
-
+        
         $data = [];
         $data['league_id'] = $request->input('league_id');
         $data['player_id'] = $request->input('player_id');
@@ -61,5 +113,31 @@ class BiddingApiController extends Controller
                 ]
             ], 409);
         }
+    }
+
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        //$columns['id'] = __('ID');
+        $columns['sr'] = __('Sr.');
+        $columns['league_name'] = __('League Name');
+        $columns['player_name'] = __('Player Name');
+        $columns['formatted_start_time'] = __('Start Time');
+        $columns['formatted_end_time'] = __('End Time');
+        $columns['formatted_status'] = __('Status');
+        $columns['bid_actions'] = __('Actions');
+
+        return $columns;
+    }
+
+    private function get_response()
+    {
+        $res = [];
+        $res['success'] = false;
+        $res['message'] = false;
+        $res['errors'] = false;
+        $res['statusCode'] = false;
+        return $res;
     }
 }
