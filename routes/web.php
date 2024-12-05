@@ -55,7 +55,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');
     Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
-    Route::get('/bidding/start/{id}', [AuctionController::class, 'started'])->name('bidding.started');
+    Route::get('/bidding/start/{id}', [AuctionController::class, 'biddingStart'])->name('bidding.started');
 
     
 

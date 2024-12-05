@@ -27,8 +27,6 @@ class TransactionController extends Controller
 
     public function index(Request $request, $team_id)
     {
-        Log::info($team_id);
-
         $data = $this->getList($team_id);
         return response()->json([
             'success' => true,
@@ -82,8 +80,6 @@ class TransactionController extends Controller
         
         $formData['status'] = $request->input('status', 'publish');
         $formData['created_by'] = Auth::id();
-
-        Log::info($formData);
 
         try{
 

@@ -58,8 +58,6 @@ class TeamPlayerApiController extends Controller
         // Paginate the results
         $items = $itemQuery->paginate(10);
 
-        \Log::info(print_r($items,true));
-
         foreach ($items as $item) {
             // Modify attributes as needed
             $item->category_name = ''; // Ensure this value is actually required
@@ -154,8 +152,6 @@ class TeamPlayerApiController extends Controller
     {
         $res = $this->get_response();
         
-        \Log::info($id);
-
         try {
             $item = SoldPlayer::findOrFail($id);
             $item->delete();

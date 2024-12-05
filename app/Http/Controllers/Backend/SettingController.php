@@ -34,15 +34,12 @@ class SettingController extends Controller
         // Loop through the settings array
         foreach ($validated['settings'] as $key => $value) {
 
-            \Log::info($key);
             // Update or Create the setting for each key-value pair
             Setting::updateOrCreate(
                 ['option_name' => $key],    // Search by option_name
                 ['option_value' => $value] // Update or insert option_value
             );
-        }
-
-        // return response()->json(['message' => 'Settings updated successfully!'], 200);
+        }        
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }

@@ -49,7 +49,7 @@ class CustomAuthController extends Controller
 
             // Return response
             return response()->json([
-                'message' => __('Login successfully, Redirecting to dashboard.'),
+                'message' => __('Login successful. Redirecting to the dashboard.'),
                 'access_token' => $token,
                 'token_type' => 'Bearer',
             ]);

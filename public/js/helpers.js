@@ -557,7 +557,7 @@ function renderTableRows(rows, columns, page) {
                     break;
                 case "team_players":
                     let team_player_url = team_players.replace('#teamid#', id);
-                    cell_value = `<a href="${team_player_url}" class="btn view-btn view-team-button hover:bg-purple-800" title="${lang.view}">${lang.view}</a>`;
+                    cell_value = `<a href="${team_player_url}" class="btn view-team-button hover:bg-purple-800 material-btn material-symbols-outlined"" title="${lang.view}">visibility</a>`;
                     break;
                 case "league_actions":
                     buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;

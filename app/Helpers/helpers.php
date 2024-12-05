@@ -70,3 +70,12 @@ if (!function_exists('getJSLang')) {
         return $lang;
     }
 }
+
+if(!function_exists('print_rd')){
+    function print_rd($ar){
+        print("<pre>");
+        print_r($ar);
+        print("</pre>");
+        die;
+    }    
+}

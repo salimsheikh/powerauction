@@ -67,6 +67,8 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'UTC'),
 
+    
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -123,6 +125,7 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'auction_expire_minutes' => env('AUCTION_EXPIRE_MINUTES',2),
     
 
 ];

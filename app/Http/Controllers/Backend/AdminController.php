@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
-    public function teamPlayers(Request $request, $id){
-        Session::put('view_team_id',$id);
-        return view('admin.team-players',['team_id'=>$id]);
+    public function teamPlayers(Request $request, $team_id){
+
+        $team = \App\Models\Team::find($team_id);        
+
+        Session::put('view_team_id',$team_id);
+        return view('admin.team-players',['team_id'=>$team_id, 'team_name' => $team->team_name]);
     }
 
     public function categories(){

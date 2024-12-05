@@ -106,9 +106,6 @@ class ImageUploadService
         // Check if the file exists and delete it
         if (File::exists($absolutePath)) {
             File::delete($absolutePath);
-            \Log::info("File deleted: " . $absolutePath);
-        } else {
-            \Log::info("File not found: " . $absolutePath);
         }
     }
 
