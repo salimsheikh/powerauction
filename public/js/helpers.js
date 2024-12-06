@@ -421,8 +421,6 @@ async function fetchAndRender(page = 1) {
 
     if (typeof master_id !== 'undefined') {
         url += master_id != "" ? "&master_id=" + master_id : "";
-
-        console.log(url);
     }
 
     const headers = get_ajax_header(false);
@@ -434,15 +432,11 @@ async function fetchAndRender(page = 1) {
         headers: headers
     });
 
-    const data = await response.json();
-
-    
+    const data = await response.json();    
 
     const columns = data.columns;
 
-    const items = data.items;
-
-    console.log(items.data);
+    const items = data.items;   
 
     renderTableHeader(columns);
 
@@ -870,5 +864,26 @@ function logConsole(...args) {
         }
     }
 }
+
+function disableSelectedPlayers(selectedPlayers, elem = 'player_id') {
+    const playerSelect = document.getElementById(elem); // Select element
+
+    // Reset all options to be enabled first
+    Array.from(playerSelect.options).forEach(option => {
+        option.disabled = false;
+    });
+
+    // Loop through and disable matching player IDs
+    Array.from(playerSelect.options).forEach(option => {
+        if (selectedPlayers.includes(parseInt(option.value))) {
+            option.disabled = true; // Disable the option
+        }
+    });
+}
+
+if (typeof player_ids !== 'undefined') {
+    disableSelectedPlayers(player_ids,'player_id')
+}
+
 
 //logConsole('Test message', { key: 'value' }, [1, 2, 3]);

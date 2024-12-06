@@ -14,6 +14,7 @@ use App\Models\Player;
 use App\Models\BidSession;
 use App\Models\UnsoldPlayer;
 use App\Models\Bid;
+use App\Models\SoldPlayer;
 
 class AuctionController extends Controller
 {
@@ -70,7 +71,15 @@ class AuctionController extends Controller
         $team_id = 0;
         $session_id = $id;
         $current_time =now();
+
+        $bid_session = BidSession::where('id',$session_id)->first();                   
+                    $bid_session = $bid_session ? $bid_session->toArray() : null;
+
         $session = BidSession::select('id','league_id','player_id','start_time','end_time','status')->find($session_id);
+        
+        $team_id = SoldPlayer::where(['league_id' => $session->league_id, 'player_id' => $session->player_id]);
+
+        print_rd($session->league_id);
         
         if(!$session){
             return redirect()->route('dashboard');
@@ -80,6 +89,8 @@ class AuctionController extends Controller
         $start_time = $session->start_time;
         $end_time = $session->end_time;
         $status = $session->status;
+
+        dd("1");
         if($status == 'active'){
             if($end_time >= $current_time){
                 $league = League::find($league_id); // Find the record by ID
@@ -87,14 +98,8 @@ class AuctionController extends Controller
 
                 $player_data = Player::get();
                 $player_data = $player_data ? $player_data->toArray() : null;
-
-               
                 $unsoldplayer = array_column($player_data, 'players_id');
-
-               
-
-
-               return $this->getBiddingPage($request);
+                return $this->getBiddingPage($request);
             }else{
                 $bid_data = Bid::where('session_id', $session_id)->orderBy('amount', 'DESC')->first(); // Use first() to get only the highest bid
 

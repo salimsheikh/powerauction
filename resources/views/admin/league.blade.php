@@ -91,5 +91,6 @@
         const BASE_API_URL = "{{ url('/api/backend/leagues/') }}";
         const image_url = "{{ url('/storage') }}";
         const set_league_id_url = "{{ route('set.league.id','#leagueid#')}}"
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

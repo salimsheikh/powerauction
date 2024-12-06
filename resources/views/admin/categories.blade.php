@@ -99,5 +99,6 @@
     <script>
         const lang = @json(getJSLang('category'));
         const BASE_API_URL = "{{ url('/api/backend/categories/') }}";
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

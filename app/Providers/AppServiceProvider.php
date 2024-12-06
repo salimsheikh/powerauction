@@ -6,6 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\RateLimiter;
 
+use Illuminate\Auth\Events\Login;
+use App\Listeners\LogUserLogin;
+use Illuminate\Support\Facades\Event;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -33,5 +37,13 @@ class AppServiceProvider extends ServiceProvider
                 return response()->json(['error' => 'Too many requests. Please wait.'], 429);
             });
         });
+
+        try {
+            // Register the listener for the Login event
+            Event::listen(Login::class, LogUserLogin::class);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Login event failed.'], 429);
+        }
+        
     }
 }

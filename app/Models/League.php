@@ -46,4 +46,12 @@ class League extends Model
         }
         parent::delete();
     }
+
+    public static function updateAuctionViewAmount(int $leagueId, int $auction_view): bool
+    {
+        $updated = self::where(['league_id' => $leagueId, 'status' => 1])
+                    ->update(['auction_view' => $auction_view]);
+
+        return $updated > 0; // Returns true if any row was updated
+    }
 }

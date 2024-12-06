@@ -65,6 +65,7 @@ class BiddingApiController extends Controller
         ]);
     }
 
+
     public function startBidding(Request $request){
         $userId = Auth::id();
 

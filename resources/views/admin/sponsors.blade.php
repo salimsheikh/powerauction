@@ -107,5 +107,6 @@
         const lang = @json(getJSLang('sponsor'));
         const BASE_API_URL = "{{ url('/api/backend/sponsors/') }}";
         const image_url = "{{ url('/storage') }}";
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

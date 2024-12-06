@@ -151,5 +151,6 @@
         const lang = @json(getJSLang('player'));
         const BASE_API_URL = "{{ url('/api/backend/players/') }}";
         const image_url = "{{ url('/storage') }}";
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

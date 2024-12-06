@@ -103,14 +103,16 @@ if (popupAddForm) {
             submitButton.disabled = true; // Disable the button
         }
 
-        const response = await fetch(`${BASE_API_URL}/store`, {
+        await fetch(`${BASE_API_URL}/store`, {
             method: 'POST',
             headers: headers,
             body: formData,
         }).then((response) => {
             logConsole("response 1");
+            
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
@@ -122,13 +124,28 @@ if (popupAddForm) {
             logConsole("response 2");
             alertElement.textContent = data.message;
             alertElement.classList.add("alert-success");
+            
+            /** Team player popup select dropdonw */
+            if (data?.team_player_ids) {
+                disableSelectedPlayers(data.team_player_ids,'player_id');
+            }
 
             cleanForm(fields);
 
             fetchAndRender(current_page);
 
             setTimeout(function () {
-                hideModal();
+
+                if(typeof autoCloseAddPopup !== undefined){
+                    if(autoCloseAddPopup){
+                        hideModal();    
+                    }else{                        
+                        alertElement.classList.add("alert-hidden");
+                        submitButton.disabled = false;
+                    }
+                }else{
+                    hideModal();
+                }
                 formProcessing = false;
             }, 1500);
         }).catch((error) => {
@@ -432,6 +449,7 @@ if (popupDeleteForm) {
             logConsole("response 1");
             //do not delete
             alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
+
             formProcessing = false;
 
             if (!response.ok) {
@@ -457,8 +475,14 @@ if (popupDeleteForm) {
 
             fetchAndRender(current_page);
 
+            if (data?.team_player_ids) {                
+                disableSelectedPlayers(data.team_player_ids,'player_id');
+            }
+
             setTimeout(function () {
+
                 hideModal();
+                
             }, 1000);
         }).catch((error) => {
             deleteButton.disabled = false;
@@ -832,18 +856,21 @@ document.getElementById('city').value = 'Nehru Nagar';
 document.getElementById('email').value = 'salimsheikh@gmail.com';
 */
 /*
-document.getElementById('sponsor_name').value = 'Salim Shaikh';
-document.getElementById('sponsor_description').value = 'batsman';
-document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
-document.getElementById('sponsor_type').value = 'gold';
+if(document.getElementById('sponsor_name')){
+    document.getElementById('sponsor_name').value = 'Salim Shaikh';
+    document.getElementById('sponsor_description').value = 'batsman';
+    document.getElementById('sponsor_website_url').value = 'right_hand_batsman';
+    document.getElementById('sponsor_type').value = 'gold';
+}
 */
 /*
-const sampleName = getRandomSample();logConsole(sampleName.randomNumber);
-document.getElementById('team_name').value = sampleName.team;
-document.getElementById('league_id').value = sampleName.randomNumber;
-document.getElementById('owner_name').value = sampleName.name;
-document.getElementById('owner_email').value = sampleName.email;
-document.getElementById('owner_phone').value = sampleName.mobile;
-document.getElementById('owner_password').value = '123';
+if(document.getElementById('team_name')){
+    const sampleName = getRandomSample();
+    document.getElementById('team_name').value = sampleName.team;
+    document.getElementById('league_id').value = sampleName.randomNumber;
+    document.getElementById('owner_name').value = sampleName.name;
+    document.getElementById('owner_email').value = sampleName.email;
+    document.getElementById('owner_phone').value = sampleName.mobile;
+    document.getElementById('owner_password').value = '123';
+}
 */
-

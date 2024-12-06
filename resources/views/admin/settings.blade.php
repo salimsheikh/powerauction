@@ -53,6 +53,7 @@
     <script>
         const lang = @json(getJSLang('settings'));
         const BASE_API_URL = "{{ url('/api/backend/settings/') }}";
+        const autoCloseAddPopup = true;
     </script>
     <script src="https://cdn.tiny.cloud/1/miguh24g9nnuc0d65gtvvur4r7p4lqyx0ut0s9prrzwlstsr/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     

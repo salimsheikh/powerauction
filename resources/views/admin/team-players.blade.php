@@ -87,5 +87,7 @@
         const BASE_API_URL = "{{ url('/api/backend/team/players/') }}";
         const image_url = "{{ url('/storage') }}";
         const master_id = "{{ $team_id }}";
+        const player_ids = @json($player_ids);
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

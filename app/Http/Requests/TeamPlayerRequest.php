@@ -5,6 +5,10 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use App\Models\Player;
+use App\Models\Team;
+use Illuminate\Support\Facades\Auth;
 
 class TeamPlayerRequest extends FormRequest
 {
@@ -24,25 +28,15 @@ class TeamPlayerRequest extends FormRequest
      * @return array
      */
     public function rules(): array
-    {
+    {       
+        $unique = Rule::unique('sold_players')->where(function ($query) {
+            return $query->where('player_id', $this->player_id)->where('team_id', $this->team_id);
+        });
+       
         $rules = [
-            'player_id' => 'required|integer',
-            'team_id' => 'required|integer'
-        ];
-
-        $update_id = $this->input('update_id', 0);
-
-        if ($this->isMethod('post')) {
-            // Rules for creating a player
-            if($update_id > 0){
-                $rules['player_id'] = 'required|integer';
-            }else{
-                $rules['player_id'] = 'required|integer';
-            }            
-        } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
-            // Rules for updating a player
-            $rules['player_id'] = 'required|integer';
-        }
+            'player_id' => ['required','integer',$unique],
+            'team_id' => ['required','integer']
+        ];        
 
         return $rules;
 
@@ -53,10 +47,30 @@ class TeamPlayerRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        // Set default value for 'status' if it's not provided
+        $player = Player::with('category')->find($this->player_id);
+
+        $team = Team::find($this->team_id);
+
+        if (!$player || !$team) {
+            $this->merge([
+                'invalid_player_or_team' => true,
+            ]);
+            return;
+        }
+
+        $category_id = $player->category->id ?? null;
+        $league_id = $team->league_id;
+        $baseprice = $player->category->base_price ?? 0;
+
+        // Calculate the adjusted base price
+        $baseprice = $baseprice > 0 ? $baseprice + ($baseprice / 2) : 0;
+
+        // Merge calculated fields into the request data
         $this->merge([
-            //'status' => $this->input('status', 'publish'), // Default to 'publish'
-        ]);
+            'category_id' => $category_id,
+            'league_id' => $league_id,
+            'sold_price' => $baseprice,
+        ]);       
     }
 
     /**
@@ -66,7 +80,9 @@ class TeamPlayerRequest extends FormRequest
      */
     public function messages(): array
     {
-        return [];
+        return [
+            'team_id.unique' => 'The selected player is exists.',
+        ];
     }
 
     /**

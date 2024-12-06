@@ -18,7 +18,7 @@
                             <x-popup-form-input type="select" id="auction_category_id" name="category_id" label="{{ __('Category Name:') }}" value="{{ $categoryId }}" />
                         </form>                        
                     </div>
-
+                    
                     <div class="slider">
                         <div class="slider-track">
                             @foreach ($players as $player)
@@ -56,6 +56,7 @@
     <script>
         const lang = @json(getJSLang('bidding'));
         const BASE_API_URL = "{{ url('/api/backend/bidding/') }}";
+        const autoCloseAddPopup = true;
     </script>
     <script src="{{ asset('js/auction.js') }}"></script>
 </x-app-layout>

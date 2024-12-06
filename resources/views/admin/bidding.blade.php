@@ -166,5 +166,6 @@
     <script>
         const lang = @json(getJSLang('bidding'));
         const BASE_API_URL = "{{ url('/api/backend/bidding/') }}";
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

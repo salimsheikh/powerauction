@@ -81,61 +81,18 @@ class TeamPlayerApiController extends Controller
     {
         $request->validated();
 
-        $formData = $request->all();
-        $formData['created_by'] = Auth::id();
-
-        $player_id = $request->input('player_id');
-        $team_id = $request->input('team_id');
-
         try {
-            // Check for duplicates
-            $duplicate = SoldPlayer::where('player_id', $player_id)
-                ->where('team_id', $team_id)
-                ->exists();
 
-            if ($duplicate) {
-                return response()->json([
-                    'success' => false,
-                    'message' => __('The player is already assigned to this team.'),
-                    'errors' => [
-                        'player_id' => [__('The player is already assigned to this team.')]
-                    ]
-                ], 409); // 409 Conflict HTTP status
-            }
-
-            // Fetch related data
-            $player = Player::with('category')->find($player_id);
-            $team = Team::find($team_id);
-
-            if (!$player || !$team) {
-                return response()->json([
-                    'success' => false,
-                    'message' => __('Invalid player or team.'),
-                    'errors' => [
-                        'player_id' => [__('Invalid player or team.')]
-                    ]
-                ], 422);
-            }
-
-            $category_id = $player->category->id ?? null;
-            $league_id = $team->league_id;
-            $baseprice = $player->category->base_price ?? 0;
-
-            $baseprice = $baseprice > 0 ? $baseprice + ($baseprice / 2) : 0;
-
-            $formData['player_id'] = $player_id;
-            $formData['team_id'] = $team_id;
-            $formData['category_id'] = $category_id;
-            $formData['league_id'] = $league_id;
-            $formData['sold_price'] = $baseprice;
-
+            $formData = $request->all();        
+                        
             // Create the new record
-            $soldPlayer = SoldPlayer::create($formData);
+            $soldPlayer = SoldPlayer::create($formData);            
 
             return response()->json([
                 'success' => true,
                 'message' => __('Player added successfully.'),
                 'data' => $soldPlayer,
+                'team_player_ids' => $this->getSelectedPlayers($request->team_id),
             ]);
         } catch (Exception $e) {
             return response()->json([
@@ -148,17 +105,27 @@ class TeamPlayerApiController extends Controller
         }
     }
 
+    function getSelectedPlayers($team_id){
+        return SoldPlayer::where('team_id', $team_id)->pluck('player_id')->toArray();
+    }
+
     public function destroy($id)
     {
         $res = $this->get_response();
         
         try {
+            $team_id = SoldPlayer::where('id', $id)->value('team_id');
+
             $item = SoldPlayer::findOrFail($id);
+
             $item->delete();
-            $res['success'] = true;
-            $res['message'] = __('Player deleted successfully');
-            $res['statusCode'] = 201;
-            return jsonResponse($res);
+
+            return response()->json([
+                'success' => true,
+                'message' => __('Player deleted successfully.'),
+                'data' => '',
+                'team_player_ids' => $this->getSelectedPlayers($team_id),
+            ]);            
         } catch (ModelNotFoundException $e) {
             $res['errors'] = ['Team not found' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');

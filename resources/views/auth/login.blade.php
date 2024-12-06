@@ -47,5 +47,6 @@
     <script>
         const lang = @json(getJSLang('login'));
         const redirect_url = "{{ url('/admin/dashboard') }}";
+        const autoCloseAddPopup = true;
     </script>
 </x-guest-layout>

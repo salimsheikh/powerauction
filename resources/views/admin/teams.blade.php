@@ -175,6 +175,7 @@
         const TRANS_API_URL = "{{ url('/api/backend/transactions/') }}";
         const image_url = "{{ url('/storage') }}";
         const booster_plans = @json($plans);
-        const team_players = "{{ route('team.players.index','#teamid#') }}"
+        const team_players = "{{ route('team.players.index','#teamid#') }}";
+        const autoCloseAddPopup = false;
     </script>
 </x-app-layout>

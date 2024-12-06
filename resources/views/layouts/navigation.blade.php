@@ -11,7 +11,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -102,6 +102,29 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
+                {{ __('Category') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
+                {{ __('Players') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index') || request()->routeIs('team.players.index')">
+                {{ __('Teams') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
+                {{ __('Leagues') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
+                {{ __('Sponsors') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
+                {{ __('Biddings') }}
             </x-responsive-nav-link>
         </div>
 
