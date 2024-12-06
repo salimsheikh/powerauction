@@ -5,6 +5,7 @@ namespace App\Listeners;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Session;
 use App\Models\Team;
 
 class LogUserLogin
@@ -24,17 +25,15 @@ class LogUserLogin
     {
         // Get the authenticated user
         $user = $event->user;
+
         $user_id = $user->id;
 
         $team_id = Team::where('owner_id', $user_id)->value('id');
-        \Log::info($team_id);
 
-        // Log the user's team ID (assuming the user has a team_id field)
-        \Log::info('User logged in:', [
-            'user_id' => $user_id,
-            'team_id' => $team_id, // Assuming team_id exists
-            'session_id' => session()->getId(), // Log the session ID
-        ]);
+        $owner_team_id = $team_id > 0 ? $team_id : null;
         
+        Session::put('owner_team_id', $owner_team_id);
+
+        \Log::info("Owner team id: " . $owner_team_id);        
     }
 }

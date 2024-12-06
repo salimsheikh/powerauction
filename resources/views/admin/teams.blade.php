@@ -176,6 +176,6 @@
         const image_url = "{{ url('/storage') }}";
         const booster_plans = @json($plans);
         const team_players = "{{ route('team.players.index','#teamid#') }}";
-        const autoCloseAddPopup = false;
+        const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

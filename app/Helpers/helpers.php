@@ -51,6 +51,7 @@ if (!function_exists('getJSLang')) {
         $lang['auction'] = __("Auction");
         $lang['booster'] = __("Booster");        
         $lang['not_found'] = __('Item not found.');
+        $lang['remove'] = __("Remove");
 
         switch($page){
             case "category":

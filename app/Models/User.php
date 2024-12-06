@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 use Laravel\Sanctum\HasApiTokens;
 
@@ -52,5 +53,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class,'created_by');
+    }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class,'owner_id');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+
+            if ($user->teams()->exists()) {
+                throw new \Exception(__('Cannot delete user with associated team.'));
+            }
+
+            
+            if ($user->categories()->exists()) {
+                throw new \Exception(__('Cannot delete user with associated category.'));
+            }
+        });
     }
 }

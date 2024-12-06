@@ -9,12 +9,16 @@ use Illuminate\View\Component;
 class PopupDeleteItemModel extends Component
 {
     public $title = '';
+
+    public $buttonTitle = "";
     /**
      * Create a new component instance.
      */
-    public function __construct($title = '')
+    public function __construct($title = '', $buttonTitle = '')
     {
         $this->title = $title;
+
+        $this->buttonTitle = $buttonTitle == "" ? __('Delete') : $buttonTitle;
     }
 
     /**

@@ -592,7 +592,7 @@ function renderTableRows(rows, columns, page) {
                 case "team_player_actions":
                     cell_class += " actions";
                     cell_value += "<div>";                    
-                    cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.delete}</button>`;
+                    cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.remove}</button>`;
                     cell_value += "</div>";
                     break;
                 case "description":

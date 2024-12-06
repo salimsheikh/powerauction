@@ -17,7 +17,7 @@
                         </x-button-popup-close>
 
                         <x-button-popup-delete class="ms-3">
-                            {{ __('Delete') }}
+                            {{ $buttonTitle }}
                         </x-button-popup-delete>
                     </div>
                 </form>

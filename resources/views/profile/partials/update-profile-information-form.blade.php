@@ -1,4 +1,10 @@
 <section>
+
+    @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
     <header>
         <h2 class="text-lg font-medium text-gray-900 dark:text-white">
             {{ __('Profile Information') }}

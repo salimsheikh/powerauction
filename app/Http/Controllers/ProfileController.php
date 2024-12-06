@@ -56,11 +56,16 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        $user = $request->user();       
+
+        try {
+            $user->delete();
+        } catch (\Throwable $th) {
+            //\Log::error('User delete error: ' . $th->getMessage());
+            return redirect()->route('profile.edit')->with('error', $th->getMessage());
+        }
 
         Auth::logout();
-
-        $user->delete();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

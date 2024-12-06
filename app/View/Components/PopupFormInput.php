@@ -114,6 +114,13 @@ class PopupFormInput extends Component
                         $this->options[$item->id] = $item->player_name;
                     }
                     break;
+                case "plan_type":
+                    $this->firstOption = __('Select Plan');
+                    $items = Plan::select('id','name')->where('status', 'publish')->orderBy('order', 'ASC')->get();
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->name;
+                    }
+                    break;
             }
         }
 
