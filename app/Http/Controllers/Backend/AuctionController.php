@@ -97,7 +97,7 @@ class AuctionController extends Controller
                 // $unsoldplayer = array_column($player_data, 'players_id');
 
                 $team_id = SoldPlayer::where(['league_id' => $league_id, 'player_id' => $player_id])->value('team_id');                
-                return $this->getBiddingPage($request,$player_id,$session_id);
+                return $this->getBiddingPage($request,$player_id,$session_id,$start_time,$end_time);
             }else{
                 $bid_data = Bid::where('session_id', $session_id)->orderBy('amount', 'DESC')->first(); // Use first() to get only the highest bid
 
@@ -108,6 +108,9 @@ class AuctionController extends Controller
                     // Get bid session and player data
                     $bid_session = BidSession::where('id',$session_id)->first();                   
                     $bid_session = $bid_session ? $bid_session->toArray() : null;
+
+                    \Log::info(print_r($bid_session,true));
+
                     $player_id = $bid_session != null ? $bid_session['player_id'] : 0;                    
 
                     $player_data = Player::select('category_id')->where('id',$player_id)->first();
@@ -117,8 +120,9 @@ class AuctionController extends Controller
                     $data = ['players_id' => $bid_session['player_id'], 'category_id' => $player_data['category_id'], 'teams_id' => $bid_data['team_id'], 'league_id' => $bid_session['league_id'], 'sold_price' => $bid_data['amount']];
                     $result = SoldPlayer::create($data);
                     if($result){
+                        $ssid = isset($bid_session['session_id']) ? $bid_session['session_id'] : $session_id;
                         // Update bid_sessions status to 'closed'
-                        $updateBidSession = BidSession::find($bid_session['session_id']);
+                        $updateBidSession = BidSession::find($ssid);
                         $updateBidSession->update(['status' => 'closed']);
 
                         // Update bids table to set is_winner for the highest bid
@@ -163,7 +167,7 @@ class AuctionController extends Controller
         return redirect()->route('dashboard');
     }
 
-    function getBiddingPage($request, $player_id = 0, $session_id = 0){
+    function getBiddingPage($request, $player_id = 0, $session_id = 0,$sessionStartTime = '',$sessionEndTime = ''){
 
         $leagueId = Session::get('league_id');
 
@@ -197,7 +201,9 @@ class AuctionController extends Controller
         
         $players = $players->get();
 
-        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id','player_id'));
+        $serverTime = now();
+
+        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id','player_id','sessionStartTime','sessionEndTime','serverTime'));
     }
 
     function biddingList(){

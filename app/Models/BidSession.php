@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class BidSession extends Model
 {
@@ -61,6 +62,25 @@ class BidSession extends Model
 
     public function getFormattedStatusAttribute(){
         return  Str::headline($this->attributes['status']);
+    }
+
+    /**
+     * Get player data based on the session ID.
+     *
+     * @param int $sessionId
+     * @return array|null
+     */
+    public static function getPlayerDataBySession(int $sessionId): ?array
+    {
+        $playerData = DB::table('bid_sessions as s')
+            ->select('s.player_id', 'p.category_id', 'c.base_price')
+            ->where('s.id', $sessionId)
+            ->join('players as p', 'p.id', '=', 's.player_id')
+            ->join('categories as c', 'c.id', '=', 'p.category_id')
+            ->first();
+
+        // Convert the result to an array and return, or return null if no data found
+        return $playerData ? (array) $playerData : null;
     }
 
 }

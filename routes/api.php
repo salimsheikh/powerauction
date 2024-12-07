@@ -56,9 +56,8 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::post('/team/players/store', [TeamPlayerApiController::class, 'store']);
     Route::delete('/team/players/{id}', [TeamPlayerApiController::class, 'destroy']);
 
-    Route::get('/bidding', [BiddingApiController::class, 'index']);
-    Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding']);
-    Route::post('/bidding/bid', [BiddingApiController::class, 'bid']);
-    
-    //->name('bidding.api.start-bidding');
+    Route::get('/bidding', [BiddingApiController::class, 'index'])->name('admin.bidding.index');
+    Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding'])->name('admin.bidding.start-bidding');
+    Route::post('/bidding/bid', [BiddingApiController::class, 'bid'])->name('admin.bidding.bid');
+    Route::post('/bidding/bid-win/{id}', [BiddingApiController::class, 'bidWin'])->name('admin.bidding.bid-win');
 });

@@ -163,4 +163,157 @@ if(startBiddingForm){
     });
 }
 
+function win_Check(){
+    var base__url = bidWinURL;
+    var bid_id = bidID;
 
+    $.ajax({
+        url: base__url + 'index.php/admin/bidding/bid-win/' + bid_id, // The action URL from the form
+        type: $(this).attr('method'), // The method type from the form
+        data: $(this).serialize(), // Serialize form data
+        dataType: 'json', // Expect a JSON response
+        success: function(response) {
+            // Clear any previous alerts
+            $('#scroll-top').next('#floating-top-right').remove();
+
+
+            // Check if the response status is success or error
+            if (response.status === 'success') {
+                // Success alert
+                var successAlert = `
+                    <div id="floating-top-right" class="floating-container">
+                        <div class="alert-wrap in animated fadeIn">
+                            <div class="alert alert-success" role="alert">
+                                <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-check"></i></span>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="alert-title"></h4>
+                                        <p class="alert-message">Successfully Edited!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                $('#scroll-top').after(successAlert);
+
+                // Close button click event
+                $('.alert-success .close').click(function() {
+                    $(this).closest('#floating-top-right').remove();
+                });
+
+                setTimeout(function() {
+                    //window.location.href = base__url + 'index.php/admin/bidding';
+                }, 3000);
+
+            } else {
+                // Error alert
+                var errorAlert = `
+                    <div id="floating-top-right" class="floating-container">
+                        <div class="alert-wrap in animated fadeIn">
+                            <div class="alert alert-danger" role="alert">
+                                <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
+                                <div class="media">
+                                    <div class="media-left">
+                                        <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-minus"></i></span>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="alert-title"></h4>
+                                        <p class="alert-message">Cancelled 3</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                $('#scroll-top').after(errorAlert);
+
+                // Close button click event
+                $('.alert-danger .close').click(function() {
+                    $(this).closest('#floating-top-right').remove();
+                });
+
+            }
+
+
+        },
+        error: function(xhr, status, error) {
+            // Clear any previous alerts
+            $('#scroll-top').next('#floating-top-right').remove();
+
+            // Error alert
+            var errorAlert = `
+                <div id="floating-top-right" class="floating-container">
+                    <div class="alert-wrap in animated fadeIn">
+                        <div class="alert alert-danger" role="alert">
+                            <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
+                            <div class="media">
+                                <div class="media-left">
+                                    <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-minus"></i></span>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="alert-title"></h4>
+                                    <p class="alert-message">Cancelled 4 </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            $('#scroll-top').after(errorAlert);
+
+            // Close button click event
+            $('.alert-danger .close').click(function() {
+                $(this).closest('#floating-top-right').remove();
+            });
+        }
+    });
+}
+
+function updateTimer() {
+    const now = new Date(serverTime).getTime();
+    const remainingMs = endTimeMs - now;    
+
+    if (remainingMs <= 0) {
+        document.getElementById("timer").innerHTML = "00:00";
+        clearInterval(timerInterval);
+        // alert("Time is up!");  
+        win_Check(); 
+    } else {
+        const remainingMinutes = Math.floor(remainingMs / 60000);
+        const remainingSeconds = Math.floor((remainingMs % 60000) / 1000);
+        document.getElementById("timer").innerHTML =
+            (remainingMinutes < 10 ? "0" : "") + remainingMinutes + ":" +
+            (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
+
+            console.log(remainingSeconds);
+    }
+}
+
+// Function to start the timer
+function startTimer(startTime, endTime) {
+
+    console.log(startTime);
+    console.log(endTime);
+
+    startTimeMs = new Date(startTime).getTime();
+    endTimeMs = new Date(endTime).getTime();  
+    
+    console.log(startTimeMs);
+    console.log(endTimeMs);
+
+    // Update the timer every second
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // Initial call to display immediately
+}
+
+// Define the start time and duration
+let startTimeMs = 0;
+let endTimeMs = 0;
+let timerInterval = null;
+let durationMs = 0;
+
+// Start the timer
+if(document.getElementById("timer")){
+    startTimer(sessionStartTime, sessionEndTime);
+}

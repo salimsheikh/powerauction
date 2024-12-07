@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\BidSession;
 use Carbon\Carbon;
 
-use App\Models\Team;
+use App\Models\Bid;
+use App\Models\BidSession;
 use App\Models\SoldPlayer;
+use App\Models\Team;
+
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -124,6 +126,7 @@ class BiddingApiController extends Controller
 
         $team_id = $request->input('team_id');
         $session_id = $request->input('session_id');
+        $returnData  = [];
         if($team_id > 0){
             $team_point = Team::select('virtual_point')->where('id', $team_id)->first();
             $team_point = $team_point ? $team_point->toArray() : 0;
@@ -142,10 +145,10 @@ class BiddingApiController extends Controller
             $enter_amount = $request->input('amount');
             $enter_amount = $enter_amount == "" ? 0 : intval($enter_amount); 
 
-            \Log::info("virtual_point:- {$virtual_point}");
-            \Log::info("purchased_point:- {$purchased_point}");
-            \Log::info("remaining_point:- {$remaining_point}");
-            \Log::info("enter_amount:- {$enter_amount}");
+            $returnData['virtual_point'] = $virtual_point;
+            $returnData['purchased_point'] = $purchased_point;
+            $returnData['remaining_point'] = $remaining_point;
+            $returnData['enter_amount'] = $enter_amount;
 
             // Check if the remaining points are greater than or equal to the amount specified in the post request
             if ($remaining_point < (int)$enter_amount) {
@@ -154,6 +157,7 @@ class BiddingApiController extends Controller
                     'status' => 'error',
                     'message' => __('Cancelled 1.'),
                     'logic' => 1,
+                    'returnData' => $returnData,
                     'errors' => [
                         'error' => [__('Cancelled.')]
                     ]
@@ -167,55 +171,54 @@ class BiddingApiController extends Controller
                     'status' => 'error',
                     'message' => __('Cancelled 2.'),
                     'logic' => 2,
+                    'returnData' => $returnData,
                     'errors' => [
                         'error' => [__('Cancelled.')]
                     ]
                 ], 409);
             }
 
-            $playerData = DB::table('bid_sessions as s')
-            ->select('s.player_id', 'p.category_id', 'c.base_price')
-            ->where('s.id',  $session_id)
-            ->join('players as p', 'p.id', '=', 's.player_id')
-            ->join('categories as c', 'c.id', '=', 'p.category_id')
-            ->first();
+            $playerData = BidSession::getPlayerDataBySession((int) $session_id);
+            $base_price = isset($playerData['base_price']) ? $playerData['base_price'] : 0;
 
-            \Log::info(print_r($playerData,true));
+            $returnData['base_price'] = $base_price;
+                        
+            if ($base_price > (int)$enter_amount) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => __('Cancelled 3.'),
+                    'logic' => 3,
+                    'returnData' => $returnData,
+                    'errors' => [
+                        'error' => [__('Cancelled 3')]
+                    ]
+                ], 409);
+            }
 
-            $base_price = isset($player_data['base_price']) ? $player_data['base_price'] : 0;
+            $userId = Auth::id();
+            $data['session_id'] = $session_id;
+            $data['owner_id'] = $userId;
+            $data['team_id'] = $team_id;
+            $data['amount'] = $enter_amount;
+            $data['bid_time'] = now();
+            $result = Bid::Create($data);
 
-            //$player_data = $this->db->select('s.player_id, p.category_id, c.base_price')->from('bid_sessions as s')->where('s.session_id', $this->input->post('session_id'))->join('players as p', 'p.players_id = s.player_id')->join('category as c', 'c.category_id = p.category_id')->get()->row_array();
-            
+            if ($result) {
+                $id = $result->id;
+                $response = ['success' => true, 'status' => 'success', 'bid_id' => $id, 'message' => __('Successfully added the bid!'),'returnData' => $returnData];
+                return response()->json($response,201);
+            } else {
+                $response = ['success' => false, 'status' => 'error', 'message' => __('Cancelled 4'),'errors'=>[__('Cancelled 4')],'returnData' => $returnData];
+                return response()->json($response,409);
+            }            
         }       
 
         return response()->json([
-            'success' => true,
-            'status' => 'success',
-            'message' => __('Successfully Edited!.'),           
-        ],201);
-
-        /*
-        $player_data = $this->db->select('s.player_id, p.category_id, c.base_price')->from('bid_sessions as s')->where('s.session_id', $this->input->post('session_id'))->join('players as p', 'p.players_id = s.player_id')->join('category as c', 'c.category_id = p.category_id')->get()->row_array();
-        if ($player_data['base_price'] > (int)$this->input->post('amount')) {
-            $response = ['status' => 'error', 'message' => 'Cancelled 2'];
-            // Return response as JSON
-            echo json_encode($response);
-            exit();
-        }
-        $data['session_id'] = $this->input->post('session_id');
-        $data['owner_id'] = $this->session->userdata('admin_id');
-        $data['team_id'] = $this->input->post('team_id');
-        $data['amount'] = $this->input->post('amount');
-        $data['bid_time'] = date('Y-m-d H:i:s');
-        if ($this->db->insert('bids', $data)) {
-            $id = $this->db->insert_id();
-            $response = ['status' => 'success', 'bid_id' => $id, 'message' => 'Successfully added the bid!'];
-        } else {
-            $response = ['status' => 'error', 'message' => 'Cancelled 4'];
-        }
-        // Return the response as JSON
-        echo json_encode($response);
-        */
+            'success' => false,
+            'status' => 'error',
+            'message' => __('Cancelled, Team id not found'),           
+        ],409);
     }
 
     private function get_columns()

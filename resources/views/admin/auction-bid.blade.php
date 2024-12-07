@@ -34,6 +34,7 @@
                     </div>                    
 
                     <div class="auction-form text-center mt-10">
+                        <div class="timer" id="timer" style="font-size: 2rem; font-weight: bold; color: #fff;">00:00</div>
                         <form id="startBiddingForm" method="POST">
                             <input type="text" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
 							<input type="text" name="player_id" id="player_id" value="{{ $player_id }}">
@@ -57,6 +58,11 @@
         const lang = @json(getJSLang('bidding'));
         const BASE_API_URL = "{{ url('/api/backend/bidding/') }}";
         const autoCloseAddPopup = true;
+        const bidID = {{ $session_id }};
+        const bidWinURL = "{{ route('admin.bidding.bid-win',$session_id) }}";
+        const sessionStartTime = "{{ $sessionStartTime }}";
+        const sessionEndTime = "{{ $sessionEndTime }}";
+        const serverTime = "{{ $serverTime }}";
     </script>
     <script src="{{ asset('js/auction.js') }}"></script>
 </x-app-layout>
