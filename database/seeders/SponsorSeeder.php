@@ -21,6 +21,6 @@ class SponsorSeeder extends Seeder
             'status' => 'publish',
             'created_at' => now(),
             'updated_at' => now(),            
-    ]);
+        ]);
     }
 }

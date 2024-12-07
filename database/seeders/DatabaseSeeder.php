@@ -17,20 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //Category::factory(10)->create();
-        //Player::factory()->count(50)->create(); // Create 50 players
-
-
-        // Call your specific seeder
-        // $this->call(SettingsTableSeeder::class);
-        
-
+        // Call your specific seeders
         $this->call(CategorySeeder::class);
         $this->call(LeagueSeeder::class);
         $this->call(PlanSeeder::class);
         $this->call(PlayerSeeder::class);
         $this->call(SponsorTypeSeeder::class);
+        $this->call(SponsorSeeder::class);
         $this->call(StyleSeeder::class);
         $this->call(TeamSeeder::class);
+        $this->call(UserRolesSeeder::class);
     }
 }
