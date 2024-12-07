@@ -42,6 +42,12 @@
                         <x-input-error class="mt-2" :messages="$errors->get('settings.privacy_policy')" />
                     </div>
 
+                    <div class="mt-5">
+                        <x-input-label for="auction_expire_minutes" :value="__('Auction Expire Minutes')" />
+                        <x-text-input id="auction_expire_minutes" name="settings[auction_expire_minutes]" type="text" class="mt-1 block w-full" :value="old('auction_expire_minutes', $auction_expire_minutes)" autocomplete="auction_expire_minutes" />
+                        <x-input-error class="mt-2" :messages="$errors->get('settings.auction_expire_minutes')" />
+                    </div>
+
                     <div class="flex items-center gap-4 mt-3">
                         <x-primary-button>{{ __('Save') }}</x-primary-button>
                     </div>

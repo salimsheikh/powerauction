@@ -10,6 +10,8 @@ use Illuminate\Auth\Events\Login;
 use App\Listeners\LogUserLogin;
 use Illuminate\Support\Facades\Event;
 
+use App\Services\SettingsService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -17,7 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(SettingsService::class, function ($app) {
+            return new SettingsService();
+        });
     }
 
     /**
@@ -44,6 +48,8 @@ class AppServiceProvider extends ServiceProvider
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Login event failed.'], 429);
         }
+
+
         
     }
 }

@@ -75,7 +75,8 @@ class BiddingApiController extends Controller
     public function startBidding(Request $request){
         $userId = Auth::id();
 
-        $expire_minutes = intval(config('app.auction_expire_minutes', 2));
+        $expire_minutes = config('app.auction_expire_minutes', 2);
+        $expire_minutes = intval(setting('auction_expire_minutes', $expire_minutes));
         
         $data = [];
         $data['league_id'] = $request->input('league_id');

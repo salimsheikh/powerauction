@@ -271,13 +271,12 @@ function win_Check(){
 }
 
 function updateTimer() {
-    const now = new Date(serverTime).getTime();
-    const remainingMs = endTimeMs - now;    
+    serverTimeMs = serverTimeMs + 1000;
+    const remainingMs = endTimeMs - serverTimeMs;    
 
     if (remainingMs <= 0) {
         document.getElementById("timer").innerHTML = "00:00";
-        clearInterval(timerInterval);
-        // alert("Time is up!");  
+        clearInterval(timerInterval);        
         win_Check(); 
     } else {
         const remainingMinutes = Math.floor(remainingMs / 60000);
@@ -292,24 +291,17 @@ function updateTimer() {
 
 // Function to start the timer
 function startTimer(startTime, endTime) {
-
-    console.log(startTime);
-    console.log(endTime);
-
-    startTimeMs = new Date(startTime).getTime();
-    endTimeMs = new Date(endTime).getTime();  
+    serverTimeMs = new Date(serverTime).getTime();
+    endTimeMs = new Date(endTime).getTime();      
     
-    console.log(startTimeMs);
-    console.log(endTimeMs);
-
     // Update the timer every second
     timerInterval = setInterval(updateTimer, 1000);
     updateTimer(); // Initial call to display immediately
 }
 
 // Define the start time and duration
-let startTimeMs = 0;
 let endTimeMs = 0;
+let serverTimeMs = 0;
 let timerInterval = null;
 let durationMs = 0;
 

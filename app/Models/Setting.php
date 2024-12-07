@@ -13,4 +13,10 @@ class Setting extends Model
         'option_name',
         'option_value'
     ];
+
+    public function getAuctionExpireMinutes(){
+        $v = Setting::where('option_name', 'auction_expire_minutes')->value('option_value');
+        $v = $v == "" ? 2 : $v;
+        return $v;
+    }
 }
