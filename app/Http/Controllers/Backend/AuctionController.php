@@ -77,9 +77,7 @@ class AuctionController extends Controller
 
         $session = BidSession::select('id','league_id','player_id','start_time','end_time','status')->find($session_id);
         
-        $team_id = SoldPlayer::where(['league_id' => $session->league_id, 'player_id' => $session->player_id]);
-
-        print_rd($session->league_id);
+        $team_id = SoldPlayer::where(['league_id' => $session->league_id, 'player_id' => $session->player_id]);       
         
         if(!$session){
             return redirect()->route('dashboard');
@@ -89,8 +87,7 @@ class AuctionController extends Controller
         $start_time = $session->start_time;
         $end_time = $session->end_time;
         $status = $session->status;
-
-        dd("1");
+            
         if($status == 'active'){
             if($end_time >= $current_time){
                 $league = League::find($league_id); // Find the record by ID

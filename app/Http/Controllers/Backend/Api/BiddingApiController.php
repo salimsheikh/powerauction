@@ -116,6 +116,49 @@ class BiddingApiController extends Controller
         }
     }
 
+    function bid(){
+        /*
+        $team_point = $this->db->select('virtual_point')->where('teams_id', $this->input->post('team_id'))->get('teams')->row_array();
+        $purchased_point = $this->db->select_sum('sold_price')->where('teams_id', $this->input->post('team_id'))->get('soldplayers')->row()->sold_price;
+        $virtual_point = isset($team_point['virtual_point']) ? $team_point['virtual_point'] : 0;
+        $purchased_point2 = $this->db->select_sum('sold_price')->where('teams_id', $this->input->post('team_id'))->get('soldplayers')->row();
+        $remaining_point = $virtual_point - $purchased_point;
+        // Check if the remaining points are greater than or equal to the amount specified in the post request
+        if ($remaining_point < (int)$this->input->post('amount')) {
+            $response = ['status' => 'error', 'message' => 'Cancelled 1', 'purchased_point2' => print_r($purchased_point2, true), 'purchased_point' => $purchased_point, 'virtual_point' => $virtual_point, 'remaining_point' => $remaining_point, 'team_id' => print_r($_POST, true), 'amount' => $this->input->post('amount') ];
+            // Return response as JSON
+            echo json_encode($response);
+            exit();
+        }
+        if ($virtual_point < (int)$this->input->post('amount')) {
+            $response = ['status' => 'error', 'message' => 'Cancelled 2 php', 'purchased_point' => $purchased_point, 'virtual_point' => $virtual_point, 'remaining_point' => $remaining_point, 'amount' => $this->input->post('amount') ];
+            // Return response as JSON
+            echo json_encode($response);
+            exit();
+        }
+        $player_data = $this->db->select('s.player_id, p.category_id, c.base_price')->from('bid_sessions as s')->where('s.session_id', $this->input->post('session_id'))->join('players as p', 'p.players_id = s.player_id')->join('category as c', 'c.category_id = p.category_id')->get()->row_array();
+        if ($player_data['base_price'] > (int)$this->input->post('amount')) {
+            $response = ['status' => 'error', 'message' => 'Cancelled 2'];
+            // Return response as JSON
+            echo json_encode($response);
+            exit();
+        }
+        $data['session_id'] = $this->input->post('session_id');
+        $data['owner_id'] = $this->session->userdata('admin_id');
+        $data['team_id'] = $this->input->post('team_id');
+        $data['amount'] = $this->input->post('amount');
+        $data['bid_time'] = date('Y-m-d H:i:s');
+        if ($this->db->insert('bids', $data)) {
+            $id = $this->db->insert_id();
+            $response = ['status' => 'success', 'bid_id' => $id, 'message' => 'Successfully added the bid!'];
+        } else {
+            $response = ['status' => 'error', 'message' => 'Cancelled 4'];
+        }
+        // Return the response as JSON
+        echo json_encode($response);
+        */
+    }
+
     private function get_columns()
     {
         // Define column names (localized)

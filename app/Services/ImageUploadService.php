@@ -17,8 +17,11 @@ class ImageUploadService
      * @param  array $dimensions
      * @return array
      */
-    public function uploadImageWithThumbnail($uploadedFile, $path = 'players', $h = 80, $w = 80)
+    public function uploadImageWithThumbnail($uploadedFile, $path = 'players', $h = 80, $w = 80, $fn = "")
     {      
+        $w = $w == "" ? 80 : $w;
+        $h = $h == "" ? 80 : $h;    
+
         // Players Image Direcotry
         $playerImagePath = storage_path("app/public/{$path}/");
 
@@ -36,7 +39,7 @@ class ImageUploadService
         } 
 
         // Define the custom file name
-        $filename = Str::random(6) . '_' .time() . '.jpg';
+        $filename = $fn == "" ? Str::random(6) . '_' .time() . '.jpg' : $fn;
 
         /** Simple upload the file */
         //$imagePath = $uploadedFile->store('players', 'public');
@@ -54,14 +57,14 @@ class ImageUploadService
 
         // Resize and convert the image to JPG
         $thumbImage = Image::make($uploadedFile->getPathname())
-        ->resize($h*2, $w*2, function ($constraint) {
+        ->resize($h, $w, function ($constraint) {
             $constraint->aspectRatio(); // Maintain aspect ratio
             $constraint->upsize();     // Prevent upscaling
         })
         ->encode('jpg', 80); // Encode to JPG with 80% quality
 
         // Optionally crop the image to exactly 80x80
-        $thumbImage->crop($h, $w);
+        // $thumbImage->crop($h, $w);
 
         // Save the image to the specified path
         $thumbImage->save($thumbImagePath.$filename);

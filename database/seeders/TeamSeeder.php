@@ -91,7 +91,7 @@ class TeamSeeder extends Seeder
 
       
 
-        for($i = 1; $i<=10;$i++){
+        for($i = 100; $i<=10;$i++){
                 $email = "salim{$i}@gmail.com";
                 $insertedId = DB::table('users')->insertGetId([            
                         'name' => __('Salim Shaikh ' . $i),                

@@ -71,21 +71,26 @@ class SponsorApiController extends Controller
 
         $request->validated();
 
-        $formData = $request->all();        
-
-        if ($request->hasFile('sponsor_logo')) {
-            $uploadedFile = $request->file('sponsor_logo');               
-            $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors');
-            $formData['sponsor_logo'] = $filename;
-        }
+        $formData = $request->all();
 
         $formData['status'] = $request->input('status', 'publish');
-        $formData['created_by'] = Auth::id();       
+        $formData['created_by'] = Auth::id();
+
+        if ($request->hasFile('sponsor_logo')) {
+            //$id = $result->id;
+            $filename = "";
+            $uploadedFile = $request->file('sponsor_logo');
+            //$filename = "sponsor_{$id}.jpg";
+            $filename = "";
+            $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors','','',$filename);
+            $formData['sponsor_logo'] = $filename;
+            //$result->update(['sponsor_logo'=>$filename]);
+        }
 
         try{
 
             // Create a new record
-            $result = Sponsor::create($formData);           
+            $result = Sponsor::create($formData);
 
             return response()->json([
                 'success' => true,
@@ -156,9 +161,12 @@ class SponsorApiController extends Controller
                 
                 $uploadedFile = $request->file('sponsor_logo');
 
-                $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors');              
+                //$filename = "sponsor_{$id}.jpg"; 
+                $filename = ""; 
 
-                $formData['sponsor_logo'] = $filename;              
+                $filename = $this->imageService->uploadImageWithThumbnail($uploadedFile,'sponsors','','',$filename);              
+
+                $formData['sponsor_logo'] = $filename;
                
                 if($sponsor_logo){
                     $this->imageService->deleteMainFile($sponsor_logo,'sponsors');
