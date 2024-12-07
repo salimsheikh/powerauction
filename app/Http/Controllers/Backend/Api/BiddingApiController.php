@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\BidSession;
 use Carbon\Carbon;
 
+use App\Models\Team;
+use App\Models\SoldPlayer;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class BiddingApiController extends Controller
 {
@@ -116,26 +120,81 @@ class BiddingApiController extends Controller
         }
     }
 
-    function bid(){
+    function bid(Request $request){
+
+        $team_id = $request->input('team_id');
+        $session_id = $request->input('session_id');
+        if($team_id > 0){
+            $team_point = Team::select('virtual_point')->where('id', $team_id)->first();
+            $team_point = $team_point ? $team_point->toArray() : 0;
+
+            $virtual_point = isset($team_point['virtual_point']) ? $team_point['virtual_point'] : 0;
+
+            $purchased_point = SoldPlayer::where('team_id',$team_id)->first();
+            $purchased_point = $purchased_point ? $purchased_point->toArray() : 0;
+            
+            $purchased_point = isset($purchased_point['sold_price']) ? $purchased_point['sold_price'] : 0;
+
+            $purchased_point2 = SoldPlayer::where('team_id', $team_id)->sum('sold_price');
+
+            $remaining_point = $virtual_point - $purchased_point;
+            
+            $enter_amount = $request->input('amount');
+            $enter_amount = $enter_amount == "" ? 0 : intval($enter_amount); 
+
+            \Log::info("virtual_point:- {$virtual_point}");
+            \Log::info("purchased_point:- {$purchased_point}");
+            \Log::info("remaining_point:- {$remaining_point}");
+            \Log::info("enter_amount:- {$enter_amount}");
+
+            // Check if the remaining points are greater than or equal to the amount specified in the post request
+            if ($remaining_point < (int)$enter_amount) {
+                return response()->json([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => __('Cancelled 1.'),
+                    'logic' => 1,
+                    'errors' => [
+                        'error' => [__('Cancelled.')]
+                    ]
+                ], 409);
+            }
+
+            if ($virtual_point < (int)$enter_amount) {
+                // Return response as JSON
+                return response()->json([
+                    'success' => false,
+                    'status' => 'error',
+                    'message' => __('Cancelled 2.'),
+                    'logic' => 2,
+                    'errors' => [
+                        'error' => [__('Cancelled.')]
+                    ]
+                ], 409);
+            }
+
+            $playerData = DB::table('bid_sessions as s')
+            ->select('s.player_id', 'p.category_id', 'c.base_price')
+            ->where('s.id',  $session_id)
+            ->join('players as p', 'p.id', '=', 's.player_id')
+            ->join('categories as c', 'c.id', '=', 'p.category_id')
+            ->first();
+
+            \Log::info(print_r($playerData,true));
+
+            $base_price = isset($player_data['base_price']) ? $player_data['base_price'] : 0;
+
+            //$player_data = $this->db->select('s.player_id, p.category_id, c.base_price')->from('bid_sessions as s')->where('s.session_id', $this->input->post('session_id'))->join('players as p', 'p.players_id = s.player_id')->join('category as c', 'c.category_id = p.category_id')->get()->row_array();
+            
+        }       
+
+        return response()->json([
+            'success' => true,
+            'status' => 'success',
+            'message' => __('Successfully Edited!.'),           
+        ],201);
+
         /*
-        $team_point = $this->db->select('virtual_point')->where('teams_id', $this->input->post('team_id'))->get('teams')->row_array();
-        $purchased_point = $this->db->select_sum('sold_price')->where('teams_id', $this->input->post('team_id'))->get('soldplayers')->row()->sold_price;
-        $virtual_point = isset($team_point['virtual_point']) ? $team_point['virtual_point'] : 0;
-        $purchased_point2 = $this->db->select_sum('sold_price')->where('teams_id', $this->input->post('team_id'))->get('soldplayers')->row();
-        $remaining_point = $virtual_point - $purchased_point;
-        // Check if the remaining points are greater than or equal to the amount specified in the post request
-        if ($remaining_point < (int)$this->input->post('amount')) {
-            $response = ['status' => 'error', 'message' => 'Cancelled 1', 'purchased_point2' => print_r($purchased_point2, true), 'purchased_point' => $purchased_point, 'virtual_point' => $virtual_point, 'remaining_point' => $remaining_point, 'team_id' => print_r($_POST, true), 'amount' => $this->input->post('amount') ];
-            // Return response as JSON
-            echo json_encode($response);
-            exit();
-        }
-        if ($virtual_point < (int)$this->input->post('amount')) {
-            $response = ['status' => 'error', 'message' => 'Cancelled 2 php', 'purchased_point' => $purchased_point, 'virtual_point' => $virtual_point, 'remaining_point' => $remaining_point, 'amount' => $this->input->post('amount') ];
-            // Return response as JSON
-            echo json_encode($response);
-            exit();
-        }
         $player_data = $this->db->select('s.player_id, p.category_id, c.base_price')->from('bid_sessions as s')->where('s.session_id', $this->input->post('session_id'))->join('players as p', 'p.players_id = s.player_id')->join('category as c', 'c.category_id = p.category_id')->get()->row_array();
         if ($player_data['base_price'] > (int)$this->input->post('amount')) {
             $response = ['status' => 'error', 'message' => 'Cancelled 2'];

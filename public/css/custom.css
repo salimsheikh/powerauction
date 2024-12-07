@@ -936,6 +936,18 @@ select.inputbox.invalid,
     gap: 20px;
 }
 
+.no-slider .auction_container{
+    padding: 0;
+}
+
+.no-slider .slider-nav{
+    display: none;
+}
+
+.no-slider #form_auction_category{
+    display: none;
+}
+
 .image-container-wrap{
     display: flex;
     align-items: center;

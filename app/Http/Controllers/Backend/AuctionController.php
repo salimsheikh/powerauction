@@ -49,10 +49,10 @@ class AuctionController extends Controller
     }
 
     public function setLeagueId(Request $requst, $id)
-    {
-        
+    {   
         // Step 1: Set a session value
         Session::put('league_id', $id);
+
         Session::put('cat_id', '');
 
         // Step 2: Update all rows in the `leagues` table
@@ -71,32 +71,33 @@ class AuctionController extends Controller
         $team_id = 0;
         $session_id = $id;
         $current_time =now();
-
-        $bid_session = BidSession::where('id',$session_id)->first();                   
-                    $bid_session = $bid_session ? $bid_session->toArray() : null;
-
+                   
         $session = BidSession::select('id','league_id','player_id','start_time','end_time','status')->find($session_id);
-        
-        $team_id = SoldPlayer::where(['league_id' => $session->league_id, 'player_id' => $session->player_id]);       
         
         if(!$session){
             return redirect()->route('dashboard');
         }
 
+        $player_id = $session->player_id;
         $league_id = $session->league_id;
         $start_time = $session->start_time;
         $end_time = $session->end_time;
         $status = $session->status;
+
+        // Enable query log
+        //DB::enableQueryLog();
             
         if($status == 'active'){
             if($end_time >= $current_time){
                 $league = League::find($league_id); // Find the record by ID
                 $league->increment('auction_view'); // Increment the column by 1
 
-                $player_data = Player::get();
-                $player_data = $player_data ? $player_data->toArray() : null;
-                $unsoldplayer = array_column($player_data, 'players_id');
-                return $this->getBiddingPage($request);
+                // $player_data = Player::get();
+                // $player_data = $player_data ? $player_data->toArray() : null;
+                // $unsoldplayer = array_column($player_data, 'players_id');
+
+                $team_id = SoldPlayer::where(['league_id' => $league_id, 'player_id' => $player_id])->value('team_id');                
+                return $this->getBiddingPage($request,$player_id,$session_id);
             }else{
                 $bid_data = Bid::where('session_id', $session_id)->orderBy('amount', 'DESC')->first(); // Use first() to get only the highest bid
 
@@ -156,20 +157,19 @@ class AuctionController extends Controller
                         $response = ['status' => 'error', 'message' => 'Cancelled'];
                     }
                 }
-                return redirect()->route('admin.bidding');
+                return redirect()->route('bidding.index');
             }            
         }
         return redirect()->route('dashboard');
     }
 
-    function getBiddingPage($request){
+    function getBiddingPage($request, $player_id = 0, $session_id = 0){
+
         $leagueId = Session::get('league_id');
 
         $categoryId = Session::get('category_id');
 
-        $session_id = Session::get('session_id');
-
-        $team_id = Session::get('team_id');
+        $team_id = Session::get('owner_team_id');
 
         if(empty($leagueId) || $leagueId <= 0){
             return redirect()->route('leagues.index');
@@ -184,15 +184,20 @@ class AuctionController extends Controller
             $categoryId = $request->category_id;
         }
         
+        $players = Player::with('category');
+
         if($categoryId > 0){
             // Filter players by the selected category_id
-            $players = Player::with('category')->where('category_id', $categoryId)->get();
-        }else{
-            // If no category is selected, display all players
-            $players = Player::with('category')->get(); 
-        }   
+            $players->where('category_id', $categoryId);
+        }
 
-        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id'));
+        if($player_id > 0){
+            $players->where('id', $player_id);
+        }
+        
+        $players = $players->get();
+
+        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id','player_id'));
     }
 
     function biddingList(){

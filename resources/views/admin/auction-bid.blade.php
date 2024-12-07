@@ -8,7 +8,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="admin-page">
+            <div class="admin-page no-slider">
                 <div class="p-6 text-gray-900">
 
                     <div class="auction_header flex justify-between items-center mb-3 dark:text-white text-lg ">
@@ -34,14 +34,14 @@
                     </div>                    
 
                     <div class="auction-form text-center mt-10">
-                        <form id="start_bidding" method="POST">
-                            <input type="hidden" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
-							<input type="hidden" name="player_id" id="player_id" value="">
+                        <form id="startBiddingForm" method="POST">
+                            <input type="text" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
+							<input type="text" name="player_id" id="player_id" value="{{ $player_id }}">
 
-                            <input type="hidden" name="session_id" id="session_id" value="{{ $session_id }}">
-                            <input type="hidden" name="team_id" id="team_id" value="{{ $team_id }}">
+                            <input type="text" name="session_id" id="session_id" value="{{ $session_id }}">
+                            <input type="text" name="team_id" id="team_id" value="{{ $team_id }}">
 
-                            <input type="amount" name="player_id" id="player_id" value="">
+                            <input type="text" name="amount" id="amount" value="">
 
                             <button type="submit" class="ripple--btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
                                 {{ __('Start Bidding') }}

@@ -57,15 +57,11 @@ if (auction_category_id) {
 const start_bidding = document.getElementById('start_bidding');
 if(start_bidding){
     start_bidding.addEventListener('submit', function(e){
-        e.preventDefault();
-
-        console.log(formProcessing);
+        e.preventDefault();        
 
         if (formProcessing) {
             return false;
-        }
-
-        console.log(formProcessing);
+        }        
 
         // Get the current form
         const currentForm = e.target;
@@ -80,7 +76,7 @@ if(start_bidding){
 
         submitButton.disabled = true; // Disable the button
 
-        showToast(lang.please_wait, 'info');
+        showToast(lang.please_wait, 'info');        
         
         fetch(`${BASE_API_URL}/start-bidding`, {
             method: 'POST',
@@ -105,7 +101,7 @@ if(start_bidding){
                         window.location.href = data.url;
                     }                    
                     formProcessing = false;
-                }, 3000);
+                }, 500);
             }
 
             console.log(data);
@@ -124,3 +120,47 @@ if(start_bidding){
         return false;
     });
 }
+
+const startBiddingForm = document.getElementById('startBiddingForm');
+if(startBiddingForm){
+    startBiddingForm.addEventListener('submit', function(e){
+        e.preventDefault();        
+
+        if (formProcessing) {
+            return false;
+        }        
+
+        // Get the current form
+        const currentForm = e.target;
+
+        // Get all input and textarea elements
+        const fields = currentForm.querySelectorAll("input, textarea, select");
+
+        const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
+
+        let headers = get_ajax_header(true);
+        let formData = getFormData(fields);
+
+        submitButton.disabled = false; // Disable the button
+
+        showToast(lang.please_wait, 'info'); 
+
+        fetch(`${BASE_API_URL}/bid`, {
+            method: 'POST',
+            headers: headers,
+            body: formData,
+        }).then((response) => {
+            logConsole("response 1");
+            if (!response.ok) {
+                return response.json().then((error) => {
+                    throw error;
+                });
+            }
+            return response.json();
+        });
+
+        return false;
+    });
+}
+
+

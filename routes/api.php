@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
 
     Route::get('/bidding', [BiddingApiController::class, 'index']);
     Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding']);
+    Route::post('/bidding/bid', [BiddingApiController::class, 'bid']);
     
     //->name('bidding.api.start-bidding');
 });
