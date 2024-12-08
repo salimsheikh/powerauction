@@ -55,8 +55,10 @@ class TeamPlayerApiController extends Controller
         // Order by category_name in ascending order
         $itemQuery->orderBy('players.created_at', 'desc');
 
+        $list_per_page = intval(setting('list_per_page', 10));
+
         // Paginate the results
-        $items = $itemQuery->paginate(10);
+        $items = $itemQuery->paginate($list_per_page);
 
         foreach ($items as $item) {
             // Modify attributes as needed

@@ -48,6 +48,12 @@
                         <x-input-error class="mt-2" :messages="$errors->get('settings.auction_expire_minutes')" />
                     </div>
 
+                    <div class="mt-5">
+                        <x-input-label for="list_per_page" :value="__('List/Page')" />
+                        <x-text-input id="list_per_page" name="settings[list_per_page]" type="text" class="mt-1 block w-full" :value="old('list_per_page', $list_per_page)" autocomplete="list_per_page" />
+                        <x-input-error class="mt-2" :messages="$errors->get('settings.list_per_page')" />
+                    </div>
+
                     <div class="flex items-center gap-4 mt-3">
                         <x-primary-button>{{ __('Save') }}</x-primary-button>
                     </div>

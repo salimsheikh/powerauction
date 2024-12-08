@@ -32,11 +32,13 @@ class BiddingApiController extends Controller
 
         // Apply search filters if there is a search query
         if ($searchQuery) {
-            $query = self::applySearchFilters($query, $searchQuery);
+            $itemQuery = BidSession::applySearchFilters($itemQuery, $searchQuery);
         }
 
+        $list_per_page = intval(setting('list_per_page', 10));
+
         // Order and paginate results
-        $items = $itemQuery->orderBy('created_at', 'desc')->paginate(10);
+        $items = $itemQuery->orderBy('created_at', 'desc')->paginate($list_per_page);
 
         // Map items to include additional data
         $items->transform(function ($item) {

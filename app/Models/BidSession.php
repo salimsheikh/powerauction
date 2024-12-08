@@ -96,7 +96,7 @@ class BidSession extends Model
     }
 
     // Method to build and apply search filters
-    public static function applySearchFilters(Builder $query, string $searchQuery)
+    public static function applySearchFilters($query, string $searchQuery)
     {
         return $query->where(function ($query) use ($searchQuery) {
             $query->where('start_time', 'like', '%' . $searchQuery . '%')

@@ -66,8 +66,10 @@ class TeamApiController extends Controller
         $itemQuery->where('teams.status', 'publish')
             ->orderBy('teams.created_at', 'desc');
 
+        $list_per_page = intval(setting('list_per_page', 10));
+
         // Paginate the results
-        $items = $itemQuery->paginate(10);
+        $items = $itemQuery->paginate($list_per_page);
 
         foreach($items as $item){
             $item->league_name = '';            

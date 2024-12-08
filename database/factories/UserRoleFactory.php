@@ -18,7 +18,7 @@ class UserRoleFactory extends Factory
     {
         return [
             'slug' => $this->faker->unique()->slug,
-            'name' => $this->faker->word,
+            'name' => $this->faker->name,
             'permission' => json_encode(['view', 'edit', 'delete']), // Example permissions
             'description' => $this->faker->sentence,
             'created_by' => 1, // Default user ID
