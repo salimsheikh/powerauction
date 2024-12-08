@@ -11,7 +11,7 @@ document.addEventListener('keydown', (event) => {
 
 document.addEventListener('click', function (e) {
     const button = e.target.closest('.ripple-btn');
-    
+
     if (button) {
         // e.preventDefault();
         const rect = button.getBoundingClientRect();
@@ -304,9 +304,9 @@ function cleanForm(fields) {
         if (ft === "color") {
             field.value = '#000001';
         } else {
-            if(ft != 'hidden'){
+            if (ft != 'hidden') {
                 field.value = "";
-            }            
+            }
         }
     });
 }
@@ -426,17 +426,17 @@ async function fetchAndRender(page = 1) {
     const headers = get_ajax_header(false);
 
     // showToast(lang.please_wait, 'info');
-    
+
     const response = await fetch(url, {
         method: 'get',
         headers: headers
     });
 
-    const data = await response.json();    
+    const data = await response.json();
 
     const columns = data.columns;
 
-    const items = data.items;   
+    const items = data.items;
 
     renderTableHeader(columns);
 
@@ -449,7 +449,9 @@ async function fetchAndRender(page = 1) {
         document.querySelectorAll('span.color-code').forEach(setTextColorBasedOnBg);
     }
 
-    formProcessing = false;
+    if(typeof formProcessing !=  undefined){
+        formProcessing = false;
+    }
 }
 
 function renderTableHeader(columns) {
@@ -591,7 +593,7 @@ function renderTableRows(rows, columns, page) {
                     break;
                 case "team_player_actions":
                     cell_class += " actions";
-                    cell_value += "<div>";                    
+                    cell_value += "<div>";
                     cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.remove}</button>`;
                     cell_value += "</div>";
                     break;
@@ -654,9 +656,6 @@ function handlePagination(event, url) {
         fetchAndRender(page);
     }
 }
-
-// Initial load
-fetchAndRender(current_page);
 
 function setTextColorBasedOnBg(element) {
     // Get the background color
@@ -813,13 +812,24 @@ function getLocalStorage(StorageKey, stringify = false) {
 
 
 // Function to create toaster notifications
-function showToast(message, type = 'info') {
+function showToast(message, type = 'info', forceHide = false) {
     // Create a container if it doesn't exist
     let container = document.getElementById('toast-container');
     if (!container) {
         container = document.createElement('div');
         container.id = 'toast-container';
         document.body.appendChild(container);
+    }
+
+    if (forceHide) {
+        const childToRemove = container.querySelectorAll('.toast');
+
+        childToRemove.forEach((field) => {
+            field.classList.add('hide');
+            setTimeout(() => {
+                field.remove();
+            }, 300);
+        });
     }
 
     // Create a toast element
@@ -882,7 +892,7 @@ function disableSelectedPlayers(selectedPlayers, elem = 'player_id') {
 }
 
 if (typeof player_ids !== 'undefined') {
-    disableSelectedPlayers(player_ids,'player_id')
+    disableSelectedPlayers(player_ids, 'player_id')
 }
 
 

@@ -840,6 +840,10 @@ if (popupBoosterForm) {
     });
 }
 
+
+// Initial load
+fetchAndRender(current_page);
+
 /*
 document.getElementById('player_name').value = 'Salim Shaikh';
 document.getElementById('profile_type').value = 'men';

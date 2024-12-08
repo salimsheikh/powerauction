@@ -999,7 +999,6 @@ select.inputbox.invalid,
     text-align: center;
     font-weight: bold;
 }
-
 .auction_container .player-name {
     font-size: 22px;
     /* padding-left: 20px; */
@@ -1083,6 +1082,25 @@ select.inputbox.invalid,
         min-width: 100%;
         text-align: center;
     }
+}
+
+.auction-form{
+    display: flex;
+    justify-content: center;
+}
+
+.no-slider .auction-form{    
+    justify-content: space-between;
+}
+
+.timer{
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #555;
+}
+
+.dark .timer{
+    color: #fff;
 }
 
 /*
@@ -1189,3 +1207,18 @@ select.inputbox.invalid,
         font-size: 12px;
     }
 }
+
+.input-group {
+    display: flex;
+    align-items: center;
+}
+  
+.input-group .form-control {
+    flex: 1; /* The input takes up all available space */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px; /* Rounded left corners */
+}
+  
+  

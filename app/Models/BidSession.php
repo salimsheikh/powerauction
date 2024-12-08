@@ -83,4 +83,43 @@ class BidSession extends Model
         return $playerData ? (array) $playerData : null;
     }
 
+    /**
+     * Close expired sessions.
+     *
+     * @return int Number of records updated
+     */
+    public static function closeExpiredSessions(): int
+    {
+        return static::where('status', 'active')
+            ->where('end_time', '<=', now())
+            ->update(['status' => 'closed']);
+    }
+
+    // Method to build and apply search filters
+    public static function applySearchFilters(Builder $query, string $searchQuery)
+    {
+        return $query->where(function ($query) use ($searchQuery) {
+            $query->where('start_time', 'like', '%' . $searchQuery . '%')
+                ->orWhere('end_time', 'like', '%' . $searchQuery . '%')
+                ->orWhere('status', 'like', '%' . $searchQuery . '%')
+                ->orWhereHas('league', function ($leagueQuery) use ($searchQuery) {
+                    $leagueQuery->where('league_name', 'like', '%' . $searchQuery . '%');
+                })
+                ->orWhereHas('players', function ($playerQuery) use ($searchQuery) {
+                    $playerQuery->where('player_name', 'like', '%' . $searchQuery . '%');
+                });
+        });
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($bidSession) {
+            if ($bidSession->status === 'active' && $bidSession->end_time <= now()) {
+                $bidSession->status = 'closed';
+            }
+        });
+    }
+
 }

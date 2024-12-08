@@ -34,19 +34,21 @@
                     </div>                    
 
                     <div class="auction-form text-center mt-10">
-                        <div class="timer" id="timer" style="font-size: 2rem; font-weight: bold; color: #fff;">00:00</div>
+                        <div class="timer" id="auctionBidTimer">{{ $remainingMinutes }}</div>
                         <form id="startBiddingForm" method="POST">
-                            <input type="text" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
-							<input type="text" name="player_id" id="player_id" value="{{ $player_id }}">
+                            <input type="hidden" name="league_id" id="league_id" value="{{ Session::get('league_id') }}">
+							<input type="hidden" name="player_id" id="player_id" value="{{ $player_id }}">
 
-                            <input type="text" name="session_id" id="session_id" value="{{ $session_id }}">
-                            <input type="text" name="team_id" id="team_id" value="{{ $team_id }}">
+                            <input type="hidden" name="session_id" id="session_id" value="{{ $session_id }}">
+                            <input type="hidden" name="team_id" id="team_id" value="{{ $team_id }}">
+                            
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="amount" id="amount" value="">
 
-                            <input type="text" name="amount" id="amount" value="">
-
-                            <button type="submit" class="ripple--btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
-                                {{ __('Start Bidding') }}
-                            </button>
+                                <button type="submit" class="ripple-btn relative overflow-hidden px-6 py-3 bg-[#3b82f6] hover:bg-[#06b6d4] text-white rounded-lg shadow-md focus:outline-none focus:normal-case dark:bg-gray-900 dark:text-white">
+                                    {{ __('Start Bidding') }}
+                                </button>
+                            </div>
                         </form>
                     </div>
 

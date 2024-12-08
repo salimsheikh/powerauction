@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Carbon\Carbon;
 
 use App\Models\League;
 use App\Models\Player;
@@ -70,7 +71,7 @@ class AuctionController extends Controller
 
         $team_id = 0;
         $session_id = $id;
-        $current_time =now();
+        $current_time = now();
                    
         $session = BidSession::select('id','league_id','player_id','start_time','end_time','status')->find($session_id);
         
@@ -86,9 +87,12 @@ class AuctionController extends Controller
 
         // Enable query log
         //DB::enableQueryLog();
+
+        \Log::info("end_time: {$end_time}");
+        \Log::info("current_time: {$current_time}");
             
         if($status == 'active'){
-            if($end_time >= $current_time){
+            if($end_time > $current_time){
                 $league = League::find($league_id); // Find the record by ID
                 $league->increment('auction_view'); // Increment the column by 1
 
@@ -203,11 +207,41 @@ class AuctionController extends Controller
 
         $serverTime = now();
 
-        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id','player_id','sessionStartTime','sessionEndTime','serverTime'));
+        $remainingMinutes = "";
+
+        $remainingMinutes = $this->getRemaingTime($sessionEndTime, $serverTime);
+
+        return view('admin.auction-bid', compact('leagueName','players','leagueId','categoryId','session_id','team_id','player_id','sessionStartTime','sessionEndTime','serverTime','remainingMinutes'));
     }
 
     function biddingList(){
         return view('admin.bidding');
+    }
 
+    private function getRemaingTime($start_time, $end_time){
+
+       
+
+        $start_time = trim($start_time); // Ensure clean input
+        $end_time = trim($end_time);
+    
+        try {
+            // Create Carbon instances using the correct format
+        $start = Carbon::createFromFormat('Y-m-d H:i:s', $start_time);
+        $end = Carbon::createFromFormat('Y-m-d H:i:s', $end_time);
+
+        // Calculate the absolute difference in seconds
+        $time_difference_in_seconds = abs($end->diffInSeconds($start));
+
+        // Convert seconds into minutes and seconds
+        $remaining_minutes = intdiv($time_difference_in_seconds, 60);
+        $remaining_seconds = $time_difference_in_seconds % 60;
+
+        // Return the result as "MM:SS"
+        return sprintf('%02d:%02d', $remaining_minutes, $remaining_seconds);
+        } catch (\Exception $e) {
+            // Handle errors gracefully
+            return "00:00"; // Default value on error
+        }
     }
 }

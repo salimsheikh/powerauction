@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('league_name', 100)->nullable();
             $table->string('description', 250)->nullable();
             $table->tinyInteger('status')->default(0);
-            $table->tinyInteger('auction_view')->default(0);
+            $table->integer('auction_view')->default(0);
             $table->string('category', 100)->nullable();
             $table->tinyInteger('unsold')->default(0);
 

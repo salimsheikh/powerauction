@@ -16,7 +16,7 @@ use App\Http\Controllers\Backend\Api\TransactionController;
 use App\Http\Controllers\Backend\Api\BiddingApiController;
 use App\Http\Controllers\Backend\Api\TeamPlayerApiController;
 
-Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:1000,1'])->prefix('backend')->group(function () {
     
     Route::get('/categories', [CategoryApiController::class, 'index'])->name('category.api.index');
     Route::post('/categories/store', [CategoryApiController::class, 'store'])->name('category.api.store');
@@ -59,5 +59,5 @@ Route::middleware(['auth:sanctum', 'throttle:100,1'])->prefix('backend')->group(
     Route::get('/bidding', [BiddingApiController::class, 'index'])->name('admin.bidding.index');
     Route::post('/bidding/start-bidding', [BiddingApiController::class, 'startBidding'])->name('admin.bidding.start-bidding');
     Route::post('/bidding/bid', [BiddingApiController::class, 'bid'])->name('admin.bidding.bid');
-    Route::post('/bidding/bid-win/{id}', [BiddingApiController::class, 'bidWin'])->name('admin.bidding.bid-win');
+    Route::get('/bidding/bid-win/{id}', [BiddingApiController::class, 'bidWin'])->name('admin.bidding.bid-win');
 });

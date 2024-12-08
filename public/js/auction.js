@@ -93,7 +93,7 @@ if(start_bidding){
         }).then((data) => {
             logConsole("response 2");           
             
-            showToast('Successfully Edited!', 'success');
+            showToast('Successfully Edited!', 'success',true);
 
             if(data.bid_id > 0){
                 setTimeout(function() {
@@ -107,7 +107,7 @@ if(start_bidding){
             console.log(data);
 
         }).catch((error) => {
-            showToast('Cancelled', 'error');
+            showToast('Cancelled', 'error',true);
             console.log("response 3", error);        
             if (submitButton) {
                 setTimeout(function () {
@@ -124,11 +124,12 @@ if(start_bidding){
 const startBiddingForm = document.getElementById('startBiddingForm');
 if(startBiddingForm){
     startBiddingForm.addEventListener('submit', function(e){
+
         e.preventDefault();        
 
         if (formProcessing) {
             return false;
-        }        
+        }
 
         // Get the current form
         const currentForm = e.target;
@@ -139,11 +140,14 @@ if(startBiddingForm){
         const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
 
         let headers = get_ajax_header(true);
+
         let formData = getFormData(fields);
 
-        submitButton.disabled = false; // Disable the button
+        showToast(lang.please_wait, 'info',true);
 
-        showToast(lang.please_wait, 'info'); 
+        formProcessing = true;
+
+        submitButton.disabled = false; // Disable the button        
 
         fetch(`${BASE_API_URL}/bid`, {
             method: 'POST',
@@ -151,12 +155,29 @@ if(startBiddingForm){
             body: formData,
         }).then((response) => {
             logConsole("response 1");
+
             if (!response.ok) {
                 return response.json().then((error) => {
                     throw error;
                 });
             }
+
             return response.json();
+        }).then((data) => {
+            logConsole("response 2");
+            showToast(data.message, 'success', true);
+            console.log(data);
+
+            setTimeout(function() {
+                location.reload();
+                formProcessing = false;
+            }, 3000);
+
+
+        }).catch((error) => {
+            console.log(error);
+            formProcessing = false;
+            showToast(error.message, 'error', true);
         });
 
         return false;
@@ -164,128 +185,64 @@ if(startBiddingForm){
 }
 
 function win_Check(){
-    var base__url = bidWinURL;
-    var bid_id = bidID;
 
-    $.ajax({
-        url: base__url + 'index.php/admin/bidding/bid-win/' + bid_id, // The action URL from the form
-        type: $(this).attr('method'), // The method type from the form
-        data: $(this).serialize(), // Serialize form data
-        dataType: 'json', // Expect a JSON response
-        success: function(response) {
-            // Clear any previous alerts
-            $('#scroll-top').next('#floating-top-right').remove();
+    let headers = get_ajax_header(true);
+    
+    fetch(bidWinURL, {
+        method: 'GET',
+        headers: headers     
+    }).then((response) => {
+        logConsole("response 1");
 
-
-            // Check if the response status is success or error
-            if (response.status === 'success') {
-                // Success alert
-                var successAlert = `
-                    <div id="floating-top-right" class="floating-container">
-                        <div class="alert-wrap in animated fadeIn">
-                            <div class="alert alert-success" role="alert">
-                                <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
-                                <div class="media">
-                                    <div class="media-left">
-                                        <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-check"></i></span>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="alert-title"></h4>
-                                        <p class="alert-message">Successfully Edited!</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                $('#scroll-top').after(successAlert);
-
-                // Close button click event
-                $('.alert-success .close').click(function() {
-                    $(this).closest('#floating-top-right').remove();
-                });
-
-                setTimeout(function() {
-                    //window.location.href = base__url + 'index.php/admin/bidding';
-                }, 3000);
-
-            } else {
-                // Error alert
-                var errorAlert = `
-                    <div id="floating-top-right" class="floating-container">
-                        <div class="alert-wrap in animated fadeIn">
-                            <div class="alert alert-danger" role="alert">
-                                <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
-                                <div class="media">
-                                    <div class="media-left">
-                                        <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-minus"></i></span>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="alert-title"></h4>
-                                        <p class="alert-message">Cancelled 3</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                $('#scroll-top').after(errorAlert);
-
-                // Close button click event
-                $('.alert-danger .close').click(function() {
-                    $(this).closest('#floating-top-right').remove();
-                });
-
-            }
-
-
-        },
-        error: function(xhr, status, error) {
-            // Clear any previous alerts
-            $('#scroll-top').next('#floating-top-right').remove();
-
-            // Error alert
-            var errorAlert = `
-                <div id="floating-top-right" class="floating-container">
-                    <div class="alert-wrap in animated fadeIn">
-                        <div class="alert alert-danger" role="alert">
-                            <button class="close" type="button"><i class="fa fa-times-circle"></i></button>
-                            <div class="media">
-                                <div class="media-left">
-                                    <span class="icon-wrap icon-wrap-xs icon-circle alert-icon"><i class="fa fa-minus"></i></span>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="alert-title"></h4>
-                                    <p class="alert-message">Cancelled 4 </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-            $('#scroll-top').after(errorAlert);
-
-            // Close button click event
-            $('.alert-danger .close').click(function() {
-                $(this).closest('#floating-top-right').remove();
+        if (!response.ok) {
+            return response.json().then((error) => {
+                throw error;
             });
         }
+
+        return response.json();
+    }).then((response) => {
+        logConsole("response 2");
+        
+        console.log(response);
+
+        if (response.status === 'success') {
+            showToast(response.message, 'success', true);
+
+            setTimeout(function() {
+                window.location.href = response.bidding_url;
+            }, 3000);
+        }
+
+
+    }).catch((error) => {
+        logConsole("response 3");
+        logConsole(error);
+
+        if(error?.serverTime){
+            serverTimeMs = new Date(error.serverTime).getTime();            
+        }else{
+            showToast(error.message, 'error', true);
+        }
+
+        formProcessing = false;
     });
 }
 
 function updateTimer() {
     serverTimeMs = serverTimeMs + 1000;
-    const remainingMs = endTimeMs - serverTimeMs;    
-
+    const remainingMs = endTimeMs - serverTimeMs;
+    
     if (remainingMs <= 0) {
-        document.getElementById("timer").innerHTML = "00:00";
+        document.getElementById("auctionBidTimer").innerHTML = "00:00";
         clearInterval(timerInterval);        
         win_Check(); 
     } else {
         const remainingMinutes = Math.floor(remainingMs / 60000);
         const remainingSeconds = Math.floor((remainingMs % 60000) / 1000);
-        document.getElementById("timer").innerHTML =
+        document.getElementById("auctionBidTimer").innerHTML =
             (remainingMinutes < 10 ? "0" : "") + remainingMinutes + ":" +
             (remainingSeconds < 10 ? "0" : "") + remainingSeconds;
-
-            console.log(remainingSeconds);
     }
 }
 
@@ -306,6 +263,8 @@ let timerInterval = null;
 let durationMs = 0;
 
 // Start the timer
-if(document.getElementById("timer")){
-    startTimer(sessionStartTime, sessionEndTime);
+if(document.getElementById("auctionBidTimer")){
+    setTimeout(function(){
+        startTimer(sessionStartTime, sessionEndTime)
+    },500);    
 }
