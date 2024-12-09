@@ -33,9 +33,12 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+/*
 Route::get('/admin/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -60,6 +63,10 @@ Route::middleware('auth')->prefix('admin')->group(function () {
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
+
+
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard');
+    
 
     
 });

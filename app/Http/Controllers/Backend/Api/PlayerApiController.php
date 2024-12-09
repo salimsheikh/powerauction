@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Services\ImageUploadService;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\PlayerRequest;
@@ -108,6 +109,8 @@ class PlayerApiController extends Controller
 
             // Update the record with the unique ID
             $result->update(['uniq_id' => $uniqueId]);
+
+            
 
             return response()->json([
                 'success' => true,
@@ -302,7 +305,7 @@ class PlayerApiController extends Controller
                     $image = $item->image; // Access the 'image' value            
                     $this->imageService->deleteSavedFile($image, 'players');
                 }
-            }
+            }           
             
             $res['success'] = true;
             $res['message'] = __('Player deleted successfully');

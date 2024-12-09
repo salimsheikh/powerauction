@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Cache;
+use App\Events\CacheClearEvent;
 use Carbon\Carbon;
 
 use App\Models\League;
@@ -16,6 +18,8 @@ use App\Models\BidSession;
 use App\Models\UnsoldPlayer;
 use App\Models\Bid;
 use App\Models\SoldPlayer;
+
+
 
 class AuctionController extends Controller
 {
@@ -62,6 +66,10 @@ class AuctionController extends Controller
         // Step 3: Update specific row's status to 1
         // Replace '1' with your specific condition
         DB::table('league')->where('id', $id)->update(['status' => 1]);
+
+        // Dispatch event to clear specific cache
+        // event(new CacheClearEvent('dashboard_data'));
+        Cache::forget('dashboard_data');
 
         // Redirect to the route named 'auction.index'
         return redirect()->route('auction.index');

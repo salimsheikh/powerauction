@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -53,5 +55,12 @@ class League extends Model
                     ->update(['auction_view' => $auction_view]);
 
         return $updated > 0; // Returns true if any row was updated
+    }
+
+    public static function getCurrentLeagueName(){
+        $leagueId = Session::get('league_id');
+        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+        $leagueName = html_entity_decode($leagueName);
+        return $leagueName;
     }
 }

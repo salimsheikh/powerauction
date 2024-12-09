@@ -95,3 +95,4 @@ if (!function_exists('setting')) {
         return app(App\Services\SettingsService::class)->get($key, $default);
     }
 }
+

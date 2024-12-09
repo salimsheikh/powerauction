@@ -9,8 +9,18 @@ use App\Models\Team;
 use App\Models\SoldPlayer;
 use Illuminate\Support\Facades\Session;
 
+use App\Services\DashboardService;
+
 class AdminController extends Controller
 {
+    public function dashboard(DashboardService $dashboardService){
+        $data = array();
+        $data = $dashboardService->getDashboardData();
+
+        // $data = 
+        return view('dashboard',compact('data'));
+    }
+
     public function teamPlayers(Request $request, $team_id){
 
         $data = [];

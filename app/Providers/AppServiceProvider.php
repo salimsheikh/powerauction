@@ -7,8 +7,11 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\RateLimiter;
 
 use Illuminate\Auth\Events\Login;
-use App\Listeners\LogUserLogin;
+use App\Listeners\ClearCacheListener;
 use Illuminate\Support\Facades\Event;
+
+use App\Events\CacheClearEvent;
+use App\Listeners\LogUserLogin;
 
 use App\Services\SettingsService;
 
@@ -41,6 +44,8 @@ class AppServiceProvider extends ServiceProvider
                 return response()->json(['error' => 'Too many requests. Please wait.'], 429);
             });
         });
+
+        Event::listen(CacheClearEvent::class, ClearCacheListener::class);
 
         try {
             // Register the listener for the Login event
