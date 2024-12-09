@@ -6,6 +6,7 @@ use App\Models\Player;
 use App\Models\Team;
 use App\Models\League;
 use App\Models\SoldPlayer;
+use App\Models\Sponsor;
 use App\Models\UnsoldPlayer;
 
 use Illuminate\Support\Facades\Cache;
@@ -21,6 +22,7 @@ class DashboardService
                 'total_players' => Player::count(),
                 'sold_players' => SoldPlayer::count(),
                 'unsold_players' => UnsoldPlayer::count(),
+                'total_sponsors' => Sponsor::count(),
             ];
         });
     }

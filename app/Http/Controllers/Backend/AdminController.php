@@ -10,14 +10,21 @@ use App\Models\SoldPlayer;
 use Illuminate\Support\Facades\Session;
 
 use App\Services\DashboardService;
+use Illuminate\Support\Facades\Artisan;
 
 class AdminController extends Controller
 {
+    public function clearCache(){
+
+        // Or clear all cache
+        Artisan::call('cache:clear');
+
+        return back()->with('status', __('Cache Cleared'));
+    }
+
     public function dashboard(DashboardService $dashboardService){
         $data = array();
         $data = $dashboardService->getDashboardData();
-
-        // $data = 
         return view('dashboard',compact('data'));
     }
 

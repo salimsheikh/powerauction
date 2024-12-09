@@ -25,14 +25,14 @@ class OpServeCommand extends Command
      */
     public function handle()
     {
-        $this->info('Running config clear command...');
-        $this->call('config:clear');
+        //$this->info('Running config clear command...');
+        //$this->call('config:clear');
 
-        $this->info('Running route clear command...');
-        $this->call('route:clear');
+        //$this->info('Running route clear command...');
+        //$this->call('route:clear');
 
-        $this->info('Running route view command...');
-        $this->call('view:clear');
+        //$this->info('Running route view command...');
+        //$this->call('view:clear');
 
         $this->info('Running optimize command...');
         $this->call('optimize');

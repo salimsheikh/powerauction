@@ -27,5 +27,16 @@ class DatabaseSeeder extends Seeder
         $this->call(StyleSeeder::class);
         $this->call(TeamSeeder::class);
         $this->call(UserRolesSeeder::class);
+
+        /*
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'editor']);
+        Permission::create(['name' => 'manage posts']);
+        Permission::create(['name' => 'edit posts']);
+
+        $admin = User::find(1);
+        $admin->assignRole('admin');
+        $admin->givePermissionTo('manage posts');
+        */
     }
 }

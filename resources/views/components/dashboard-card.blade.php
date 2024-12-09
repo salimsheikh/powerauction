@@ -1,6 +1,6 @@
 <div class="w-full mt-6 px-6 {{ $wrapperClass }} xl:mt-0">
-    <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white dark:bg-black">
-        <div class="dashboard-icon p-3 rounded-full bg-{{ $iconBgColor }} bg-opacity-75 flex items-center text-center">
+    <div class="flex items-center px-5 py-6 shadow-sm rounded-md bg-white dark:bg-black ">
+        <div class="dashboard-icon p-3 rounded-full {{ $iconBgColor }} bg-opacity-75 flex items-center text-center">
             <span class="material-icons h-8 w-8 text-white leading-snug">{{ $icon }}</span>
         </div>
 

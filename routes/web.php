@@ -53,7 +53,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index');
     Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index');
     Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index');
-    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index');    
+    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index');
+    Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache');
     
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');

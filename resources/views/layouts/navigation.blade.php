@@ -12,6 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">
+                    @role('admin')
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
@@ -38,6 +39,7 @@
                     <x-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
                         {{ __('Biddings') }}
                     </x-nav-link>
+                    @endrole
                     
                 </div>
             </div>
@@ -79,7 +81,10 @@
                         </form>
 
                         <x-dropdown-link :href="route('settings.index')">
-                                {{ __('Settings') }}
+                            {{ __('Settings') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('clear-cache')">
+                            {{ __('Clear Cache') }}
                         </x-dropdown-link>
                     </x-slot>
                 </x-dropdown>
