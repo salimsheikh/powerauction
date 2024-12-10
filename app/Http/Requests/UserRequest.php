@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
-class CategoryRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,26 +25,26 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
-            'category_name' => 'required|string|max:150|unique:categories,category_name',
-            'base_price' => 'required|numeric',
-            'description' => 'required|string|max:255',
-            'color_code' => 'nullable|string|max:10',
-            'status' => 'required|string|in:publish,draft',  // Validation rule for 'status'
+        $rules = [            
+            'name' => 'required|string|max:150',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users,email',
+            'password' => 'nullable|string|max:100'
         ];
 
         $update_id = $this->input('update_id', 0);
+       
 
         if ($this->isMethod('post')) {
-            // Rules for creating a category
+            // Rules for creating a role
             if($update_id > 0){
-                $rules['category_name'] = 'required|string|max:150|unique:categories,category_name,' . $update_id;
-            }else{
-                $rules['category_name'] = 'required|string|max:150|unique:categories,category_name';
-            }            
+                $rules['email'] = 'required|string|email|max:150|unique:users,email,' . $update_id;
+                $rules['password'] = 'nullable|string|max:100';
+            }          
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
-            // Rules for updating a category
-            $rules['category_name'] = 'required|string|max:150|unique:categories,category_name,' . $this->route('category');
+            // Rules for updating a role
+            $rules['email'] = 'required|string|email|unique:users,id,' . $this->route('roles');
         }
 
         return $rules;
@@ -58,7 +58,7 @@ class CategoryRequest extends FormRequest
     {
         // Set default value for 'status' if it's not provided
         $this->merge([
-            'status' => $this->input('status', 'publish'), // Default to 'publish'
+            'guard_name' => $this->input('guard_name', 'web'), // Default to 'publish'
         ]);
     }
 
@@ -70,8 +70,7 @@ class CategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'category_name.required' => 'Category name is required!',
-            'category_name.unique' => 'This category name is already taken!',
+            'name' => 'User role name is required.'
         ];
     }
 

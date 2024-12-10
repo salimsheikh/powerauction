@@ -66,6 +66,12 @@ if (!function_exists('getJSLang')) {
             case "sponsor":
                 $lang['not_found'] = __('Sponsor not found.');
                 break;
+            case "users":
+                $lang['not_found'] = __('User not found.');
+                break;
+            case "user-roles":
+                $lang['not_found'] = __('Role not found.');
+                break;
         }
 
         return $lang;

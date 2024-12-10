@@ -29,7 +29,6 @@ class CreateAdminUserSeeder extends Seeder
      
         $user->assignRole([$role->id]);
 
-
         $user = User::create([
             'name' => 'User', 
             'email' => 'user@user.com',

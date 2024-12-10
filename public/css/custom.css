@@ -201,7 +201,8 @@ body::-webkit-scrollbar-track {
 .custom-table thead th.actions,
 .custom-table thead th.view_actions,
 .custom-table thead th.team_actions,
-.custom-table thead th.league_actions{
+.custom-table thead th.league_actions,
+.custom-table thead th.user_actions{
     text-align: center;
     vertical-align: middle;
 }
@@ -209,7 +210,8 @@ body::-webkit-scrollbar-track {
 .custom-table tbody td.actions div,
 .custom-table tbody td.view_actions div,
 .custom-table tbody td.team_actions div,
-.custom-table tbody td.league_actions div{
+.custom-table tbody td.league_actions div,
+.custom-table tbody td.user_actions div{
     text-align: center;
     white-space: nowrap;
     display: flex;

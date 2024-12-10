@@ -336,6 +336,8 @@ if (popupUpdateForm) {
             submitButton.disabled = true; // Disable the button
         }
 
+        console.log(`${BASE_API_URL}/${edit_id}`);
+
         fetch(`${BASE_API_URL}/${edit_id}`, {
             method: 'POST',
             headers: headers,

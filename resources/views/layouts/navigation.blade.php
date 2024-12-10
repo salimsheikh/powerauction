@@ -69,9 +69,25 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        
+                        <x-dropdown-link :href="route('profile.edit')" :class="request()->routeIs('profile.edit')">
                             {{ __('Profile') }}
+                        </x-dropdown-link>                        
+
+                        <x-dropdown-link :href="route('settings.index')" :class="request()->routeIs('settings.index')">
+                            {{ __('Settings') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('clear-cache')" :class="request()->routeIs('clear-cache')">
+                            {{ __('Clear Cache') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('users')" :class="request()->routeIs('users')">
+                            {{ __('Users') }}
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('user-roles')" :class="request()->routeIs('user-roles')">
+                            {{ __('User Roles') }}
+                        </x-dropdown-link>                        
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -82,13 +98,6 @@
                                 {{ __('Logout') }}
                             </x-dropdown-link>
                         </form>
-
-                        <x-dropdown-link :href="route('settings.index')">
-                            {{ __('Settings') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('clear-cache')">
-                            {{ __('Clear Cache') }}
-                        </x-dropdown-link>
                     </x-slot>
                 </x-dropdown>
             </div>

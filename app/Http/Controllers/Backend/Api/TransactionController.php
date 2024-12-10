@@ -12,19 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
-    function get_columns()
-    {
-        // Define column names (localized)
-        $columns = [];
-        //$columns['id'] = __('ID');
-        $columns['sr'] = __('No.');
-        $columns['plan_id'] = __('Plan Name');
-        $columns['amount'] = __('Virtual Amount');
-        $columns['created_by'] = __('Date');
-
-        return $columns;
-    }
-
     public function index(Request $request, $team_id)
     {
         $data = $this->getList($team_id);
@@ -111,5 +98,18 @@ class TransactionController extends Controller
                 ]
             ], 409);
         }        
+    }
+
+    private function get_columns()
+    {
+        // Define column names (localized)
+        $columns = [];
+        //$columns['id'] = __('ID');
+        $columns['sr'] = __('No.');
+        $columns['plan_id'] = __('Plan Name');
+        $columns['amount'] = __('Virtual Amount');
+        $columns['created_by'] = __('Date');
+
+        return $columns;
     }
 }

@@ -591,6 +591,13 @@ function renderTableRows(rows, columns, page) {
                     cell_value += buttons['delete'];
                     cell_value += "</div>";
                     break;
+                case "user_actions":
+                    cell_class += " actions";
+                    cell_value += "<div>";                    
+                    cell_value += buttons['edit'];
+                    cell_value += buttons['delete'];
+                    cell_value += "</div>";
+                    break;
                 case "team_player_actions":
                     cell_class += " actions";
                     cell_value += "<div>";

@@ -3,14 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SetupWizardController;
-use App\Http\Controllers\Backend\AuctionController;
-use App\Http\Controllers\Backend\CategoryController;
-use App\Http\Controllers\Backend\LeagueController;
-use App\Http\Controllers\Backend\PlayerController;
-use App\Http\Controllers\Backend\SettingController;
-use App\Http\Controllers\Backend\SponsorController;
-use App\Http\Controllers\Backend\TeamController;
-use App\Http\Controllers\Backend\AdminController;
+
+use App\Http\Controllers\Backend\{
+    AdminController,
+    AuctionController,
+    SettingController
+};
 
 Route::fallback(function () {
     $currentPath = request()->path();
@@ -48,13 +46,16 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard');
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
     Route::get("/players",[AdminController::class, 'players'])->name('players.index');
     Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index');
     Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index');
     Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index');
     Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index');
-    Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache');
+    Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache');    
+    Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles');
+    Route::get("/users",[AdminController::class, 'users'])->name('users');
     
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');
@@ -66,7 +67,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
 
 
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard');
+    
     
 
     

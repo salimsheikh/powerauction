@@ -65,4 +65,14 @@ class AdminController extends Controller
         $plans = Plan::select('id','amount')->where('status', 'publish')->orderBy('order', 'ASC')->get();
         return view('admin.teams',compact('plans'));
     }
+
+    public function users(){        
+        return view('admin.users');
+    }
+
+    public function userRoles(){        
+        return view('admin.user-roles');
+    }
+
+    
 }
