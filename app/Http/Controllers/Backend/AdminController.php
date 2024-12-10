@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Plan;
-use App\Models\Team;
-use App\Models\SoldPlayer;
-use Illuminate\Support\Facades\Session;
+use App\Models\{Plan,Team,SoldPlayer};
+use Illuminate\Support\Facades\{Session,Artisan};
 
 use App\Services\DashboardService;
-use Illuminate\Support\Facades\Artisan;
 
 class AdminController extends Controller
 {
@@ -66,11 +63,11 @@ class AdminController extends Controller
         return view('admin.teams',compact('plans'));
     }
 
-    public function users(){        
+    public function users(){           
         return view('admin.users');
     }
 
-    public function userRoles(){        
+    public function userRoles(){
         return view('admin.user-roles');
     }
 

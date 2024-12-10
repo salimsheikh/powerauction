@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Backend\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -47,17 +50,18 @@ class UserApiController extends Controller
 
     public function store(UserRequest $request)
     {       
-        $request->validated();
-
-        $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
+        $request->validated();        
 
         try {           
-            // Current authenticated user ID
-            $userId = Auth::id();
-
-            $formData = $request->all();           
             
-            // $formData['created_by'] = Auth::id();
+            $formData = $request->only(['name', 'phone', 'address', 'email']); // Whitelist allowed fields
+
+            // Hash the password if provided
+            if ($request->filled('password')) {
+                $formData['password'] = Hash::make($request->password);
+            }       
+            
+            $formData['created_by'] = Auth::id();
 
             $result = User::create($formData);
 
@@ -85,7 +89,7 @@ class UserApiController extends Controller
 
         try {
 
-            $item = User::select('name, phone, address, email')->find($id);
+            $item = User::select('name', 'phone', 'address', 'email')->find($id);
 
             if ($item) {
                 return response()->json([
@@ -118,23 +122,29 @@ class UserApiController extends Controller
         
         $request->validated();
 
-        try {
+        // Begin a database transaction
+        DB::beginTransaction();
 
-           
+        try {           
 
-            $data = $request->all();
+            $data = $request->only(['name', 'phone', 'address', 'email']); // Whitelist allowed fields
 
-            $userId = Auth::id();
-
-           
-
-            // Update modified_by field
-            $data['updated_by'] = $userId;
-
-            $item = User::find($id);
-
+            // Hash the password if provided
+            if ($request->filled('password')) {
+                $data['password'] = Hash::make($request->password);
+            }
+    
+            // Add the updated_by field
+            $data['updated_by'] = Auth::id();
+    
+            // Find the user
+            $item = User::findOrFail($id);
+    
             // Update the record
             $item->update($data);
+
+            // Commit the transaction
+            DB::commit();    
 
             return response()->json([
                 'success' => true,
@@ -147,11 +157,19 @@ class UserApiController extends Controller
             $res['statusCode'] = 201;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
+
+            // Rollback the transaction on error
+            DB::rollBack();
+
             $res['errors'] = ['User not found' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
+
+            // Rollback the transaction on error
+            DB::rollBack();
+
             $res['errors'] = ['user_delete' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;

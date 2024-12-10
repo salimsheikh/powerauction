@@ -9,18 +9,19 @@
      <!-- Add Item Popup -->
      <x-popup-add-item-model title="{{__('Add new Role')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add Role')}}">    
         <x-popup-form-input type="text" name="name" label="{{ __('Role Name:') }}" class="focus_first name required"
-            maxlength="140" value="" />
+            maxlength="100" value="" />            
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
-    <x-popup-delete-item-model title="{{__('Delete Category')}}">
-        {{ __('Do you want to delete category?') }}
+    <x-popup-delete-item-model title="{{__('Delete Role')}}">
+        {{ __('Do you want to delete role?') }}
     </x-popup-delete-item-model>
 
     <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update Role')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update Role')}}">    
-        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Category Name:') }}" class="focus_first name required"
-            maxlength="140" value="" />
+    <x-popup-update-item-model title="{{__('Update Role')}}" formType="update" formID="popupUpdateForm" popupClasses="column-3" actionButtonLabel="{{__('Update Role')}}">    
+        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Role Name:') }}" class="focus_first name required" maxlength="100" />
+        <x-popup-form-input type="checkbox" name="user_permission" id="update_user_permission" label="{{ __('Permissions:') }}" />
+
     </x-popup-update-item-model>
 
     <div class="py-12">

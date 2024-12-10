@@ -27,7 +27,7 @@ class UserRoleRequest extends FormRequest
     public function rules(): array
     {
         $rules = [            
-            'name' => 'required|integer|exists:roles,name'
+            'name' => 'required|integer|max:100|exists:roles,name'
         ];
 
         $update_id = $this->input('update_id', 0);        
@@ -69,7 +69,8 @@ class UserRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name' => 'User role name is required.'
+            'name' => 'User role name is required.',
+            'name.max' => 'User role name must not exceed 100 characters.'
         ];
     }
 

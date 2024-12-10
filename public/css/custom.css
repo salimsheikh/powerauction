@@ -477,6 +477,11 @@ td.description{
     gap: 20px;
 }
 
+.custom-modal.column-3 .modal-content{ 
+    max-width: 800px;
+    gap: 20px;
+}
+
 .custom-modal.column-2 .popup-fields{ 
     display: grid;
     grid-template-columns: 1fr 1fr;    
@@ -698,11 +703,11 @@ input.inputbox[readonly] {
     color: #a0aec0; /* Dark mode readonly text */
 }
 
-.inputblock label{
+.inputblock label.popup-label{
     width: 30%;
 }
 
-.inputblock input, 
+.inputblock input[type="type"], 
 .inputblock select, 
 .inputblock textarea{
     width: 70%;

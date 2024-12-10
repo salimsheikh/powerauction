@@ -318,6 +318,8 @@ function getFormData(fields) {
             if (field.files.length > 0) {
                 formData.append(field.name, field.files[0]);
             }
+        } else if(field.type == 'checkbox') {
+            console.log(field.checked);
         } else {
             formData.append(field.name, field.value.trim());
         }

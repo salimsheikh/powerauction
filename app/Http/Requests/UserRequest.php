@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
+
 class UserRequest extends FormRequest
 {
     /**
@@ -26,11 +27,11 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         $rules = [            
-            'name' => 'required|string|max:150',
+            'name' => 'required|string|max:191',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:191',
-            'email' => 'required|string|email|max:191|unique:users,email',
-            'password' => 'nullable|string|max:100'
+            'email' => 'required|email|max:191|unique:users,email',
+            'password' => 'nullable|string|min:8',
         ];
 
         $update_id = $this->input('update_id', 0);
@@ -41,10 +42,11 @@ class UserRequest extends FormRequest
             if($update_id > 0){
                 $rules['email'] = 'required|string|email|max:150|unique:users,email,' . $update_id;
                 $rules['password'] = 'nullable|string|max:100';
-            }          
+            }
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             // Rules for updating a role
             $rules['email'] = 'required|string|email|unique:users,id,' . $this->route('roles');
+            $rules['password'] = 'nullable|string|max:100';
         }
 
         return $rules;
@@ -70,7 +72,8 @@ class UserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name' => 'User role name is required.'
+            'name' => 'User role name is required.',
+            
         ];
     }
 
