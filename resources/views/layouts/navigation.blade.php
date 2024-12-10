@@ -13,9 +13,12 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">
                     @role('admin')
+                   
+                   
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @endrole
                     <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
                         {{ __('Category') }}
                     </x-nav-link>
@@ -39,7 +42,7 @@
                     <x-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
                         {{ __('Biddings') }}
                     </x-nav-link>
-                    @endrole
+                    {{-- @endrole --}}
                     
                 </div>
             </div>

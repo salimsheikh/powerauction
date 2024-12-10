@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        /*
         Schema::create('user_roles', function (Blueprint $table) {
+            
             $table->id();
             $table->string('slug',70)->unique();
             $table->string('name',70)->nullable();
@@ -24,7 +26,9 @@ return new class extends Migration
             // Foreign keys
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
+            
         });
+        */
     }
 
     /**

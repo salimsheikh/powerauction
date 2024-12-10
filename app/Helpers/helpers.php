@@ -96,3 +96,9 @@ if (!function_exists('setting')) {
     }
 }
 
+
+
+function hasRole($role)
+{
+    return auth()->user() && auth()->user()->hasRole($role);
+}

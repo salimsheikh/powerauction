@@ -26,7 +26,10 @@ class DatabaseSeeder extends Seeder
         $this->call(SponsorSeeder::class);
         $this->call(StyleSeeder::class);
         $this->call(TeamSeeder::class);
-        $this->call(UserRolesSeeder::class);
+        // $this->call(UserRolesSeeder::class);
+
+        $this->call(PermissionTableSeeder::class);
+        $this->call(CreateAdminUserSeeder::class);
 
         /*
         Role::create(['name' => 'admin']);

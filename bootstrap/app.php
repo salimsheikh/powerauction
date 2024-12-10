@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(CheckAdminExists::class);
         $middleware->append(VerifyToken::class);
-        $middleware->append(RoleMiddleware::class);
+        // $middleware->append(RoleMiddleware::class);
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
