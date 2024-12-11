@@ -130,7 +130,7 @@ class PopupFormInput extends Component
                     foreach($items as $item){
                         $this->options[$item->id] = $item->name;
                     }
-                    \Log::info(print_r($this->options,true));
+                    // \Log::info(print_r($this->options,true));
                     break;
             }
             

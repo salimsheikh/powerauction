@@ -19,51 +19,45 @@ class UserApiController extends Controller
 {
     public function index(Request $request)
     {
-       // Get the search query from the request
-       $query = $request->input('query', '');        
+        // Get the search query from the request
+        $query = $request->input('query', '');
+        // Start the query builder for the User model
+        $itemQuery = User::query()
+        ->select(['id', 'name', 'address', 'email', 'phone']) // Select only necessary columns
+        ->with(['roles:id, name']); // Eager load roles with only 'id' and 'name'     
 
        // Start the query builder for the User model
-       $itemQuery = User::query();
+       $itemQuery = User::query()->with('roles');
 
        // If there is a search query, apply the filters
        if ($query) {
-           $itemQuery->where(function ($queryBuilder) use ($query) {
-               $queryBuilder->where('name', 'like', '%' . $query . '%');
-               $queryBuilder->where('phone', 'like', '%' . $query . '%');
-               $queryBuilder->where('address', 'like', '%' . $query . '%');
-               $queryBuilder->where('email', 'like', '%' . $query . '%');
-           });
-       }       
+            $itemQuery->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('phone', 'like', '%' . $query . '%')
+                    ->orWhere('address', 'like', '%' . $query . '%')
+                    ->orWhere('email', 'like', '%' . $query . '%')
+                    ->orWhereHas('roles', function ($roleQuery) use ($query) {
+                        $roleQuery->where('name', 'like', '%' . $query . '%');
+                    });
+            });
+        }    
        
-       $list_per_page = intval(setting('list_per_page', 10));
+        $list_per_page = intval(setting('list_per_page',10) ?? 10);
 
-       // Paginate the results
-       $items = $itemQuery->paginate($list_per_page);
+        // Paginate the results
+        $items = $itemQuery->paginate($list_per_page);
 
-       $columns = $this->get_columns();
+        $columns = $this->get_columns();
 
-       foreach($items as $key => $uer){
-        $items[$key]->roles = '';
-        if(!empty($user->getRoleNames())){
-            $r = [];
-            foreach($user->getRoleNames() as $v){
-                $r[] = $v;
-            }
-            $items[$key]->roles = implode(",",$r);
+        foreach ($items as $user) {
+            $user->user_roles = $user->roles->pluck('name')->implode(',');
         }
-       }
 
-    //    @if(!empty($user->getRoleNames()))
-    //    @foreach($user->getRoleNames() as $v)
-    //       <label class="badge badge-success">{{ $v }}</label>
-    //    @endforeach
-    //  @endif
-
-       // Return the columns and items data in JSON format
-       return response()->json([
+        // Return the columns and items data in JSON format
+        return response()->json([
            'columns' => $columns,
            'items' => $items
-       ]);
+        ]);
     }
 
     public function store(UserRequest $request)
@@ -150,9 +144,7 @@ class UserApiController extends Controller
         // Begin a database transaction
         DB::beginTransaction();
 
-        try {    
-            
-            \Log::info($request->all());
+        try {
 
             $data = $request->only(['name', 'phone', 'address', 'email']); // Whitelist allowed fields
 
@@ -241,7 +233,7 @@ class UserApiController extends Controller
         $columns['phone'] = __('Phone');
         $columns['address'] = __('Address');
         $columns['email'] = __('Email');
-        $columns['roles'] = __('Roles');
+        $columns['user_roles'] = __('Roles');
         
         $columns['user_actions'] = __('Actions');
         return $columns;

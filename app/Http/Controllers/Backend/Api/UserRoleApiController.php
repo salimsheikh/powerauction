@@ -163,16 +163,27 @@ class UserRoleApiController extends Controller
     public function destroy($id)
     {
         $res = $this->get_response();
-
-        try {
+        try {            
             $item = Role::findOrFail($id); // Attempt to find the role by ID
-            $item->delete(); // Delete the role if found
+
+            // Check if the role is assigned to any user
+            if ($item->users()->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('This role cannot be deleted because it is assigned to one or more users.'),
+                    'errors' => ['role_delete' => [__('This role cannot be deleted because it is assigned to one or more users.')]],
+                ], 400); // Return a bad request status
+            }
+
+            // Proceed with deletion if not assigned
+            $item->delete();
+
             $res['success'] = true;
             $res['message'] = __('Role deleted successfully');
             $res['statusCode'] = 200;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['Role not found' => [$e->getMessage()]];
+            $res['errors'] = ['role_delete' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);

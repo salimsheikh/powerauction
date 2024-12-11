@@ -41,7 +41,7 @@ class UserRequest extends FormRequest
             // Rules for creating a role
             if($update_id > 0){
                 $rules['email'] = 'required|string|email|max:150|unique:users,email,' . $update_id;
-                $rules['password'] = 'nullable|string|max:100';
+                $rules['password'] = 'nullable|string|min:8|max:100';
             }
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             // Rules for updating a role
@@ -73,6 +73,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'User role name is required.',
+            'password.min' => __('Password must be minimum 8 characters.')
             
         ];
     }

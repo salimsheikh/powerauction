@@ -13,19 +13,19 @@ class PopupTextbox extends Component
     public $class = "";
     public $label = "";
     public $value = "";
-    public $mexlength = "";
+    public $maxlength = "";
 
     /**
      * Create a new component instance.
      */
-    public function __construct($type = 'text', $name = 'inputname', $label = 'label', $class = '', $value = '', $mexlength = '100')
+    public function __construct($type = 'text', $name = 'inputname', $label = 'label', $class = '', $value = '', $maxlength = '100')
     {
         $this->type = $type;
         $this->name = $name;
         $this->label = $label;
         $this->class = $class;
         $this->value = $value;
-        $this->mexlength = $mexlength;
+        $this->maxlength = $maxlength;
     }
 
     /**

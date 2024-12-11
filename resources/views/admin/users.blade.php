@@ -9,9 +9,9 @@
      <!-- Add Item Popup -->
      <x-popup-add-item-model title="{{__('Add new User')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add User')}}">    
         <x-popup-form-input type="text" name="name" label="{{ __('Name:') }}" class="focus_first name required" maxlength="50" value="" />
-        <x-popup-form-input type="text" name="phone" label="{{ __('Phone:') }}" class="focus_first phone " maxlength="15" value="" />
-        <x-popup-form-input type="text" name="address" label="{{ __('Address:') }}" class="focus_first address " maxlength="150" value="" />
-        <x-popup-form-input type="text" name="email" label="{{ __('Email:') }}" class="focus_first email_validate required" maxlength="150" value="" />
+        <x-popup-form-input type="text" name="phone" label="{{ __('Phone:') }}" class="phone " maxlength="15" value="" />
+        <x-popup-form-input type="text" name="address" label="{{ __('Address:') }}" class="address " maxlength="150" value="" />
+        <x-popup-form-input type="text" name="email" label="{{ __('Email:') }}" class="email_validate required" maxlength="150" value="" />
 
         <x-popup-form-input type="password" id="password" name="password"
             label="{{ __('Password:') }}" value="" class="required password" />
@@ -27,11 +27,11 @@
 
     <!-- Update Item Popup -->
     <x-popup-update-item-model title="{{__('Update User')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update User')}}">    
-        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Category Name:') }}" class="focus_first name required"
+        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Name:') }}" class="focus_first name required"
         maxlength="50" value="" />        
-        <x-popup-form-input type="text" name="phone" id="update_phone" label="{{ __('Phone:') }}" class="focus_first phone " maxlength="15" value="" />
-        <x-popup-form-input type="text" name="address" id="update_adderss" label="{{ __('Address:') }}" class="focus_first address " maxlength="150" value=""  />
-        <x-popup-form-input type="text" name="email" id="update_email" label="{{ __('Email:') }}" class="focus_first email_validate" maxlength="150" value=""  readOnly="readonly"  />
+        <x-popup-form-input type="text" name="phone" id="update_phone" label="{{ __('Phone:') }}" class=" phone " maxlength="15" value="" />
+        <x-popup-form-input type="text" name="address" id="update_adderss" label="{{ __('Address:') }}" class=" address " maxlength="150" value=""  />
+        <x-popup-form-input type="text" name="email" id="update_email" label="{{ __('Email:') }}" class=" email_validate" maxlength="150" value=""  readOnly="readonly"  />
         <x-popup-form-input type="password" id="update_password" name="password"
             label="{{ __('Password:') }}" value="" class="update_password" />
 

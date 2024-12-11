@@ -4,6 +4,6 @@
     @if($type == 'color')
         <input type="{{$type}}" id="{{$name}}" name="{{$name}}" value="{{$value}}" maxlength="10" class="{{$name}} {{$class}} textbox w-full md:w-2/3 focus:outline-none" />
     @else
-        <input type="{{$type}}" id="{{$name}}" name="{{$name}}" value="{{$value}}" maxlength="{{$mexlength}}" class="{{$name}} {{$class}} textbox w-full md:w-2/3 px-3 py-1 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 dark:text-white" />
+        <input type="{{$type}}" id="{{$name}}" name="{{$name}}" value="{{$value}}" maxlength="{{$maxlength}}" class="{{$name}} {{$class}} textbox w-full md:w-2/3 px-3 py-1 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400 dark:text-white" />
     @endif    
 </div>

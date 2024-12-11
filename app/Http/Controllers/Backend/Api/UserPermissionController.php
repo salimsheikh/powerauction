@@ -50,9 +50,7 @@ class UserPermissionController extends Controller
 
         try {           
            
-            $formData = $request->all();
-
-            \Log::info(json_encode($formData));
+            $formData = $request->all();            
 
             $item = Permission::create($formData);
 
@@ -81,14 +79,14 @@ class UserPermissionController extends Controller
         try {
 
             $item = Permission::select('name')->find($id);
-            $roles = Role::pluck('name','name')->all();
+
+           
 
             if ($item) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Permission successfully found.',
-                    'data' => $item,
-                    'data' => $roles
+                    'data' => $item,                   
                 ], 200);
             } else {
                 $res['errors'] = ['permission' => [__('Permission not found.')]];
@@ -155,6 +153,16 @@ class UserPermissionController extends Controller
 
         try {
             $item = Permission::findOrFail($id); // Attempt to find the permission by ID
+
+             // Check if the role is assigned to any user
+             if ($item->roles()->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('This permission cannot be deleted because it is assigned to one or more roles.'),
+                    'errors' => ['role_delete' => [__('This permission cannot be deleted because it is assigned to one or more roles.')]],
+                ], 400); // Return a bad request status
+            }
+
             $item->delete(); // Delete the permission if found
             $res['success'] = true;
             $res['message'] = __('Permission deleted successfully');

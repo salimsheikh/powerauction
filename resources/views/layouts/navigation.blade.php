@@ -12,37 +12,48 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">
-                    @role('admin')
-                   
-                   
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    @endrole
-                    <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
-                        {{ __('Category') }}
-                    </x-nav-link>
+                    
+                    @can('dashboard-page-view')
+                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                            {{ __('Dashboard') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
-                        {{ __('Players') }}
-                    </x-nav-link>
+                    @can('categories-page-view')
+                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
+                            {{ __('Category') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index') || request()->routeIs('team.players.index')">
-                        {{ __('Teams') }}
-                    </x-nav-link>
+                    @can('players-page-view')
+                        <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
+                            {{ __('Players') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <x-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
-                        {{ __('Leagues') }}
-                    </x-nav-link>
+                    @can('teams-page-view')
+                        <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index') || request()->routeIs('team.players.index')">
+                            {{ __('Teams') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <x-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
-                        {{ __('Sponsors') }}
-                    </x-nav-link>
+                    @can('leagues-page-view')
+                        <x-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
+                            {{ __('Leagues') }}
+                        </x-nav-link>
+                    @endcan
 
-                    <x-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
-                        {{ __('Biddings') }}
-                    </x-nav-link>
-                    {{-- @endrole --}}
+                    @can('sponsors-page-view')
+                        <x-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
+                            {{ __('Sponsors') }}
+                        </x-nav-link>
+                    @endcan
+
+                    @can('bidding-page-view')
+                        <x-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
+                            {{ __('Biddings') }}
+                        </x-nav-link>
+                    @endcan
                     
                 </div>
             </div>

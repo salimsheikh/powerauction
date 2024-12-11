@@ -74,7 +74,7 @@
             <div class="alert model-body-alert alert-hidden"></div>
             <div class="popup-fields">
                 <x-popup-form-input type="select" id="plan_type" name="plan_type" label="{{ __('Plan Type:') }}" class="focus_first plan_type required" value="" />
-                <x-popup-form-input type="text" id="plan_amount" name="plan_amount" label="{{ __('Virtual Point:') }}" class="plan_amount virtual_point required" value="" mexlength="10" placeholder="{{ __('Virtual Amount') }}" />
+                <x-popup-form-input type="text" id="plan_amount" name="plan_amount" label="{{ __('Virtual Point:') }}" class="plan_amount virtual_point required" value="" maxlength="10" placeholder="{{ __('Virtual Amount') }}" />
             </div>
 
             <div class="modal-body-footer">
