@@ -27,7 +27,8 @@ class UserRoleRequest extends FormRequest
     public function rules(): array
     {
         $rules = [            
-            'name' => 'required|integer|max:100|exists:roles,name'
+            'name' => 'required|integer|max:100|exists:roles,name',
+            'permission' => 'required',
         ];
 
         $update_id = $this->input('update_id', 0);        

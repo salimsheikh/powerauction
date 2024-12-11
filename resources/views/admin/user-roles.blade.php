@@ -7,9 +7,11 @@
     </x-slot>
     
      <!-- Add Item Popup -->
-     <x-popup-add-item-model title="{{__('Add new Role')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add Role')}}">    
+     <x-popup-add-item-model title="{{__('Add new Role')}}" formType="add" formID="popupAddForm" popupClasses="column-3" actionButtonLabel="{{__('Add Role')}}">    
         <x-popup-form-input type="text" name="name" label="{{ __('Role Name:') }}" class="focus_first name required"
             maxlength="100" value="" />            
+        
+        <x-popup-form-input type="checkbox" name="permission" id="add_permission" label="{{ __('Permissions:') }}" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
@@ -20,7 +22,7 @@
     <!-- Update Item Popup -->
     <x-popup-update-item-model title="{{__('Update Role')}}" formType="update" formID="popupUpdateForm" popupClasses="column-3" actionButtonLabel="{{__('Update Role')}}">    
         <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Role Name:') }}" class="focus_first name required" maxlength="100" />
-        <x-popup-form-input type="checkbox" name="user_permission" id="update_user_permission" label="{{ __('Permissions:') }}" />
+        <x-popup-form-input type="checkbox" name="permission" id="update_permission" label="{{ __('Permissions:') }}" />
 
     </x-popup-update-item-model>
 

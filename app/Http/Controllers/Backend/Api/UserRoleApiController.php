@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\{Role,Permission};
 
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRoleRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,19 +44,15 @@ class UserRoleApiController extends Controller
 
     public function store(UserRoleRequest $request)
     {       
-        $request->validated();
-
-        $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
+        $request->validated();        
 
         try {           
-            // Current authenticated user ID
-            $userId = Auth::id();
+           
+            $formData = $request->all();
 
-            $formData = $request->all();           
-            
-            // $formData['created_by'] = Auth::id();
+            $item = Role::create($formData);
 
-            $result = Role::create($formData);
+            $item->syncPermissions($request->input('permission'));
 
             return response()->json([
                 'success' => true,
@@ -84,11 +80,18 @@ class UserRoleApiController extends Controller
 
             $item = Role::select('name')->find($id);
 
+            $permission = Permission::get();
+            $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
+                ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
+                ->all();
+
             if ($item) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Role successfully found.',
                     'data' => $item,
+                    'permission' => $permission,
+                    'rolePermissions' => $rolePermissions,
                 ], 200);
             } else {
                 $res['errors'] = ['role' => [__('Role not found.')]];
@@ -125,15 +128,12 @@ class UserRoleApiController extends Controller
 
             \Log::info(print_r($data,true));
 
-            $userId = Auth::id();           
-
-            // Update modified_by field
-            // $data['updated_by'] = $userId;
-
             $item = Role::find($id);
 
             // Update the record
             $item->update($data);
+
+            $item->syncPermissions($request->input('permission'));
 
             return response()->json([
                 'success' => true,

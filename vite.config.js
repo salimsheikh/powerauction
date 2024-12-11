@@ -6,7 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/js/app.js',                
+                'resources/js/app.js',
             ],
             refresh: true,
         }),
@@ -14,5 +14,10 @@ export default defineConfig({
     server: {
         host: '127.0.0.1', // Change to '0.0.0.0' if you want it accessible from other devices on the network
         port: 5173,       // Default Vite port
+    },
+    build: {
+        rollupOptions: {
+            external: ['tippy.js'],
+        },
     },
 });

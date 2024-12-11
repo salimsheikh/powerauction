@@ -12,9 +12,6 @@ use App\Models\SponsorType;
 use App\Models\League;
 use App\Models\Plan;
 use App\Models\Player;
-use Spatie\Permission\Models\Permission;
-
-
 
 class PopupFormInput extends Component
 {
@@ -121,7 +118,7 @@ class PopupFormInput extends Component
                
             }
         }elseif($type == 'checkbox'){           
-            $items = Permission::select('id','name')->orderBy('name', 'ASC')->get();
+            $items = \Spatie\Permission\Models\Permission::select('id','name')->orderBy('name', 'ASC')->get();
             foreach($items as $item){
                 $this->options[$item->id] = $item->name;
             }

@@ -301,12 +301,19 @@ function cleanForm(fields) {
 
         ft = field.type;
 
-        if (ft === "color") {
-            field.value = '#000001';
-        } else {
-            if (ft != 'hidden') {
+        switch(ft){
+            case "checkbox":
+                field.checked = false;
+                break;
+            case "color":
+                field.value = '#000001';
+                break;
+            case "hidden":
+                /** can not changed */
+                break;
+            default:
                 field.value = "";
-            }
+                break;
         }
     });
 }
@@ -319,7 +326,9 @@ function getFormData(fields) {
                 formData.append(field.name, field.files[0]);
             }
         } else if(field.type == 'checkbox') {
-            console.log(field.checked);
+            if(field.checked){
+                formData.append(field.name, field.value.trim());
+            }
         } else {
             formData.append(field.name, field.value.trim());
         }

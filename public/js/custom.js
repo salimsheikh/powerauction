@@ -286,6 +286,25 @@ if (tableContainer) {
                     elem.value = "";
                 }
 
+                if(data?.rolePermissions){
+                    const checkboxes = document.querySelectorAll('.update_permission');
+
+                    // Loop through the checkboxes and uncheck them
+                    checkboxes.forEach((checkbox) => {
+                        checkbox.checked = false;
+                    });
+
+                    for (const [id] of Object.entries(data?.rolePermissions)) {
+                        elem = document.getElementById('update_permission_' + id);
+                        if (elem) {
+                            elem.checked = true;
+                        }
+                    }
+
+                
+                    // document.querySelectorAll(".update_permission").dispatchEvent(new Event('change'));
+                }
+
                 showPopupForm();
 
             }).catch((error) => {
@@ -334,9 +353,7 @@ if (popupUpdateForm) {
         const submitButton = currentForm.querySelector('button[type="submit"], input[type="submit"]');
         if (submitButton) {
             submitButton.disabled = true; // Disable the button
-        }
-
-        console.log(`${BASE_API_URL}/${edit_id}`);
+        }        
 
         fetch(`${BASE_API_URL}/${edit_id}`, {
             method: 'POST',
@@ -841,6 +858,53 @@ if (popupBoosterForm) {
         });
     });
 }
+
+// Function to toggle checkboxes
+document.querySelectorAll('.selectAllPermission').forEach(button => {
+    const checkboxClass = button.getAttribute('data-checkbox');
+    const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+
+    button.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent default action of the link        
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+        // If all checkboxes are checked, uncheck them
+        if (allChecked) {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            //button.textContent = `Select All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
+            button.textContent = `Select All`;
+
+            // Trigger the change event manually on each checkbox
+            checkbox.dispatchEvent(new Event('change'));
+        } else {
+            // Otherwise, check all checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+
+                // Trigger the change event manually on each checkbox
+                checkbox.dispatchEvent(new Event('change'));
+            });
+            //button.textContent = `Unselect All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
+            button.textContent = `Unselect All`;
+        }
+    });
+
+    // Listen for any changes in the checkboxes and update button text
+    checkboxes.forEach((checkbox) => {
+        checkbox.addEventListener('change', function (event) {
+            event.preventDefault(); // Prevent default action of the link 
+
+            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+            if (allChecked) {
+                button.textContent = 'Unselect All';
+            } else {
+                button.textContent = 'Select All';
+            }
+        });
+    });
+});
 
 
 // Initial load
