@@ -11,50 +11,14 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">
-                    
-                    @can('dashboard-page-view')
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            {{ __('Dashboard') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('categories-page-view')
-                        <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
-                            {{ __('Category') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('players-page-view')
-                        <x-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
-                            {{ __('Players') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('teams-page-view')
-                        <x-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index') || request()->routeIs('team.players.index')">
-                            {{ __('Teams') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('leagues-page-view')
-                        <x-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
-                            {{ __('Leagues') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('sponsors-page-view')
-                        <x-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
-                            {{ __('Sponsors') }}
-                        </x-nav-link>
-                    @endcan
-
-                    @can('bidding-page-view')
-                        <x-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
-                            {{ __('Biddings') }}
-                        </x-nav-link>
-                    @endcan
-                    
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu">                    
+                    @foreach ($header_menu as $menu)
+                       
+                            <x-nav-link :href="route($menu['route_name'])" :active="request()->routeIs($menu['active_routes'])">
+                                {{ __($menu['label']) }}
+                            </x-nav-link>
+                       
+                    @endforeach                    
                 </div>
             </div>
 
@@ -79,30 +43,15 @@
                         </button>
                     </x-slot>
 
-                    <x-slot name="content">
-                        
-                        <x-dropdown-link :href="route('profile.edit')" :class="request()->routeIs('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>                        
+                    <x-slot name="content">                       
 
-                        <x-dropdown-link :href="route('settings.index')" :class="request()->routeIs('settings.index')">
-                            {{ __('Settings') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('clear-cache')" :class="request()->routeIs('clear-cache')">
-                            {{ __('Clear Cache') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('users')" :class="request()->routeIs('users')">
-                            {{ __('Users') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('user-roles')" :class="request()->routeIs('user-roles')">
-                            {{ __('User Roles') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('permissions')" :class="request()->routeIs('permissions')">
-                            {{ __('Permissions') }}
-                        </x-dropdown-link>
+                        @foreach ($dropdown_menu as $menu)
+                            @can($menu['permission'])
+                                <x-dropdown-link :href="route($menu['route_name'])" :active="request()->routeIs($menu['active_routes'])">
+                                    {{ __($menu['label']) }}
+                                </x-dropdown-link>
+                            @endcan
+                        @endforeach
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -132,32 +81,14 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
-                {{ __('Category') }}
-            </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('players.index')" :active="request()->routeIs('players.index')">
-                {{ __('Players') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="route('teams.index')" :active="request()->routeIs('teams.index') || request()->routeIs('team.players.index')">
-                {{ __('Teams') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="route('leagues.index')" :active="request()->routeIs('leagues.index')">
-                {{ __('Leagues') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="route('sponsors.index')" :active="request()->routeIs('sponsors.index')">
-                {{ __('Sponsors') }}
-            </x-responsive-nav-link>
-
-            <x-responsive-nav-link :href="route('bidding.index')" :active="request()->routeIs('bidding.index')">
-                {{ __('Biddings') }}
-            </x-responsive-nav-link>
+            @foreach ($header_menu as $menu)
+                @can($menu['permission'])
+                    <x-responsive-nav-link :href="route($menu['route_name'])" :active="request()->routeIs($menu['active_routes'])">
+                        {{ __($menu['label']) }}
+                    </x-responsive-nav-link>
+                @endcan
+            @endforeach
         </div>
 
         <!-- Responsive Settings Options -->

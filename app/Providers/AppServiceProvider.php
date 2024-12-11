@@ -5,15 +5,18 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\RateLimiter;
-
-use Illuminate\Auth\Events\Login;
-use App\Listeners\ClearCacheListener;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Event;
 
-use App\Events\CacheClearEvent;
+use Illuminate\Auth\Events\Login;
+
+use App\Listeners\ClearCacheListener;
 use App\Listeners\LogUserLogin;
 
+use App\Events\CacheClearEvent;
+
 use App\Services\SettingsService;
+use App\Services\MenuService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +38,20 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191); // Restricts default string length to fit within 1000 bytes
 
         //$this->configureRateLimiting();
+
+        $menus = config('menus'); // Or fetch from the database
+
+        $filters = config('menu_filters');
+        $headerRoutes = $filters['header'];
+        $sideMenuRoutes = $filters['side_menu'];
+    
+        $menuService = app(MenuService::class);
+        $filteredMenus = $menuService->filterMenus($menus, $headerRoutes, $sideMenuRoutes);
+
+        $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
+        $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
+    
+        View::share(['header_menu' => $headerMenu, 'dropdown_menu' => $sideMenu]);
     }
 
     protected function configureRateLimiting()
