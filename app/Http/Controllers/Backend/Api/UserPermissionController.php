@@ -3,23 +3,25 @@
 namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\{Role,Permission};
 
-use Illuminate\Support\Facades\{Auth, DB};
+use Spatie\Permission\Models\{Role, Permission};
+use Illuminate\Support\Str;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Http\Requests\UserRoleRequest;
+use App\Http\Requests\UserPermissionRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
-class UserRoleApiController extends Controller
+class UserPermissionController extends Controller
 {
     public function index(Request $request)
     {
        // Get the search query from the request
        $query = $request->input('query', '');        
 
-       // Start the query builder for the Role model
-       $itemQuery = Role::query();
+       // Start the query builder for the Permission model
+       $itemQuery = Permission::query();
 
        // If there is a search query, apply the filters
        if ($query) {
@@ -42,7 +44,7 @@ class UserRoleApiController extends Controller
        ]);
     }
 
-    public function store(UserRoleRequest $request)
+    public function store(UserPermissionRequest $request)
     {       
         $request->validated();        
 
@@ -50,22 +52,22 @@ class UserRoleApiController extends Controller
            
             $formData = $request->all();
 
-            $item = Role::create($formData);
+            \Log::info(json_encode($formData));
 
-            $item->syncPermissions($request->input('permission'));
+            $item = Permission::create($formData);
 
             return response()->json([
                 'success' => true,
-                'message' => __('Role created successfully.'),
+                'message' => __('Permission created successfully.'),
                 'data' => $formData,
             ],201);
         } catch (Exception $e) {
 
             return response()->json([
                 'success' => false,
-                'message' => __('Role name already exists.'),
+                'message' => __('Permission name already exists.'),
                 'errors' => [
-                    'role_name' => [$e->getMessage()]
+                    'permission_name' => [$e->getMessage()]
                 ]
             ], 409);
         }
@@ -78,48 +80,37 @@ class UserRoleApiController extends Controller
 
         try {
 
-            $item = Role::select('name')->find($id);
-
-            $permission = Permission::get();
-            $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
-                ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
-                ->all();
-
-                \Log::info(\json_encode($rolePermissions));
+            $item = Permission::select('name')->find($id);
+            $roles = Role::pluck('name','name')->all();
 
             if ($item) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Role successfully found.',
+                    'message' => 'Permission successfully found.',
                     'data' => $item,
-                    'permission' => $permission,
-                    'rolePermissions' => $rolePermissions,
+                    'data' => $roles
                 ], 200);
             } else {
-                $res['errors'] = ['role' => [__('Role not found.')]];
+                $res['errors'] = ['permission' => [__('Permission not found.')]];
                 $res['message'] = __('An unexpected error occurred.');
                 $res['statusCode'] = 404;
                 return jsonResponse($res);
             }
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['role' => [$e->getMessage()]];
+            $res['errors'] = ['permission' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
-            $res['errors'] = ['role' => [$e->getMessage()]];
+            $res['errors'] = ['permission' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);
         }
     }
 
-    public function update(UserRoleRequest $request, $id)
+    public function update(UserPermissionRequest $request, $id)
     {
-
-        \Log::info($id);
-        \Log::info("update user");
-
         $res = $this->get_response(); 
         
         $request->validated();
@@ -128,32 +119,30 @@ class UserRoleApiController extends Controller
 
             $data = $request->all();
 
-            \Log::info(print_r($data,true));
+            $item = Permission::find($id);
 
-            $item = Role::find($id);
+            $data['name'] = Str::slug($data['name'], '-');
 
             // Update the record
-            $item->update($data);
-
-            $item->syncPermissions($request->input('permission'));
+            $item->update($data);           
 
             return response()->json([
                 'success' => true,
-                'message' => 'Role updated successfully.',
-                'role' => $data,
+                'message' => 'Permission updated successfully.',
+                'permission' => $data,
             ]);
 
             $res['success'] = true;
-            $res['message'] = __('Role updated successfully');
+            $res['message'] = __('Permission updated successfully');
             $res['statusCode'] = 201;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['Role not found' => [$e->getMessage()]];
+            $res['errors'] = ['Permission not found' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
-            $res['errors'] = ['role_delete' => [$e->getMessage()]];
+            $res['errors'] = ['permission_delete' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);
@@ -165,19 +154,19 @@ class UserRoleApiController extends Controller
         $res = $this->get_response();
 
         try {
-            $item = Role::findOrFail($id); // Attempt to find the role by ID
-            $item->delete(); // Delete the role if found
+            $item = Permission::findOrFail($id); // Attempt to find the permission by ID
+            $item->delete(); // Delete the permission if found
             $res['success'] = true;
-            $res['message'] = __('Role deleted successfully');
+            $res['message'] = __('Permission deleted successfully');
             $res['statusCode'] = 200;
             return jsonResponse($res);
         } catch (ModelNotFoundException $e) {
-            $res['errors'] = ['Role not found' => [$e->getMessage()]];
+            $res['errors'] = ['Permission not found' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 404;
             return jsonResponse($res);
         } catch (Exception $e) {
-            $res['errors'] = ['role_delete' => [$e->getMessage()]];
+            $res['errors'] = ['permission_delete' => [$e->getMessage()]];
             $res['message'] = __('An unexpected error occurred.');
             $res['statusCode'] = 500;
             return jsonResponse($res);
@@ -189,7 +178,7 @@ class UserRoleApiController extends Controller
         // Define column names (localized)
         $columns = [];
         $columns['sr'] = __('Sr.');
-        $columns['name'] = __('Role Name');
+        $columns['name'] = __('Permission Name');
         $columns['user_actions'] = __('Actions');
         return $columns;
     }

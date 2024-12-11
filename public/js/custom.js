@@ -46,6 +46,8 @@ if (buttonPopupShowAddItemModel) {
 
         //cleanForm(fields);
 
+        updateButtonText(document.querySelectorAll('.add_permission'),document.getElementById('add_permission'));
+
     }
 }
 
@@ -300,9 +302,7 @@ if (tableContainer) {
                             elem.checked = true;
                         }
                     }
-
-                
-                    // document.querySelectorAll(".update_permission").dispatchEvent(new Event('change'));
+                    updateButtonText(checkboxes,document.getElementById('update_permission'));
                 }
 
                 showPopupForm();
@@ -874,20 +874,20 @@ document.querySelectorAll('.selectAllPermission').forEach(button => {
                 checkbox.checked = false;
             });
             //button.textContent = `Select All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
-            button.textContent = `Select All`;
+            button.textContent = lang.select_all;
 
             // Trigger the change event manually on each checkbox
-            checkbox.dispatchEvent(new Event('change'));
+           //checkbox.dispatchEvent(new Event('change'));
         } else {
             // Otherwise, check all checkboxes
             checkboxes.forEach(checkbox => {
                 checkbox.checked = true;
 
                 // Trigger the change event manually on each checkbox
-                checkbox.dispatchEvent(new Event('change'));
+                //checkbox.dispatchEvent(new Event('change'));
             });
             //button.textContent = `Unselect All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
-            button.textContent = `Unselect All`;
+            button.textContent = lang.unselect_all;
         }
     });
 
@@ -895,17 +895,29 @@ document.querySelectorAll('.selectAllPermission').forEach(button => {
     checkboxes.forEach((checkbox) => {
         checkbox.addEventListener('change', function (event) {
             event.preventDefault(); // Prevent default action of the link 
-
-            const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-            if (allChecked) {
-                button.textContent = 'Unselect All';
-            } else {
-                button.textContent = 'Select All';
-            }
+            updateButtonText(checkboxes, button);
         });
     });
 });
 
+function updateButtonText(checkboxes,button) {
+    if(checkboxes && button){
+        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+        if (allChecked) {
+            button.textContent = lang.unselect_all;
+        } else {
+            button.textContent = lang.select_all;
+        }
+    }
+}
+
+const role_name = document.querySelector('.role_name');
+if(role_name){
+    role_name.addEventListener('input', function (event) {
+        // Replace characters that are not A-Z, a-z, 0-9, space, or hyphen
+        this.value = this.value.replace(/[^a-zA-Z0-9\- ]/g, '');
+    });
+}
 
 // Initial load
 fetchAndRender(current_page);

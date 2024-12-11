@@ -87,7 +87,11 @@
 
                         <x-dropdown-link :href="route('user-roles')" :class="request()->routeIs('user-roles')">
                             {{ __('User Roles') }}
-                        </x-dropdown-link>                        
+                        </x-dropdown-link>
+
+                        <x-dropdown-link :href="route('permissions')" :class="request()->routeIs('permissions')">
+                            {{ __('Permissions') }}
+                        </x-dropdown-link>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

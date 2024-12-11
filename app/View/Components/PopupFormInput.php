@@ -21,7 +21,7 @@ class PopupFormInput extends Component
     public $class = "";
     public $label = "";
     public $value = "";
-    public $mexlength = "";
+    public $maxlength = "";
     public $readOnly = "";
     public $options = "";
     public $firstOption = "";
@@ -30,7 +30,7 @@ class PopupFormInput extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct($type = 'text', $name = 'inputname', $id = '', $label = 'label', $class = '', $value = '', $mexlength = '', $placeholder = "", $readOnly = "")
+    public function __construct($type = 'text', $name = 'inputname', $id = '', $label = 'label', $class = '', $value = '', $maxlength = '', $placeholder = "", $readOnly = "")
     {
         $id = $id == "" ? $name : $id;
 
@@ -40,7 +40,7 @@ class PopupFormInput extends Component
         $this->label = $label;
         $this->class = $class != "" ? $class : $id;
         $this->value = $value;
-        $this->mexlength = ($mexlength == null || $mexlength < 0) ? 191 : $mexlength;
+        $this->maxlength = $maxlength == null ? 191 : $maxlength;
         $this->placeholder = ($placeholder == null || $placeholder == "") ? Str::replaceLast(':', '', $label) : $placeholder ;
         $this->options = [];
         $this->firstOption = '';
@@ -117,11 +117,23 @@ class PopupFormInput extends Component
                     break;
                
             }
-        }elseif($type == 'checkbox'){           
-            $items = \Spatie\Permission\Models\Permission::select('id','name')->orderBy('name', 'ASC')->get();
-            foreach($items as $item){
-                $this->options[$item->id] = $item->name;
+        }elseif($type == 'checkbox'){
+            switch($name){
+                case "permission[]":
+                    $items = \Spatie\Permission\Models\Permission::select('id','name')->orderBy('name', 'ASC')->get();
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->name;
+                    }
+                    break;
+                case "roles[]":
+                    $items = \Spatie\Permission\Models\Role::select('id','name')->orderBy('name', 'ASC')->get();
+                    foreach($items as $item){
+                        $this->options[$item->id] = $item->name;
+                    }
+                    \Log::info(print_r($this->options,true));
+                    break;
             }
+            
         }
 
     }

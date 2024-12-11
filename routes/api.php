@@ -17,7 +17,8 @@ use App\Http\Controllers\Backend\Api\{
     TeamApiController,
     TeamPlayerApiController,
     UserRoleApiController,
-    UserApiController
+    UserApiController,
+    UserPermissionController
 };
 
 
@@ -78,4 +79,10 @@ Route::middleware(['auth:sanctum', 'throttle:10000,1'])->prefix('backend')->grou
     Route::get('/users/edit/{id}', [UserApiController::class, 'edit'])->name('admin.users.edit');
     Route::post('/users/{id}', [UserApiController::class, 'update'])->name('admin.users.update');
     Route::delete('/users/{id}', [UserApiController::class, 'destroy'])->name('admin.users.destroy');
+
+    Route::get('/permissions', [UserPermissionController::class, 'index'])->name('admin.user-permissions.index');
+    Route::post('/permissions/store', [UserPermissionController::class, 'store'])->name('admin.user-permissions.store');
+    Route::get('/permissions/edit/{id}', [UserPermissionController::class, 'edit'])->name('admin.user-permissions.edit');
+    Route::post('/permissions/{id}', [UserPermissionController::class, 'update'])->name('admin.user-permissions.update');
+    Route::delete('/permissions/{id}', [UserPermissionController::class, 'destroy'])->name('admin.user-permissions.destroy');
 });

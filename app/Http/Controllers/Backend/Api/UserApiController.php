@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Spatie\Permission\Models\{Role,Permission};
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,23 @@ class UserApiController extends Controller
 
        $columns = $this->get_columns();
 
+       foreach($items as $key => $uer){
+        $items[$key]->roles = '';
+        if(!empty($user->getRoleNames())){
+            $r = [];
+            foreach($user->getRoleNames() as $v){
+                $r[] = $v;
+            }
+            $items[$key]->roles = implode(",",$r);
+        }
+       }
+
+    //    @if(!empty($user->getRoleNames()))
+    //    @foreach($user->getRoleNames() as $v)
+    //       <label class="badge badge-success">{{ $v }}</label>
+    //    @endforeach
+    //  @endif
+
        // Return the columns and items data in JSON format
        return response()->json([
            'columns' => $columns,
@@ -63,7 +81,8 @@ class UserApiController extends Controller
             
             $formData['created_by'] = Auth::id();
 
-            $result = User::create($formData);
+            $item = User::create($formData);
+            $item->assignRole($request->input('roles'));
 
             return response()->json([
                 'success' => true,
@@ -89,13 +108,19 @@ class UserApiController extends Controller
 
         try {
 
-            $item = User::select('name', 'phone', 'address', 'email')->find($id);
+            $item = User::select('id','name', 'phone', 'address', 'email')->find($id);
+            
+            $roles = Role::pluck('id','name')->all();           
+
+            $userRole = $item->roles->pluck('id','id')->all();              
+            
 
             if ($item) {
                 return response()->json([
                     'success' => true,
                     'message' => 'User successfully found.',
                     'data' => $item,
+                    'rolePermissions' => $userRole
                 ], 200);
             } else {
                 $res['errors'] = ['user' => [__('User not found.')]];
@@ -125,7 +150,9 @@ class UserApiController extends Controller
         // Begin a database transaction
         DB::beginTransaction();
 
-        try {           
+        try {    
+            
+            \Log::info($request->all());
 
             $data = $request->only(['name', 'phone', 'address', 'email']); // Whitelist allowed fields
 
@@ -142,6 +169,10 @@ class UserApiController extends Controller
     
             // Update the record
             $item->update($data);
+         
+            DB::table('model_has_roles')->where('model_id',$id)->delete();
+        
+            $item->assignRole($request->input('roles'));
 
             // Commit the transaction
             DB::commit();    
@@ -210,6 +241,8 @@ class UserApiController extends Controller
         $columns['phone'] = __('Phone');
         $columns['address'] = __('Address');
         $columns['email'] = __('Email');
+        $columns['roles'] = __('Roles');
+        
         $columns['user_actions'] = __('Actions');
         return $columns;
     }

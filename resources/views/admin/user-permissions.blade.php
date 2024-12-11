@@ -1,42 +1,25 @@
-@section('title', __('Users'))
+@section('title', __('User Permission'))
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight dark:text-white">
-            {{ __('Users') }}
+            {{ __('User Permission') }}
         </h2>
     </x-slot>
     
      <!-- Add Item Popup -->
-     <x-popup-add-item-model title="{{__('Add new User')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add User')}}">    
-        <x-popup-form-input type="text" name="name" label="{{ __('Name:') }}" class="focus_first name required" maxlength="50" value="" />
-        <x-popup-form-input type="text" name="phone" label="{{ __('Phone:') }}" class="focus_first phone " maxlength="15" value="" />
-        <x-popup-form-input type="text" name="address" label="{{ __('Address:') }}" class="focus_first address " maxlength="150" value="" />
-        <x-popup-form-input type="text" name="email" label="{{ __('Email:') }}" class="focus_first email_validate required" maxlength="150" value="" />
-
-        <x-popup-form-input type="password" id="password" name="password"
-            label="{{ __('Password:') }}" value="" class="required password" />
-
-        <x-popup-form-input type="checkbox" name="roles[]" id="add_permission" label="{{ __('Roles:') }}" />
-
+     <x-popup-add-item-model title="{{__('Add new Permission')}}" formType="add" formID="popupAddForm" popupClasses="column-1" actionButtonLabel="{{__('Add Permission')}}">    
+        <x-popup-form-input type="text" name="name" label="{{ __('Permission Name:') }}" class="focus_first name required role_name"
+        maxlength="30" value="" />
     </x-popup-add-item-model>
 
     <!-- Add Item Popup -->
-    <x-popup-delete-item-model title="{{__('Delete Category')}}">
-        {{ __('Do you want to delete category?') }}
+    <x-popup-delete-item-model title="{{__('Delete Permission')}}">
+        {{ __('Do you want to delete permission?') }}
     </x-popup-delete-item-model>
 
     <!-- Update Item Popup -->
-    <x-popup-update-item-model title="{{__('Update User')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update User')}}">    
-        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Category Name:') }}" class="focus_first name required"
-        maxlength="50" value="" />        
-        <x-popup-form-input type="text" name="phone" id="update_phone" label="{{ __('Phone:') }}" class="focus_first phone " maxlength="15" value="" />
-        <x-popup-form-input type="text" name="address" id="update_adderss" label="{{ __('Address:') }}" class="focus_first address " maxlength="150" value=""  />
-        <x-popup-form-input type="text" name="email" id="update_email" label="{{ __('Email:') }}" class="focus_first email_validate" maxlength="150" value=""  readOnly="readonly"  />
-        <x-popup-form-input type="password" id="update_password" name="password"
-            label="{{ __('Password:') }}" value="" class="update_password" />
-
-        <x-popup-form-input type="checkbox" name="roles[]" id="update_permission" label="{{ __('Roles:') }}" />
-
+    <x-popup-update-item-model title="{{__('Update Permission')}}" formType="update" formID="popupUpdateForm" popupClasses="column-1" actionButtonLabel="{{__('Update Permission')}}">    
+        <x-popup-form-input type="text" name="name" id="update_name" label="{{ __('Permission Name:') }}" class="focus_first name required role_name" maxlength="30" />
     </x-popup-update-item-model>
 
     <div class="py-12">
@@ -47,14 +30,14 @@
                         <div>
                             <button id="buttonPopupShowAddItemModel"
                                 class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                {{ __('Add User') }}
+                                {{ __('Add Permission') }}
                             </button>
                         </div>
                         <div class="search-input">
                             <label for="table-search" class="sr-only">{{ __('Search') }}</label>
                             <div class="relative">
                                 <form id="formSearch" method="GET">
-                                    <div id="btnSearchText" class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 cursor-pointer outline-none">
+                                    <div id="btnSearchText" class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-1 cursor-pointer outline-none">
                                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -98,8 +81,8 @@
         </div>
     </div>
     <script>
-        const lang = @json(getJSLang('users'));
-        const BASE_API_URL = "{{ route('admin.users.index') }}";
+        const lang = @json(getJSLang('user-permissions'));
+        const BASE_API_URL = "{{ route('admin.user-permissions.index') }}";
         const autoCloseAddPopup = true;
     </script>
 </x-app-layout>

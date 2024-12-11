@@ -56,6 +56,9 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache');    
     Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles');
     Route::get("/users",[AdminController::class, 'users'])->name('users');
+    Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions');
+
+    // admin.user-permissions.index
     
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');

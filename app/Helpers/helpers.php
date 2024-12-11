@@ -53,6 +53,9 @@ if (!function_exists('getJSLang')) {
         $lang['not_found'] = __('Item not found.');
         $lang['remove'] = __("Remove");
 
+        $lang['select_all'] = __("Select All");
+        $lang['unselect_all'] = __("Unselect All");
+
         switch($page){
             case "category":
                 $lang['not_found'] = __('Category not found.');

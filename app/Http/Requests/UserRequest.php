@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 
-
 class UserRequest extends FormRequest
 {
     /**
@@ -32,6 +31,7 @@ class UserRequest extends FormRequest
             'address' => 'nullable|string|max:191',
             'email' => 'required|email|max:191|unique:users,email',
             'password' => 'nullable|string|min:8',
+            'roles' => 'required',
         ];
 
         $update_id = $this->input('update_id', 0);

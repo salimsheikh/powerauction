@@ -68,9 +68,11 @@ class AdminController extends Controller
     }
 
     public function userRoles(){
-        //$permission = \Spatie\Permission\Models\Permission::get();
-        //dd($permission);
         return view('admin.user-roles');
+    }
+
+    public function permissions(){
+        return view('admin.user-permissions');
     }
 
     

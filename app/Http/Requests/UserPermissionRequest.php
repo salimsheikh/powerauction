@@ -5,9 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use App\Models\Role;
 
-class UserRoleRequest extends FormRequest
+class UserPermissionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +26,8 @@ class UserRoleRequest extends FormRequest
     public function rules(): array
     {
         $rules = [            
-            'name' => 'required|string|max:100|unique:roles,name',
-            'permission' => 'required',
+            'name' => 'required|string|max:100|unique:permissions,name',
+            
         ];
 
         $update_id = $this->input('update_id', 0);        
@@ -38,13 +37,11 @@ class UserRoleRequest extends FormRequest
         if ($this->isMethod('post')) {
             // Rules for creating a role
             if($update_id > 0){
-                $rules['name'] = 'required|string|max:100|unique:roles,name,' . $update_id;
-            }else{
-                $rules['name'] = 'required|string|max:100|unique:roles,name';
+                $rules['name'] = 'required|string|max:100|unique:permissions,name,' . $update_id;
             }            
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             // Rules for updating a role
-            $rules['name'] = 'required|string|max:100|unique:roles,id,' . $this->route('roles');
+            $rules['name'] = 'required|string|max:100|unique:permissions,id,' . $this->route('roles');
         }
 
         return $rules;
@@ -70,8 +67,9 @@ class UserRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name' => 'User role name is required.',
-            'name.max' => 'User role name must not exceed 100 characters.'
+            'name' => 'User permission name is required.',
+            'name.max' => 'User permission name must not exceed 100 characters.',
+            'name.unique' => 'User permission already used.'
         ];
     }
 

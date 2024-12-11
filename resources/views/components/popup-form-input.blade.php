@@ -8,13 +8,13 @@
     @elseif($type == 'file')
         <label for="{{ $id }}" class="popup-label block md:w-1/3 mb-1 md:mb-0 md:text-left pr-4 dark:text-white">{{ $label }}</label>
         <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
-            value="{{ $value }}" maxlength="{{ $mexlength }}"
+            value="{{ $value }}" maxlength="{{ $maxlength }}"
             class="{{ $name }} {{ $class }} inputbox" accept="image/png, image/gif, image/jpeg"
             placeholder="{{ $placeholder }}" />
     @elseif($type == 'textarea')
         <label for="{{ $id }}" class="popup-label block md:w-1/3 mb-1 md:mb-0 md:text-left pr-4 dark:text-white">{{ $label }}</label>
         <textarea name="{{ $name }}" id="{{ $id }}" cols="30" rows="3"
-            class="{{ $name }} {{ $class }} inputbox" maxlength="{{ $mexlength }}"
+            class="{{ $name }} {{ $class }} inputbox" maxlength="{{ $maxlength }}"
             placeholder="{{ $placeholder }}">{{ $value }}</textarea>
     @elseif($type == 'select')
         <label for="{{ $id }}" class="popup-label block md:w-1/3 mb-1 md:mb-0 md:text-left pr-4 dark:text-white">{{ $label }}</label>
@@ -30,16 +30,16 @@
     @elseif($type == 'checkbox')
         <div>
             <div class="my-2 dark:text-white">{{ $label }} <a href="#" id="{{ $id }}" class="selectAllPermission" data-checkbox="{{ $id }}">{{ __('Select All') }}</a></div>
-            <ul class="grid w-full gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+            <ul class="grid w-full gap-4 grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5">
                 @foreach ($options as $option_name => $option_value)
                     <li>
-                        <input type="checkbox" id="{{ $id }}_{{ $option_name }}" name="{{ $name }}[]"
+                        <input type="checkbox" id="{{ $id }}_{{ $option_name }}" name="{{ $name }}"
                             class="hidden peer {{ $id }}" value="{{ $option_value }}" />
     
                         <label for="{{ $id }}_{{ $option_name }}"
                             class="inline-flex items-center justify-between w-full px-2 py-1 text-gray-500 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             <div class="block">
-                                <div class="w-full text-lg font-semibold">
+                                <div class="w-full text-sm font-semibold">
                                     {{ Str::title(str_replace('-', ' ', $option_value)) }}</div>
                             </div>
                         </label>
@@ -51,6 +51,6 @@
         <label for="{{ $id }}" class="popup-label block md:w-1/3 mb-1 md:mb-0 md:text-left pr-4 dark:text-white">{{ $label }}</label>
         <input type="{{ $type }}" id="{{ $id }}" name="{{ $name }}"
             value="{{ $value }}" class="{{ $name }} {{ $class }} inputbox"
-            maxlength="{{ $mexlength }}" placeholder="{{ $placeholder }}" {{ $readOnly }} />
+            maxlength="{{ $maxlength }}" placeholder="{{ $placeholder }}" {{ $readOnly }} />
     @endif
 </div>
