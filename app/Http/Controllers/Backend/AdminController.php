@@ -6,11 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Plan,Team,SoldPlayer};
 use Illuminate\Support\Facades\{Session,Artisan};
+use Illuminate\Support\Facades\Auth;
 
 use App\Services\DashboardService;
 
 class AdminController extends Controller
 {
+
+    public function __construct(){
+        // $this->middleware('permission:permissions-page-view');
+    }
+
+
     public function clearCache(){
 
         // Or clear all cache
@@ -20,6 +27,9 @@ class AdminController extends Controller
     }
 
     public function dashboard(DashboardService $dashboardService){
+        $userId = Auth::id();
+        \Log::info("userId: " . $userId);
+        
         $data = array();
         $data = $dashboardService->getDashboardData();
         return view('dashboard',compact('data'));

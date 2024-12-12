@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/create_token', [ProfileController::class, 'create_token'])->name('profile.create_token');    
 });
 
-Route::middleware('auth')->prefix('admin')->group(function () {
+Route::middleware(['auth','permission:permissions-page-view'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard');
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
     Route::get("/players",[AdminController::class, 'players'])->name('players.index');

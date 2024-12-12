@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Auth\Events\Login;
+
 
 use App\Listeners\ClearCacheListener;
 use App\Listeners\LogUserLogin;
@@ -39,6 +41,10 @@ class AppServiceProvider extends ServiceProvider
 
         //$this->configureRateLimiting();
 
+        \Log::info('Auth Check:', ['check' => auth()->check()]);
+        \Log::info('User:', ['user' => auth()->user()]);
+                
+
         $menus = config('menus'); // Or fetch from the database
 
         $filters = config('menu_filters');
@@ -48,10 +54,10 @@ class AppServiceProvider extends ServiceProvider
         $menuService = app(MenuService::class);
         $filteredMenus = $menuService->filterMenus($menus, $headerRoutes, $sideMenuRoutes);
 
-        $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
-        $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
+        // $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
+        // $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
     
-        View::share(['header_menu' => $headerMenu, 'dropdown_menu' => $sideMenu]);
+        View::share($filteredMenus);
     }
 
     protected function configureRateLimiting()
