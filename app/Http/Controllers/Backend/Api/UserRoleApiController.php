@@ -30,6 +30,8 @@ class UserRoleApiController extends Controller
        
        $list_per_page = intval(setting('list_per_page', 10));
 
+       $itemQuery->orderBy('name', 'asc'); 
+
        // Paginate the results
        $items = $itemQuery->paginate($list_per_page);
 
@@ -85,7 +87,7 @@ class UserRoleApiController extends Controller
                 ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
                 ->all();
 
-                \Log::info(\json_encode($rolePermissions));
+               // \Log::info(\json_encode($rolePermissions));
 
             if ($item) {
                 return response()->json([
@@ -117,8 +119,8 @@ class UserRoleApiController extends Controller
     public function update(UserRoleRequest $request, $id)
     {
 
-        \Log::info($id);
-        \Log::info("update user");
+       //info($id);
+        //\Log::info("update user");
 
         $res = $this->get_response(); 
         
@@ -128,7 +130,7 @@ class UserRoleApiController extends Controller
 
             $data = $request->all();
 
-            \Log::info(print_r($data,true));
+            //\Log::info(print_r($data,true));
 
             $item = Role::find($id);
 

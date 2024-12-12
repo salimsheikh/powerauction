@@ -306,6 +306,8 @@ if (tableContainer) {
                 }
 
                 showPopupForm();
+                // setTimeout(initializeSearch,1000);
+              
 
             }).catch((error) => {
                 fatchResponseCatch(error, alertElement);
@@ -916,6 +918,35 @@ if(role_name){
     role_name.addEventListener('input', function (event) {
         // Replace characters that are not A-Z, a-z, 0-9, space, or hyphen
         this.value = this.value.replace(/[^a-zA-Z0-9\- ]/g, '');
+    });
+}
+
+function initializeSearch() {
+  
+    const searchInput = document.querySelector('.search-tags');
+    const permissionItems = document.querySelectorAll('ul li');
+
+    if (!searchInput || permissionItems.length === 0) {
+        console.error("Search input or permission items not found. Ensure the popup is open and the structure is correct.");
+        return;
+    }
+
+    // Add an event listener to the search input
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase(); // Get the search query in lowercase
+
+        console.log(query);
+
+        permissionItems.forEach((item) => {
+            const text = item.textContent.trim().toLowerCase(); // Get the text of each permission in lowercase
+
+            // Show or hide the item based on whether it matches the query
+            if (text.includes(query)) {
+                item.style.display = "block"; // Show matching items
+            } else {
+                item.style.display = "none"; // Hide non-matching items
+            }
+        });
     });
 }
 

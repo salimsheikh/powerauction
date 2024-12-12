@@ -34,6 +34,6 @@ class LogUserLogin
         
         Session::put('owner_team_id', $owner_team_id);
 
-        \Log::info("Owner team id: " . $owner_team_id);        
+        //\Log::info("Owner team id: " . $owner_team_id);        
     }
 }

@@ -41,8 +41,8 @@ class AppServiceProvider extends ServiceProvider
 
         //$this->configureRateLimiting();
 
-        \Log::info('Auth Check:', ['check' => auth()->check()]);
-        \Log::info('User:', ['user' => auth()->user()]);
+        //\Log::info('Auth Check:', ['check' => auth()->check()]);
+        //\Log::info('User:', ['user' => auth()->user()]);
                 
 
         $menus = config('menus'); // Or fetch from the database

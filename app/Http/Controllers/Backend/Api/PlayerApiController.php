@@ -46,9 +46,8 @@ class PlayerApiController extends Controller
         }
 
         $itemQuery->where('status', 'publish');
-
-        // Order by category_name in ascending order
-        $itemQuery->orderBy('created_at', 'desc');
+        
+        $itemQuery->orderBy('player_name', 'asc');
 
         $list_per_page = intval(setting('list_per_page', 10));
 

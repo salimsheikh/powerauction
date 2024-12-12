@@ -31,7 +31,7 @@ class UserRequest extends FormRequest
             'address' => 'nullable|string|max:191',
             'email' => 'required|email|max:191|unique:users,email',
             'password' => 'nullable|string|min:8',
-            'roles' => 'required',
+            'roles' => ['required'],
         ];
 
         $update_id = $this->input('update_id', 0);
@@ -73,7 +73,8 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'User role name is required.',
-            'password.min' => __('Password must be minimum 8 characters.')
+            'password.min' => __('Password must be minimum 8 characters.'),
+            'disabled' => __('Some permission required')
             
         ];
     }

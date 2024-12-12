@@ -44,6 +44,8 @@ class UserApiController extends Controller
        
         $list_per_page = intval(setting('list_per_page',10) ?? 10);
 
+        $itemQuery->orderBy('name', 'asc'); 
+
         // Paginate the results
         $items = $itemQuery->paginate($list_per_page);
 

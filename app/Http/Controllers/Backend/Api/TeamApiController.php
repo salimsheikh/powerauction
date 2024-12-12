@@ -64,7 +64,7 @@ class TeamApiController extends Controller
 
         // Filter by status and sort by creation date
         $itemQuery->where('teams.status', 'publish')
-            ->orderBy('teams.created_at', 'desc');
+            ->orderBy('teams.team_name', 'asc');
 
         $list_per_page = intval(setting('list_per_page', 10));
 

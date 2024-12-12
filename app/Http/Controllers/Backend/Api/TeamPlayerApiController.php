@@ -53,7 +53,7 @@ class TeamPlayerApiController extends Controller
         $itemQuery->where('players.status', 'publish');
 
         // Order by category_name in ascending order
-        $itemQuery->orderBy('players.created_at', 'desc');
+        $itemQuery->orderBy('players.player_name', 'asc');
 
         $list_per_page = intval(setting('list_per_page', 10));
 

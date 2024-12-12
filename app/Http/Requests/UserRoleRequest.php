@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use App\Models\Role;
+use App\Rules\ImmutablePermissionsCheck;
 
 class UserRoleRequest extends FormRequest
 {
@@ -26,14 +27,26 @@ class UserRoleRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Base validation rules
         $rules = [            
             'name' => 'required|string|max:100|unique:roles,name',
-            'permission' => 'required',
+            'permission' => [
+                'required',
+                'array',
+                'min:1',
+            ],
         ];
+
+        $name = $this->input('name', '');     
+
+        if (in_array($name, ['admin', 'super-admin', 'Admin', 'Administrator'])) {
+            $immutablePermissions = config('permissions.immutable_permissions');
+            $rules['permission'][] = new ImmutablePermissionsCheck($immutablePermissions);
+        }
 
         $update_id = $this->input('update_id', 0);        
 
-        \Log::info($update_id);
+        //\Log::info($update_id);
 
         if ($this->isMethod('post')) {
             // Rules for creating a role
@@ -71,7 +84,8 @@ class UserRoleRequest extends FormRequest
     {
         return [
             'name' => 'User role name is required.',
-            'name.max' => 'User role name must not exceed 100 characters.'
+            'name.max' => 'User role name must not exceed 100 characters.',
+            'permission.immutable_permissions_check' => 'You cannot disable immutable permissions required for your role.',
         ];
     }
 
@@ -93,5 +107,18 @@ class UserRoleRequest extends FormRequest
         ], 422);
 
         throw new ValidationException($validator, $response);
+    }
+
+    /**
+     * Custom method to check if all immutable permissions are present.
+     */
+    private function areImmutablePermissionsPresent(array $selectedPermissions, array $immutablePermissions): bool
+    {
+        foreach ($immutablePermissions as $permission) {
+            if (!in_array($permission, $selectedPermissions)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -32,7 +32,7 @@ class LeagueApiController extends Controller
         // $itemQuery->where('status', '1');
 
         // Order by category_name in ascending order
-        $itemQuery->orderBy('created_at', 'desc');
+        $itemQuery->orderBy('league_name', 'asc');
 
         $list_per_page = intval(setting('list_per_page', 10));
 

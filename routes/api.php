@@ -3,10 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 use App\Http\Controllers\Backend\Api\{
     CategoryApiController,
     PlayerApiController,
@@ -21,26 +17,29 @@ use App\Http\Controllers\Backend\Api\{
     UserPermissionController
 };
 
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum', 'throttle:10000,1'])->prefix('backend')->group(function () {
     
-    Route::get('/categories', [CategoryApiController::class, 'index'])->name('category.api.index');
-        Route::post('/categories/store', [CategoryApiController::class, 'store'])->name('category.api.store');
-        Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit'])->name('category.api.edit');
-        Route::post('/categories/{id}', [CategoryApiController::class, 'update'])->name('category.api.update');
-    Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy'])->name('category.api.destroy');
+    Route::get('/categories', [CategoryApiController::class, 'index'])->name('category.api.index')->middleware('permission:category-list');
+    Route::post('/categories/store', [CategoryApiController::class, 'store'])->name('category.api.store')->middleware('permission:category-create');
+    Route::get('/categories/edit/{id}', [CategoryApiController::class, 'edit'])->name('category.api.edit')->middleware('permission:category-edit');
+    Route::post('/categories/{id}', [CategoryApiController::class, 'update'])->name('category.api.update')->middleware('permission:category-update');
+    Route::delete('/categories/{id}', [CategoryApiController::class, 'destroy'])->name('category.api.destroy')->middleware('permission:category-delete');
 
     Route::get('/players', [PlayerApiController::class, 'index']);
-        Route::post('/players/store', [PlayerApiController::class, 'store']);                
-        Route::get('/players/edit/{id}', [PlayerApiController::class, 'edit']);
-        Route::post('/players/{id}', [PlayerApiController::class, 'update']);
-        Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
+    Route::post('/players/store', [PlayerApiController::class, 'store']);                
+    Route::get('/players/edit/{id}', [PlayerApiController::class, 'edit']);
+    Route::post('/players/{id}', [PlayerApiController::class, 'update']);
+    Route::delete('/players/{id}', [PlayerApiController::class, 'destroy']);    
     Route::get('/players/view/{id}', [PlayerApiController::class, 'view']);
 
     Route::get('/teams', [TeamApiController::class, 'index']);
-        Route::post('/teams/store', [TeamApiController::class, 'store']);                
-        Route::get('/teams/edit/{id}', [TeamApiController::class, 'edit']);
-        Route::post('/teams/{id}', [TeamApiController::class, 'update']);
+    Route::post('/teams/store', [TeamApiController::class, 'store']);                
+    Route::get('/teams/edit/{id}', [TeamApiController::class, 'edit']);
+    Route::post('/teams/{id}', [TeamApiController::class, 'update']);
     Route::delete('/teams/{id}', [TeamApiController::class, 'destroy']);
 
     Route::get('/transactions/{team_id}', [TransactionController::class, 'index']);

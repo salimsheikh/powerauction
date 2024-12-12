@@ -96,8 +96,8 @@ class AuctionController extends Controller
         // Enable query log
         //DB::enableQueryLog();
 
-        \Log::info("end_time: {$end_time}");
-        \Log::info("current_time: {$current_time}");
+        //\Log::info("end_time: {$end_time}");
+        //\Log::info("current_time: {$current_time}");
             
         if($status == 'active'){
             if($end_time > $current_time){
@@ -121,7 +121,7 @@ class AuctionController extends Controller
                     $bid_session = BidSession::where('id',$session_id)->first();                   
                     $bid_session = $bid_session ? $bid_session->toArray() : null;
 
-                    \Log::info(print_r($bid_session,true));
+                    //\Log::info(print_r($bid_session,true));
 
                     $player_id = $bid_session != null ? $bid_session['player_id'] : 0;                    
 

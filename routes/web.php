@@ -31,49 +31,36 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-/*
-Route::get('/admin/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-*/
-
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/create_token', [ProfileController::class, 'create_token'])->name('profile.create_token');    
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit')->middleware('permission:profile-page-view');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update')->middleware('permission:profile-update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy')->middleware('permission:profile-delete');
+    // Route::post('/create_token', [ProfileController::class, 'create_token'])->name('profile.create_token');
 });
 
-Route::middleware(['auth','permission:permissions-page-view'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard');
-    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
-    Route::get("/players",[AdminController::class, 'players'])->name('players.index');
-    Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index');
-    Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index');
-    Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index');
-    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index');
-    Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache');    
-    Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles');
-    Route::get("/users",[AdminController::class, 'users'])->name('users');
-    Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions');
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard')->middleware('permission:dashboard-page-view');
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index')->middleware('permission:category-page-view');
+    Route::get("/players",[AdminController::class, 'players'])->name('players.index')->middleware('permission:players-page-view');
+    Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index')->middleware('permission:teams-page-view');
+    Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index')->middleware('permission:teams-page-view');
+    Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index')->middleware('permission:leagues-page-view');
+    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index')->middleware('permission:sponsors-page-view');
+    Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache')->middleware('permission:clear-cache-page-view');
+    Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles')->middleware('permission:user-roles-page-view');
+    Route::get("/users",[AdminController::class, 'users'])->name('users')->middleware('permission:users-page-view');
+    Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions')->middleware('permission:permissions-page-view');
 
     // admin.user-permissions.index
     
     // Handling both GET and POST requests on the same route
-    Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index');
-    Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id');
-    Route::get('/bidding/start/{id}', [AuctionController::class, 'biddingStart'])->name('bidding.started');    
-    Route::get('/bidding', [AuctionController::class, 'biddingList'])->name('bidding.index');    
+    Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index')->middleware('permission:bidding-page-view');
+    Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id')->middleware('permission:bidding-page-view');
+    Route::get('/bidding/start/{id}', [AuctionController::class, 'biddingStart'])->name('bidding.started')->middleware('permission:bidding-page-view');
+    Route::get('/bidding', [AuctionController::class, 'biddingList'])->name('bidding.index')->middleware('permission:bidding-page-view');
 
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update');
-
-
-    
-    
-
-    
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:settings-page-view');
+    Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:settings-update');    
 });
 
 require __DIR__.'/auth.php';

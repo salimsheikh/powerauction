@@ -28,7 +28,7 @@ class AdminController extends Controller
 
     public function dashboard(DashboardService $dashboardService){
         $userId = Auth::id();
-        \Log::info("userId: " . $userId);
+        //\Log::info("userId: " . $userId);
         
         $data = array();
         $data = $dashboardService->getDashboardData();

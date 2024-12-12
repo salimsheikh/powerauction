@@ -10,7 +10,7 @@
             'label' => 'Category',
             'route_name' => 'categories.index',
             'active_routes' => ['categories.index'],
-            'permission' => 'categories-page-view'
+            'permission' => 'category-page-view'
         ],
         [
             'label' => 'Players',
