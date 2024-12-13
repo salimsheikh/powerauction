@@ -1,21 +1,23 @@
 <?php
 return [
     'immutable_permissions' => [
-        'user-roles-page-view',
-        'users-page-view',
-                
-    ],
-];
-/*'role-create',
-        'role-delete',
-        'role-edit',
-        'role-list',
         'user-create',
         'user-delete',
         'user-edit',
         'user-list',
-        'delete-create',
-        'delete-delete',
-        'delete-edit',
-        'delete-list',
-        */
+        'user-page-view',
+        'user-permission-create',
+        'user-permission-delete',
+        'user-permission-edit',
+        'user-permission-list',
+        'user-permission-page-view',
+        'user-permission-update',
+        'user-role-create',
+        'user-role-delete',
+        'user-role-edit',
+        'user-role-list',
+        'user-role-page-view',
+        'user-role-update',
+        'user-update',      
+    ],
+];

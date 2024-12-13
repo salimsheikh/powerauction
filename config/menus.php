@@ -76,7 +76,7 @@
             'label' => 'Permissions',
             'route_name' => 'permissions',
             'active_routes' => ['permissions'],
-            'permission' => 'permissions-page-view'
+            'permission' => 'user-permission-page-view'
         ]
     ];
 ?>

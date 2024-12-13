@@ -48,8 +48,7 @@ class TeamSeeder extends Seeder
                 'name' => __('Salim Shaikh'),                
                 'phone' => '+919876543210',                
                 'address' => 'Kurla',
-                'email' => 'salimsheikh4u2000@gmail.com',
-                'role' => 'administrator',
+                'email' => 'salimsheikh4u2000@gmail.com',                
                 'email_verified_at' => now(),
                 'password' => Hash::make('salimsheikh4u2000@gmail.com'),
                 'remember_token' => Str::random(10),
@@ -70,24 +69,7 @@ class TeamSeeder extends Seeder
                 'status' => 'publish',
                 'created_at' => now(),
                 'updated_at' => now(),            
-        ]);
-
-        $insertedId = DB::table('users')->insertGetId([            
-                'name' => __('Salim Shaikh'),                
-                'phone' => '+919876543210',                
-                'address' => 'Kurla',
-                'email' => 'salim@salim.com',
-                'role' => 'administrator',
-                'email_verified_at' => now(),
-                'password' => Hash::make('salim@salim.com'),
-                'remember_token' => Str::random(10),
-                'created_by'=> 1,
-                'updated_by'=> 1,
-                'created_at' => now(),
-                'updated_at' => now(),            
-        ]);
-
-       
+        ]);     
 
       
 

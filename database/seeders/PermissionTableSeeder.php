@@ -20,17 +20,21 @@ class PermissionTableSeeder extends Seeder
             $permissions[] = $menu['permission'];
         }      
 
-        $masters = ['category','player','team','league','sponsor','user','role','permission'];
-        $subPermissions = ['page-page','create','edit','update','delete'];
+        $masters = ['category','player','team','league','sponsor','user','user-role','user-permission'];
+        $subPermissions = ['page-view','list','create','edit','update','delete'];
 
         foreach($masters as $m){
             foreach($subPermissions as $p){
                 $permissions[] =   $m."-".$p;
             }
         }
+
+        $permissions = array_values(array_unique($permissions));
+
+        sort($permissions);       
       
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
     }
 }

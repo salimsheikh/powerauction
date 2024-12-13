@@ -43,13 +43,13 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index')->middleware('permission:category-page-view');
     Route::get("/players",[AdminController::class, 'players'])->name('players.index')->middleware('permission:player-page-view');
     Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index')->middleware('permission:team-page-view');
-    Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index')->middleware('permission:teams-page-view');
+    Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index')->middleware('permission:team-page-view');
     Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index')->middleware('permission:league-page-view');
-    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index')->middleware('permission:sponsors-page-view');
+    Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index')->middleware('permission:sponsor-page-view');
     Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache')->middleware('permission:clear-cache-page-view');
-    Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles')->middleware('permission:user-roles-page-view');
-    Route::get("/users",[AdminController::class, 'users'])->name('users')->middleware('permission:users-page-view');
-    Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions')->middleware('permission:permissions-page-view');
+    Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles')->middleware('permission:user-role-page-view');
+    Route::get("/users",[AdminController::class, 'users'])->name('users')->middleware('permission:user-page-view');
+    Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions')->middleware('permission:user-permission-page-view');
 
     // admin.user-permissions.index
     
@@ -59,7 +59,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/bidding/start/{id}', [AuctionController::class, 'biddingStart'])->name('bidding.started')->middleware('permission:bidding-page-view');
     Route::get('/bidding', [AuctionController::class, 'biddingList'])->name('bidding.index')->middleware('permission:bidding-page-view');
 
-    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:settings-page-view');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:setting-page-view');
     Route::put('/settings/update', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:settings-update');    
 });
 

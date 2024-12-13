@@ -14,7 +14,7 @@ class AdminController extends Controller
 {
 
     public function __construct(){
-        // $this->middleware('permission:permissions-page-view');
+        // $this->middleware('permission:permission-page-view');
     }
 
 

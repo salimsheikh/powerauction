@@ -15,13 +15,18 @@ class CreateAdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'name' => 'Admin', 
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('admin@admin.com')
-        ]);
+        $email = 'support@makent.in';
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => __('Nexgeno Team'), 
+                'email' => $email,
+                'password' => bcrypt($email)
+            ]);
+        }
     
-        $role = Role::create(['name' => 'Admin']);
+        $role = Role::create(['name' => 'Administrator']);
      
         $permissions = Permission::pluck('id','id')->all();
    
@@ -29,11 +34,16 @@ class CreateAdminUserSeeder extends Seeder
      
         $user->assignRole([$role->id]);
 
-        $user = User::create([
-            'name' => 'User', 
-            'email' => 'user@user.com',
-            'password' => bcrypt('user@user.com')
-        ]);
+        $email = 'salimsheikh4u2000@gmail.com';
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            $user = User::create([
+                'name' => __('Salim Shaikh'), 
+                'email' => $email,
+                'password' => bcrypt($email)
+            ]);
+        }
     
         $role = Role::create(['name' => 'User']);
      
@@ -42,5 +52,8 @@ class CreateAdminUserSeeder extends Seeder
         $role->syncPermissions($permissions);
      
         $user->assignRole([$role->id]);
+
+        $role = Role::create(['name' => 'Player']);
+        $role = Role::create(['name' => 'Subscriber']);
     }
 }
