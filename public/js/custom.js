@@ -177,6 +177,7 @@ if (tableContainer) {
             selectedButton = e.target; // Store the clicked button
 
             if (formProcessing) {
+                showToast(lang.please_wait, 'warning',true);
                 return false;
             }
 
@@ -233,7 +234,7 @@ if (tableContainer) {
                 logConsole("response 1");
                 //do not delete
                 alertElement.classList.remove("alert-danger", "alert-info", "alert-success");
-                formProcessing = false;
+                
 
                 buttonText.classList.remove('hidden'); // Hide the text
                 loadingSpinner.classList.add('hidden'); // Show the spinner
@@ -246,7 +247,7 @@ if (tableContainer) {
 
                 return response.json();
             }).then((data) => {
-
+                formProcessing = false;
                 alertElement.textContent = data.message;
                 alertElement.classList.add("alert-success");
 
@@ -310,7 +311,11 @@ if (tableContainer) {
               
 
             }).catch((error) => {
-                fatchResponseCatch(error, alertElement);
+                setTimeout(function () {                    
+                    formProcessing = false;
+                }, 1000);
+                
+                fatchResponseCatch(error, null);
             });
 
         }
@@ -387,6 +392,7 @@ if (popupUpdateForm) {
             }, 1500);
 
         }).catch((error) => {
+            
             if (submitButton) {
                 setTimeout(function () {
                     submitButton.disabled = false; // Disable the button
@@ -506,6 +512,7 @@ if (popupDeleteForm) {
                 
             }, 1000);
         }).catch((error) => {
+            console.log("Errors:", error)
             deleteButton.disabled = false;
             fatchResponseCatch(error, alertElement);
         });

@@ -1248,3 +1248,11 @@ select.inputbox.invalid,
 .custom-modal.column-6 input.inputbox{ 
     width: 100%;
 }
+
+.text-red{
+    color: red;
+}
+
+.dark .text-yellow{
+    color: yellow;
+}

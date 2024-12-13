@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Str;
 
 class ImmutablePermissionsCheck implements Rule
 {
@@ -36,6 +37,7 @@ class ImmutablePermissionsCheck implements Rule
     public function message()
     {
         $missingList = implode(', ', $this->missingPermissions);
+        $missingList = Str::title(str_replace('-', ' ', $missingList));
         return "The following permissions cannot be disabled: {$missingList}.";
     }
 }

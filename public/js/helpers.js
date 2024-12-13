@@ -199,6 +199,8 @@ function fatchResponseCatch(error, alertElement) {
             alertElement.classList.add("alert-danger");
             alertElement.classList.remove("alert-hidden");
             alertElement.innerHTML = errorMessage;
+        }else{
+            showToast(errorMessage, 'error',true);
         }
     } else {
         logConsole('Error:', error);
@@ -206,6 +208,8 @@ function fatchResponseCatch(error, alertElement) {
             alertElement.classList.add("alert-danger");
             alertElement.classList.remove("alert-hidden");
             alertElement.textContent = 'The server returned an invalid response. Please try again later.';
+        }else{
+            showToast('The server returned an invalid response. Please try again later.', 'error',true);
         }
     }
 }
@@ -436,14 +440,31 @@ async function fetchAndRender(page = 1) {
 
     const headers = get_ajax_header(false);
 
-    // showToast(lang.please_wait, 'info');
+    showToast(lang.please_wait, 'info');
 
     const response = await fetch(url, {
         method: 'get',
         headers: headers
-    });
+    });    
 
-    const data = await response.json();
+    const data = await response.json();    
+
+    if(data?.errors){
+        fatchResponseCatch(data, null);
+        let errorMessage = "";
+        for (const field_name in data.errors) {            
+            errorMessage += `${data.errors[field_name].join(', ')}` + ";";
+        }
+        const tbody = document.getElementById('table-body');
+        const tbody_p = tbody.querySelector('p')
+        tbody_p.innerHTML = errorMessage;
+        tbody_p.classList.remove('dark:text-white')
+        tbody_p.classList.add('text-red')
+        tbody_p.classList.add('dark:text-yellow')
+        return false;
+    }else{
+        showToast('', 'info', true);
+    }
 
     const columns = data.columns;
 
@@ -853,7 +874,8 @@ function showToast(message, type = 'info', forceHide = false) {
     // Create a toast element
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    toast.textContent = message;
+    // toast.textContent = message;
+    toast.innerHTML = message;
 
     // Append the toast to the container
     container.appendChild(toast);

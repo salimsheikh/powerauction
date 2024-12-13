@@ -6,12 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 use Illuminate\Support\Str;
-use App\Models\Category;
-use App\Models\Style;
-use App\Models\SponsorType;
-use App\Models\League;
-use App\Models\Plan;
-use App\Models\Player;
+use App\Models\{Category,Style,SponsorType,League,Plan,Player};
 
 class PopupFormInput extends Component
 {
@@ -129,8 +124,7 @@ class PopupFormInput extends Component
                     $items = \Spatie\Permission\Models\Role::select('id','name')->orderBy('name', 'ASC')->get();
                     foreach($items as $item){
                         $this->options[$item->id] = $item->name;
-                    }
-                    // \Log::info(print_r($this->options,true));
+                    }                    
                     break;
             }
             

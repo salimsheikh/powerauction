@@ -30,15 +30,10 @@ class UserRoleRequest extends FormRequest
         // Base validation rules
         $rules = [            
             'name' => 'required|string|max:100|unique:roles,name',
-            'permission' => [
-                'required',
-                'array',
-                'min:1',
-            ],
+            'permission' => ['required','array','min:1'],
         ];
 
-        $name = $this->input('name', '');     
-
+        $name = $this->input('name', '');
         if (in_array($name, ['admin', 'super-admin', 'Admin', 'Administrator'])) {
             $immutablePermissions = config('permissions.immutable_permissions');
             $rules['permission'][] = new ImmutablePermissionsCheck($immutablePermissions);
@@ -52,8 +47,6 @@ class UserRoleRequest extends FormRequest
             // Rules for creating a role
             if($update_id > 0){
                 $rules['name'] = 'required|string|max:100|unique:roles,name,' . $update_id;
-            }else{
-                $rules['name'] = 'required|string|max:100|unique:roles,name';
             }            
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             // Rules for updating a role
