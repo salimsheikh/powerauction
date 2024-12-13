@@ -27,18 +27,23 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
            // 'permission2' => \App\Http\Middleware\CustomPermissionMiddleware::class,
         ]);
-
-        
-
-        
         //$middleware->append(CustomThrottleHandler::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {
-            return response()->json([                
-                'message' => 'You do not have the required permission.',
-                'required_permission' => '',
-                'errors' => ['category_delete' => [$e->getMessage()]],
-            ], Response::HTTP_FORBIDDEN);
+
+            // Check if the request is an API call, fetch(), or expects JSON
+            if ($request->expectsJson() ||  $request->is('api/*') || str_contains($request->header('Content-Type'), 'application/json')) {
+
+                // Extract the missing permission from the exception message
+                $missingPermission = $e->getRequiredPermissions();
+
+                return response()->json([                
+                    'message' => 'You do not have the required permission.',
+                    'required_permission' => $missingPermission,
+                    'errors' => ['permission' => [$e->getMessage()]],
+                    'description' => 'JSON coming from bootstrap/app.php',
+                ], Response::HTTP_FORBIDDEN);
+            }
         });
     })->create();

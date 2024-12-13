@@ -13,37 +13,24 @@ class PermissionTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [
-            'role-list',
-            'role-create',
-            'role-edit',
-            'role-delete',
-            'category-list',
-            'category-create',
-            'category-edit',
-            'category-delete',
-            'player-list',
-            'player-create',
-            'player-edit',
-            'player-delete',
-            'team-list',
-            'team-create',
-            'team-edit',
-            'team-delete',
-            'league-list',
-            'league-create',
-            'league-edit',
-            'league-delete',
-            'sponsor-list',
-            'sponsor-create',
-            'sponsor-edit',
-            'sponsor-delete',
+        $permissions = [];
 
-            'bidding-list',
-         ];
+        $menus = config('menus'); // Or fetch from the database
+        foreach($menus as $menu){
+            $permissions[] = $menu['permission'];
+        }      
+
+        $masters = ['category','player','team','league','sponsor','user','role','permission'];
+        $subPermissions = ['page-page','create','edit','update','delete'];
+
+        foreach($masters as $m){
+            foreach($subPermissions as $p){
+                $permissions[] =   $m."-".$p;
+            }
+        }
       
-         foreach ($permissions as $permission) {
-              Permission::create(['name' => $permission]);
-         }
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
     }
 }

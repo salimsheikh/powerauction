@@ -456,11 +456,11 @@ async function fetchAndRender(page = 1) {
             errorMessage += `${data.errors[field_name].join(', ')}` + ";";
         }
         const tbody = document.getElementById('table-body');
-        const tbody_p = tbody.querySelector('p')
+        const tbody_p = tbody.querySelector('p');
         tbody_p.innerHTML = errorMessage;
-        tbody_p.classList.remove('dark:text-white')
-        tbody_p.classList.add('text-red')
-        tbody_p.classList.add('dark:text-yellow')
+        tbody_p.classList.remove('dark:text-white');
+        tbody_p.classList.add('text-red');
+        tbody_p.classList.add('dark:text-yellow');
         return false;
     }else{
         showToast('', 'info', true);
@@ -468,7 +468,7 @@ async function fetchAndRender(page = 1) {
 
     const columns = data.columns;
 
-    const items = data.items;
+    const items = data.items;    
 
     renderTableHeader(columns);
 
@@ -499,10 +499,14 @@ function renderTable(data) {
 
     const totalItems = data.items.total;
 
+    const actions = data?.actions;
+
+    console.log(actions);
+
     const tbody = document.getElementById('table-body');
 
     if (totalItems > 0) {
-        tbody.innerHTML = renderTableRows(items, columns, data.items);
+        tbody.innerHTML = renderTableRows(items, columns, data.items, actions);
     } else {
         const colspan = Object.keys(columns).length;
         tbody.innerHTML = `
@@ -515,7 +519,7 @@ function renderTable(data) {
     }
 }
 
-function renderTableRows(rows, columns, page) {
+function renderTableRows(rows, columns, page, actions) {
 
     let id = 0;
     let output = "";
@@ -531,18 +535,26 @@ function renderTableRows(rows, columns, page) {
     </svg>`
 
     const buttons = [];
+    buttons['delete'] = "";
+    buttons['edit'] = "";
 
     let i = 0;
     rows.forEach(row => {
         id = row.id;
 
         if (id <= 1 && rows.length <= 1) {
-            buttons['delete'] = `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
+            if(actions?.delete){
+                buttons['delete'] = `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
+            }
         } else {
-            buttons['delete'] = `<button class="btn delete-btn delete-button r" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+            if(actions?.delete){
+                buttons['delete'] = `<button class="btn delete-btn delete-button r" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+            }
         }
 
-        buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+        if(actions?.edit){
+            buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
+        }
         buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
         buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 " data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
 
@@ -852,6 +864,9 @@ function getLocalStorage(StorageKey, stringify = false) {
 
 // Function to create toaster notifications
 function showToast(message, type = 'info', forceHide = false) {
+
+   
+
     // Create a container if it doesn't exist
     let container = document.getElementById('toast-container');
     if (!container) {
@@ -869,6 +884,10 @@ function showToast(message, type = 'info', forceHide = false) {
                 field.remove();
             }, 300);
         });
+    }   
+
+    if(message == ""){
+        return false;
     }
 
     // Create a toast element

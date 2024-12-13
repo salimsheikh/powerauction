@@ -35,13 +35,8 @@ class UserRoleApiController extends Controller
        // Paginate the results
        $items = $itemQuery->paginate($list_per_page);
 
-       $columns = $this->get_columns();
-
        // Return the columns and items data in JSON format
-       return response()->json([
-           'columns' => $columns,
-           'items' => $items
-       ]);
+       return response()->json($this->getActionPermissionsAndColumns($items));
     }
 
     public function store(UserRoleRequest $request)
@@ -205,6 +200,30 @@ class UserRoleApiController extends Controller
         $columns['name'] = __('Role Name');
         $columns['user_actions'] = __('Actions');
         return $columns;
+    }
+
+    private function getActionPermissionsAndColumns($items){
+        $columns = $this->get_columns();
+        $user = auth()->user(); // Get the logged-in user
+
+        // Get permissions for the actions
+        $actions = [];        
+        //$actions['edit'] = $user->can('category-edit');
+        //$actions['delete'] = $user->can('category-delete');
+
+        $actions['edit'] = true;
+        $actions['delete'] = true;
+
+        // Exclude the actions column if no actions are allowed
+        if (!$actions['edit'] && !$actions['delete']) {
+            unset($columns['actions']);
+        }
+
+        return [
+            'columns' => $columns,
+            'items' => $items,
+            'actions' => $actions
+        ];
     }
 
     private function get_response()

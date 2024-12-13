@@ -41,10 +41,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['verified'])->name('dashboard')->middleware('permission:dashboard-page-view');
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index')->middleware('permission:category-page-view');
-    Route::get("/players",[AdminController::class, 'players'])->name('players.index')->middleware('permission:players-page-view');
-    Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index')->middleware('permission:teams-page-view');
+    Route::get("/players",[AdminController::class, 'players'])->name('players.index')->middleware('permission:player-page-view');
+    Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index')->middleware('permission:team-page-view');
     Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index')->middleware('permission:teams-page-view');
-    Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index')->middleware('permission:leagues-page-view');
+    Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index')->middleware('permission:league-page-view');
     Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index')->middleware('permission:sponsors-page-view');
     Route::get("/clear-cache",[AdminController::class, 'clearCache'])->name('clear-cache')->middleware('permission:clear-cache-page-view');
     Route::get("/user-roles",[AdminController::class, 'userRoles'])->name('user-roles')->middleware('permission:user-roles-page-view');

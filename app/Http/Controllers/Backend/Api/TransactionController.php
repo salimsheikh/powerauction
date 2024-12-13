@@ -15,6 +15,7 @@ class TransactionController extends Controller
     public function index(Request $request, $team_id)
     {
         $data = $this->getList($team_id);
+        
         return response()->json([
             'success' => true,
             'message' => 'Transaction data.',            
@@ -111,5 +112,29 @@ class TransactionController extends Controller
         $columns['created_by'] = __('Date');
 
         return $columns;
+    }
+
+    private function getActionPermissionsAndColumns($items){
+        $columns = $this->get_columns();
+        $user = auth()->user(); // Get the logged-in user
+
+        // Get permissions for the actions
+        $actions = [];        
+        //$actions['edit'] = $user->can('category-edit');
+        //$actions['delete'] = $user->can('category-delete');
+
+        $actions['edit'] = true;
+        $actions['delete'] = true;
+
+        // Exclude the actions column if no actions are allowed
+        if (!$actions['edit'] && !$actions['delete']) {
+            unset($columns['actions']);
+        }
+
+        return [
+            'columns' => $columns,
+            'items' => $items,
+            'actions' => $actions
+        ];
     }
 }

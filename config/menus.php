@@ -16,25 +16,25 @@
             'label' => 'Players',
             'route_name' => 'players.index',
             'active_routes' => ['players.index'],
-            'permission' => 'players-page-view'
+            'permission' => 'player-page-view'
         ],
         [
             'label' => 'Teams',
             'route_name' => 'teams.index',
             'active_routes' => ['teams.index','team.players.index'],
-            'permission' => 'teams-page-view'
+            'permission' => 'team-page-view'
         ],
         [
             'label' => 'Leagues',
             'route_name' => 'leagues.index',
             'active_routes' => ['leagues.index'],
-            'permission' => 'leagues-page-view'
+            'permission' => 'league-page-view'
         ],
         [
             'label' => 'Sponsors',
             'route_name' => 'sponsors.index',
             'active_routes' => ['sponsors.index'],
-            'permission' => 'sponsors-page-view'
+            'permission' => 'sponsor-page-view'
         ],
         [
             'label' => 'Biddings',
@@ -52,7 +52,7 @@
             'label' => 'Settings',
             'route_name' => 'settings.index',
             'active_routes' => ['settings.index'],
-            'permission' => 'settings-page-view'
+            'permission' => 'setting-page-view'
         ],
         [
             'label' => 'Clear Cache',
@@ -64,13 +64,13 @@
             'label' => 'Users',
             'route_name' => 'users',
             'active_routes' => ['users'],
-            'permission' => 'users-page-view'
+            'permission' => 'user-page-view'
         ],
         [
             'label' => 'User Roles',
             'route_name' => 'user-roles',
             'active_routes' => ['user-roles'],
-            'permission' => 'user-roles-page-view'
+            'permission' => 'user-role-page-view'
         ],        
         [
             'label' => 'Permissions',

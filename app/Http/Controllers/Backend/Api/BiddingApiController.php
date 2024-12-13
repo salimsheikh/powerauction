@@ -52,14 +52,8 @@ class BiddingApiController extends Controller
             ];
         });
 
-        // Get table columns
-        $columns = $this->get_columns();
-
-        // Return response in JSON format
-        return response()->json([
-            'columns' => $columns,
-            'items' => $items
-        ]);
+        // Return the columns and items data in JSON format
+        return response()->json($this->getActionPermissionsAndColumns($items));
     }
 
 
@@ -370,6 +364,29 @@ class BiddingApiController extends Controller
         $columns['bid_actions'] = __('Actions');
 
         return $columns;
+    }
+
+    private function getActionPermissionsAndColumns($items){
+        $columns = $this->get_columns();
+        $user = auth()->user(); // Get the logged-in user
+
+        // Get permissions for the actions
+        $actions = [];        
+        $actions['edit'] = $user->can('category-edit');
+        $actions['delete'] = $user->can('category-delete');
+
+        // Exclude the actions column if no actions are allowed
+        if (!$actions['edit'] && !$actions['delete']) {
+            unset($columns['actions']);
+        }
+
+        unset($columns['bid_actions']);
+
+        return [
+            'columns' => $columns,
+            'items' => $items,
+            'actions' => $actions
+        ];
     }
 
     private function get_response()

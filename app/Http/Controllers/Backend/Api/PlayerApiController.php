@@ -63,13 +63,8 @@ class PlayerApiController extends Controller
             $items[$key]->style_label = '';
         }
 
-        $columns = $this->get_columns();
-
         // Return the columns and items data in JSON format
-        return response()->json([
-            'columns' => $columns,
-            'items' => $items
-        ]);
+        return response()->json($this->getActionPermissionsAndColumns($items));
     }
 
     public function store(PlayerRequest $request){
@@ -339,6 +334,30 @@ class PlayerApiController extends Controller
         $columns['view_actions'] = __('Actions');
 
         return $columns;
+    }
+
+    private function getActionPermissionsAndColumns($items){
+        $columns = $this->get_columns();
+        $user = auth()->user(); // Get the logged-in user
+
+        // Get permissions for the actions
+        $actions = [];        
+        //$actions['edit'] = $user->can('category-edit');
+        //$actions['delete'] = $user->can('category-delete');
+
+        $actions['edit'] = true;
+        $actions['delete'] = true;
+
+        // Exclude the actions column if no actions are allowed
+        if (!$actions['edit'] && !$actions['delete']) {
+            unset($columns['actions']);
+        }
+
+        return [
+            'columns' => $columns,
+            'items' => $items,
+            'actions' => $actions
+        ];
     }
 
     private function get_response()

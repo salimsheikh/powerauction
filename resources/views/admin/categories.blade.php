@@ -41,10 +41,12 @@
                 <div class="p-6 text-gray-900">
                     <div class="table-header-search">
                         <div>
-                            <button id="buttonPopupShowAddItemModel"
-                                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                                {{ __('Add Category') }}
-                            </button>
+                            @can('category-create')
+                                <button id="buttonPopupShowAddItemModel"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                                    {{ __('Add Category') }}
+                                </button>
+                            @endcan
                         </div>
                         <div class="search-input">
                             <label for="table-search" class="sr-only">{{ __('Search') }}</label>
