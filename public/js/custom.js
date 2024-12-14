@@ -12,6 +12,40 @@ var buttonPopupShowAddItemModel = document.getElementById("buttonPopupShowAddIte
 // Get the modal
 var popupAddItemModal = document.getElementById("popupAddItemModal");
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    const searchTags = document.querySelectorAll('.btn-search-tags');
+    if (searchTags) {
+        searchTags.forEach(searchButton => {
+
+            searchButton.onclick = function(e){    
+
+                const list_id = e.target.getAttribute('data-checkbox');                
+
+                const prevSibling = e.target.previousElementSibling;
+
+                const permissionItems = document.querySelectorAll(`ul.${list_id} li`);
+
+                const query = prevSibling.value.trim().toLowerCase();
+
+                prevSibling.value = query;
+
+                permissionItems.forEach((item) => {
+                    const text = item.textContent.trim().toLowerCase(); // Get the text of each permission in lowercase
+        
+                    // Show or hide the item based on whether it matches the query
+                    if (text.includes(query)) {
+                        item.style.display = "block"; // Show matching items
+                    } else {
+                        item.style.display = "none"; // Hide non-matching items
+                    }
+                });
+            }            
+        });      
+    }
+});
+
+
 if (buttonPopupShowAddItemModel) {
     // When the user clicks the button, open the modal 
     buttonPopupShowAddItemModel.onclick = function () {
@@ -226,6 +260,16 @@ if (tableContainer) {
             if (loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
 
             formProcessing = true;
+
+            const searchButton = popupTargetModel.querySelector(".btn-search-tags");
+            const list_id = searchButton.getAttribute('data-checkbox');                
+            const permissionItems = document.querySelectorAll(`ul.${list_id} li`);
+            permissionItems.forEach((item) => {
+                item.style.display = "block";
+            })
+
+            console.log(searchButton);
+            
 
             fetch(`${BASE_API_URL}/edit/${edit_id}`, {
                 method: 'get',
@@ -956,6 +1000,7 @@ function initializeSearch() {
         });
     });
 }
+
 
 // Initial load
 fetchAndRender(current_page);

@@ -31,12 +31,13 @@
         <div class="w-full">
             <div class="my-2 dark:text-white flex items-center justify-between">
                 <div>{{ $label }} <a href="#" id="{{ $id }}" class="selectAllPermission" data-checkbox="{{ $id }}">{{ __('Select All') }}</a></div>                
-                <div>
-                    {{-- <input type="text" name="search-tag" value="" class="search-tags inputbox"> --}}
+                <div class="flex items-center justify-between gap-1">
+                    <input type="text" name="search-tag" value="" class="search-tags inputbox" autocomplete="off">
+                    <button type="button" class="px-4 py-1 bg-gray-600 text-gray-200 rounded hover:bg-gray-700 btn-search-tags" data-checkbox="item-{{ $id }}">{{ __('Search') }}</button>
                 </div>
             </div>
             {{-- grid w-full gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-4 --}}
-            <ul class="grid w-full gap-4 popup-checkbox-grid">
+            <ul class="grid w-full gap-4 popup-checkbox-grid item-{{ $id }}">
                 @foreach ($options as $option_name => $option_value)
                     <li>
                         <input type="checkbox" id="{{ $id }}_{{ $option_name }}" name="{{ $name }}"
