@@ -80,7 +80,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'User role name is required.',
             'password.min' => __('Password must be minimum 8 characters.'),
-            'disabled' => __('Some permission required')
+            'disabled' => __('Some permission required'),
             
         ];
     }

@@ -11,41 +11,6 @@ var buttonPopupShowAddItemModel = document.getElementById("buttonPopupShowAddIte
 
 // Get the modal
 var popupAddItemModal = document.getElementById("popupAddItemModal");
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const searchTags = document.querySelectorAll('.btn-search-tags');
-    if (searchTags) {
-        searchTags.forEach(searchButton => {
-
-            searchButton.onclick = function(e){    
-
-                const list_id = e.target.getAttribute('data-checkbox');                
-
-                const prevSibling = e.target.previousElementSibling;
-
-                const permissionItems = document.querySelectorAll(`ul.${list_id} li`);
-
-                const query = prevSibling.value.trim().toLowerCase();
-
-                prevSibling.value = query;
-
-                permissionItems.forEach((item) => {
-                    const text = item.textContent.trim().toLowerCase(); // Get the text of each permission in lowercase
-        
-                    // Show or hide the item based on whether it matches the query
-                    if (text.includes(query)) {
-                        item.style.display = "block"; // Show matching items
-                    } else {
-                        item.style.display = "none"; // Hide non-matching items
-                    }
-                });
-            }            
-        });      
-    }
-});
-
-
 if (buttonPopupShowAddItemModel) {
     // When the user clicks the button, open the modal 
     buttonPopupShowAddItemModel.onclick = function () {
@@ -259,17 +224,7 @@ if (tableContainer) {
             if (buttonText) buttonText.classList.add('hidden'); // Hide the text
             if (loadingSpinner) loadingSpinner.classList.remove('hidden'); // Show the spinner
 
-            formProcessing = true;
-
-            const searchButton = popupTargetModel.querySelector(".btn-search-tags");
-            const list_id = searchButton.getAttribute('data-checkbox');                
-            const permissionItems = document.querySelectorAll(`ul.${list_id} li`);
-            permissionItems.forEach((item) => {
-                item.style.display = "block";
-            })
-
-            console.log(searchButton);
-            
+            formProcessing = true;            
 
             fetch(`${BASE_API_URL}/edit/${edit_id}`, {
                 method: 'get',
@@ -916,30 +871,32 @@ if (popupBoosterForm) {
 document.querySelectorAll('.selectAllPermission').forEach(button => {
     const checkboxClass = button.getAttribute('data-checkbox');
     const checkboxes = document.querySelectorAll(`.${checkboxClass}`);
+    checkboxes.forEach(checkbox => {
+        const parent = checkbox.parentElement;
+        parent.style.display = 'block';
+    });    
 
     button.addEventListener('click', function (event) {
         event.preventDefault(); // Prevent default action of the link        
         const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-
+        
         // If all checkboxes are checked, uncheck them
         if (allChecked) {
             checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            //button.textContent = `Select All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
+                const parent = checkbox.parentElement;
+                if (parent && window.getComputedStyle(parent).display === 'block') {
+                    checkbox.checked = false;
+                }
+            });            
             button.textContent = lang.select_all;
-
-            // Trigger the change event manually on each checkbox
-           //checkbox.dispatchEvent(new Event('change'));
         } else {
             // Otherwise, check all checkboxes
             checkboxes.forEach(checkbox => {
-                checkbox.checked = true;
-
-                // Trigger the change event manually on each checkbox
-                //checkbox.dispatchEvent(new Event('change'));
+                const parent = checkbox.parentElement;
+                if (parent && window.getComputedStyle(parent).display === 'block') {
+                    checkbox.checked = true;
+                }
             });
-            //button.textContent = `Unselect All ${checkboxClass.replace('_', ' ').toUpperCase()}`; // Update button text
             button.textContent = lang.unselect_all;
         }
     });
@@ -1000,6 +957,67 @@ function initializeSearch() {
         });
     });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const popupSearchClear = document.querySelectorAll('.popup-search-clear');
+    if (popupSearchClear) {
+        popupSearchClear.forEach(searchButton => {
+            searchButton.onclick = function(e){
+                const checkbox_id = e.target.getAttribute('data-checkbox');
+
+                const permissionItems = document.querySelectorAll(`ul.items-${checkbox_id} li`);
+
+                const popupSearchTextBox = document.querySelector(`input.textbox-${checkbox_id}`);
+                popupSearchTextBox.value = "";
+
+                permissionItems.forEach((item) => {
+                    item.style.display = "block"; // Show matching items
+                });
+
+                document.querySelector(`.select-all-${checkbox_id}`).style.display = 'inline-block';
+            }
+        });
+    }    
+
+    const searchTags = document.querySelectorAll('.btn-search-tags');
+    if (searchTags) {
+        searchTags.forEach(searchButton => {
+
+            searchButton.onclick = function(e){    
+
+                const checkbox_id = e.target.getAttribute('data-checkbox');           
+
+                const popupSearchTextBox = document.querySelector(`input.textbox-${checkbox_id}`);
+
+                const permissionItems = document.querySelectorAll(`ul.items-${checkbox_id} li`);
+
+                const query = popupSearchTextBox.value.trim().toLowerCase();
+
+                popupSearchTextBox.value = query;
+
+                if(query == ""){
+                    document.querySelector(`.select-all-${checkbox_id}`).style.display = 'inline-block';
+                }else{
+                    document.querySelector(`.select-all-${checkbox_id}`).style.display = 'none';
+                }
+
+                permissionItems.forEach((item) => {
+                    const text = item.textContent.trim().toLowerCase(); // Get the text of each permission in lowercase
+        
+                    // Show or hide the item based on whether it matches the query
+                    if (text.includes(query)) {
+                        item.style.display = "block"; // Show matching items
+                    } else {
+                        item.style.display = "none"; // Hide non-matching items
+                    }
+                });
+
+                updateButtonText(document.querySelectorAll('.'+checkbox_id),document.getElementById(checkbox_id));
+            }            
+        });      
+    }
+});
 
 
 // Initial load

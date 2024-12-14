@@ -1260,6 +1260,21 @@ select.inputbox.invalid,
 .popup-checkbox-grid{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: 16px; /* Space between grid items */
-    
+    gap: 16px; /* Space between grid items */    
+}
+
+.popup-search-box{
+    position: relative;
+}
+
+.popup-search-box input{
+    width: 100px;
+    padding-right: 20px;
+}
+
+.popup-search-box span{
+    position: absolute; 
+    right: 10px; top: 50%; 
+    transform: translateY(-50%);
+    cursor: pointer;
 }

@@ -78,6 +78,7 @@ class UserRoleRequest extends FormRequest
         return [
             'name' => 'User role name is required.',
             'name.max' => 'User role name must not exceed 100 characters.',
+            'name.unique' => 'Entered role name is exists.',
             'permission.immutable_permissions_check' => 'You cannot disable immutable permissions required for your role.',
         ];
     }

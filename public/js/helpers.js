@@ -169,6 +169,19 @@ function showPopupForm() {
     if (body_content) {
         body_content.style.display = "block";
     }
+
+    const searchButton = popupTargetModel.querySelector(".btn-search-tags");
+    if(searchButton){
+        const checkbox_id = searchButton.getAttribute('data-checkbox');                
+        const permissionItems = document.querySelectorAll(`ul.items-${checkbox_id} li`);
+        if(permissionItems){
+            permissionItems.forEach((item) => {
+                item.style.display = "block";
+            });
+        }
+
+        document.querySelector(`.select-all-${checkbox_id}`).style.display = 'inline-block';
+    }
 }
 
 function fatchResponseCatch(error, alertElement) {
@@ -601,7 +614,7 @@ function renderTableRows(rows, columns, page, actions) {
                     break;
                 case "team_players":
                     let team_player_url = team_players.replace('#teamid#', id);
-                    cell_value = `<a href="${team_player_url}" class="btn view-team-button hover:bg-purple-800 material-btn material-symbols-outlined"" title="${lang.view}">visibility</a>`;
+                    cell_value = `<a href="${team_player_url}" class="btn view-team-button hover:bg-purple-800 material-btn material-symbols-outlined" title="${lang.view}">visibility</a>`;
                     break;
                 case "league_actions":
                     buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
