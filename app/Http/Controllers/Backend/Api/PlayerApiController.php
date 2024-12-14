@@ -342,15 +342,17 @@ class PlayerApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
+        $actions['edit'] = false;
+        $actions['delete'] = false;
+        $actions['view'] = false;
 
-        $actions['edit'] = true;
-        $actions['delete'] = true;
+        $actions['edit'] = $user->can('player-edit');
+        $actions['delete'] = $user->can('player-delete');
+        $actions['view'] = $user->can('player-view');
 
         // Exclude the actions column if no actions are allowed
-        if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
+        if (!$actions['edit'] && !$actions['delete'] && !$actions['view']) {
+            unset($columns['view_actions']);
         }
 
         return [

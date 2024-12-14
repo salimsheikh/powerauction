@@ -188,15 +188,12 @@ class LeagueApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
-
-        $actions['edit'] = true;
-        $actions['delete'] = true;
+        $actions['edit'] = $user->can('league-edit');
+        $actions['delete'] = $user->can('league-delete');       
 
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
+            unset($columns['league_actions']);
         }
 
         return [

@@ -372,12 +372,12 @@ class BiddingApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        $actions['edit'] = $user->can('category-edit');
-        $actions['delete'] = $user->can('category-delete');
+        $actions['edit'] = true;
+        $actions['delete'] = true;
 
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
+            unset($columns['bid_actions']);
         }
 
         unset($columns['bid_actions']);

@@ -252,15 +252,12 @@ class UserApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
-
-        $actions['edit'] = true;
-        $actions['delete'] = true;
+        $actions['edit'] = $user->can('user-edit');
+        $actions['delete'] = $user->can('user-delete');
 
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
+            unset($columns['user_actions']);
         }
 
         return [

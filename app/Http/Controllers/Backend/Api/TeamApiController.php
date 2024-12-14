@@ -374,16 +374,20 @@ class TeamApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
-
-        $actions['edit'] = true;
-        $actions['delete'] = true;
+        $actions['edit'] = $user->can('team-edit');
+        $actions['delete'] = $user->can('team-delete');
+        $actions['booster'] = $user->can('team-booster');
+        $actions['view-players'] = $user->can('team-view-players');
 
         // Exclude the actions column if no actions are allowed
-        if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
+        if (!$actions['edit'] && !$actions['delete'] && $actions['booster']) {
+            unset($columns['team_actions']);
         }
+
+        if (!$actions['view-players']) {
+            unset($columns['team_players']);
+        }
+        
 
         return [
             'columns' => $columns,

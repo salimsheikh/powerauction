@@ -119,17 +119,7 @@ class TransactionController extends Controller
         $user = auth()->user(); // Get the logged-in user
 
         // Get permissions for the actions
-        $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
-
-        $actions['edit'] = true;
-        $actions['delete'] = true;
-
-        // Exclude the actions column if no actions are allowed
-        if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['actions']);
-        }
+        $actions = []; 
 
         return [
             'columns' => $columns,

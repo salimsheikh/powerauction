@@ -13,7 +13,7 @@ class PermissionTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [];
+        $permissions = ['player-view','player-add-team','player-remove-team'];
 
         $menus = config('menus'); // Or fetch from the database
         foreach($menus as $menu){

@@ -218,11 +218,8 @@ class UserRoleApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        //$actions['edit'] = $user->can('category-edit');
-        //$actions['delete'] = $user->can('category-delete');
-
-        $actions['edit'] = true;
-        $actions['delete'] = true;
+        $actions['edit'] = $user->can('user-role-edit');
+        $actions['delete'] = $user->can('user-role-delete');
 
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
