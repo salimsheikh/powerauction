@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Api;
 
+use Illuminate\Support\Str;
+
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\{Role,Permission};
 
@@ -169,7 +171,15 @@ class UserRoleApiController extends Controller
                     'success' => false,
                     'message' => __('This role cannot be deleted because it is assigned to one or more users.'),
                     'errors' => ['role_delete' => [__('This role cannot be deleted because it is assigned to one or more users.')]],
-                ], 400); // Return a bad request status
+                ], 409); // Return a bad request status
+            }
+            
+            if ($item && in_array(Str::lower($item->name), ['administrator', 'super-admin','player','user'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('This role cannot be deleted because it is created by system.'),
+                    'errors' => ['role_delete' => [__('This role cannot be deleted because it is created by system.')]],
+                ], 409); // Return a bad request status
             }
 
             // Proceed with deletion if not assigned

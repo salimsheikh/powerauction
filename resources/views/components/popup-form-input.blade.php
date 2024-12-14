@@ -28,14 +28,15 @@
             @endforeach
         </select>
     @elseif($type == 'checkbox')
-        <div>
+        <div class="w-full">
             <div class="my-2 dark:text-white flex items-center justify-between">
                 <div>{{ $label }} <a href="#" id="{{ $id }}" class="selectAllPermission" data-checkbox="{{ $id }}">{{ __('Select All') }}</a></div>                
                 <div>
                     {{-- <input type="text" name="search-tag" value="" class="search-tags inputbox"> --}}
                 </div>
             </div>
-            <ul class="grid w-full gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {{-- grid w-full gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-4 --}}
+            <ul class="grid w-full gap-4 popup-checkbox-grid">
                 @foreach ($options as $option_name => $option_value)
                     <li>
                         <input type="checkbox" id="{{ $id }}_{{ $option_name }}" name="{{ $name }}"

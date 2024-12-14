@@ -1256,3 +1256,10 @@ select.inputbox.invalid,
 .dark .text-yellow{
     color: yellow;
 }
+
+.popup-checkbox-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; /* Space between grid items */
+    
+}

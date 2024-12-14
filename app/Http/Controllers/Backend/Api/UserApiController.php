@@ -143,6 +143,17 @@ class UserApiController extends Controller
 
         try {
 
+             // Find the user
+             $item = User::findOrFail($id);
+             $userRole = $item->role;
+
+            if($userRole == 'administrator' && !array_intersect(['administrator','Administrator'],$request->input('roles'))){
+                $res['success'] = false;
+                $res['errors'] = ['user_delete' => [__('Administrator role can no be change.')]];
+                $res['statusCode'] = 409;
+                return jsonResponse($res);
+            }
+
             $data = $request->only(['name', 'phone', 'address', 'email']); // Whitelist allowed fields
 
             // Hash the password if provided
@@ -153,8 +164,7 @@ class UserApiController extends Controller
             // Add the updated_by field
             $data['updated_by'] = Auth::id();
     
-            // Find the user
-            $item = User::findOrFail($id);
+           
     
             // Update the record
             $item->update($data);

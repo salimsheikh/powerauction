@@ -39,7 +39,7 @@ class UserRoleRequest extends FormRequest
             $rules['permission'][] = new ImmutablePermissionsCheck($immutablePermissions);
         }
 
-        $update_id = $this->input('update_id', 0);        
+        $update_id = $this->input('update_id', 0);
 
         //\Log::info($update_id);
 

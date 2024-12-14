@@ -12,19 +12,16 @@ class MenuService
         $headerMenu = [];
         $sideMenu = [];
 
+        $i = 0;
         foreach ($menus as $menu) {
-            if (in_array($menu['route_name'], $headerRoutes)) {
-                $headerMenu[] = $menu;
+            if (in_array($menu['route_name'], $headerRoutes) && $i++ < 7) {
+                $headerMenu[] = $menu;                
             }
 
             if (in_array($menu['route_name'], $sideMenuRoutes)) {
                 $sideMenu[] = $menu;
             }
-        }
-
-        $headerMenu = $this->filterMenu($headerMenu);
-
-        $sideMenu = $this->filterMenu($sideMenu);
+        }        
 
         return ['header_menu' => $headerMenu, 'dropdown_menu' => $sideMenu];
     }

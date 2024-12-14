@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class UserRequest extends FormRequest
 {
@@ -15,7 +16,7 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+       return true;
     }
 
     /**
@@ -32,9 +33,14 @@ class UserRequest extends FormRequest
             'email' => 'required|email|max:191|unique:users,email',
             'password' => 'nullable|string|min:8',
             'roles' => ['required'],
+            //|string|exists:roles,name',
         ];
 
         $update_id = $this->input('update_id', 0);
+        if($update_id > 0){
+            $user = User::find($update_id);
+            $userRole = $user->role;
+        }
        
 
         if ($this->isMethod('post')) {
