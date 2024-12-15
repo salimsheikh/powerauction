@@ -49,10 +49,10 @@ class League extends Model
         parent::delete();
     }
 
-    public static function updateAuctionViewAmount(int $leagueId, int $auction_view): bool
+    public static function updateAuctionViewAmount(int $leagueId, int $playerId): bool
     {
         $updated = self::where(['league_id' => $leagueId, 'status' => 1])
-                    ->update(['auction_view' => $auction_view]);
+                    ->update(['auction_view' => $playerId]);
 
         return $updated > 0; // Returns true if any row was updated
     }
@@ -63,4 +63,6 @@ class League extends Model
         $leagueName = html_entity_decode($leagueName);
         return $leagueName;
     }
+
+    
 }

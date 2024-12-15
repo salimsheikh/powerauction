@@ -149,7 +149,7 @@ class TeamPlayerApiController extends Controller
         $columns['style_label'] = __('Style');
         $columns['age'] = __('Age');
         $columns['category_name'] = __('Category');        
-        $columns['team_player_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
 
         return $columns;
     }
@@ -160,12 +160,12 @@ class TeamPlayerApiController extends Controller
 
         // Get permissions for the actions
         $actions = [];        
-        $actions['edit'] = $user->can('team-edit');
-        $actions['delete'] = $user->can('team-delete');
-        $actions['remove-player'] = true;
+        $actions['edit'] = false;
+        $actions['delete'] = false;
+        $actions['remove_player'] = $user->can('team-remve-player');
 
-        if (!$actions['remove-player']) {
-            unset($columns['team_player_actions']);
+        if (!$actions['remove_player']) {
+            unset($columns['actions']);
         }
 
         return [

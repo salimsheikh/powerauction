@@ -54,7 +54,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // admin.user-permissions.index
     
     // Handling both GET and POST requests on the same route
-    Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index')->middleware('permission:bidding-page-view');
+    Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index')->middleware('permission:auction-page-view');
     Route::get("/auction/update-league/{id}",[AuctionController::class, 'setLeagueId'])->name('set.league.id')->middleware('permission:bidding-page-view');
     Route::get('/bidding/start/{id}', [AuctionController::class, 'biddingStart'])->name('bidding.started')->middleware('permission:bidding-page-view');
     Route::get('/bidding', [AuctionController::class, 'biddingList'])->name('bidding.index')->middleware('permission:bidding-page-view');

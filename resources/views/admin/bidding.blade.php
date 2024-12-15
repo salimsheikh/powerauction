@@ -133,17 +133,7 @@
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container hscorll" id="tableContainer">
                             <table class="custom-table">
-                                <thead id="table-head">
-                                    <tr>
-                                        <th>{{ __('No.') }}</th>
-                                        <th>{{ __('League Name') }}</th>
-                                        <th>{{ __('Player Name') }}</th>
-                                        <th>{{ __('Start Time') }}</th>
-                                        <th>{{ __('End Time') }}</th>
-                                        <th>{{ __('Status') }}</th>
-                                        <th class="view_actions">{{ __('Actions') }}</th>
-                                    </tr>
-                                </thead>
+                                <thead id="table-head"></thead>
                                 <tbody id="table-body">
                                     <tr>
                                         <td colspan="10">

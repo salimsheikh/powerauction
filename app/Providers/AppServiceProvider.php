@@ -46,14 +46,9 @@ class AppServiceProvider extends ServiceProvider
                 
 
         $menus = config('menus'); // Or fetch from the database
-
-        $filters = config('menu_filters');
-        $headerRoutes = $filters['header'];
-        $sideMenuRoutes = $filters['side_menu'];
-    
         $menuService = app(MenuService::class);
-        $filteredMenus = $menuService->filterMenus($menus, $headerRoutes, $sideMenuRoutes);
-
+        $filteredMenus = $menuService->filterMenus($menus);
+        
         // $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
         // $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
     

@@ -5,26 +5,24 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\{Session,DB,Lang,Cache,Auth};
 use App\Events\CacheClearEvent;
 use Carbon\Carbon;
 
-use App\Models\League;
-use App\Models\Player;
-use App\Models\BidSession;
-use App\Models\UnsoldPlayer;
-use App\Models\Bid;
-use App\Models\SoldPlayer;
-
-
+use App\Models\{League,Player,BidSession,UnsoldPlayer,Bid,SoldPlayer};
 
 class AuctionController extends Controller
 {
     public function index(Request $request)
     {
+        $admin = Auth::user()->hasRole('Administrator');
+
+        if(!$admin){
+            return $this->auctionPlayer();
+        }
+              
+        $view = $admin ? 'admin.auction' : 'admin.auction-user';
+
         $leagueId = Session::get('league_id');
 
         $categoryId = Session::get('category_id');
@@ -35,6 +33,8 @@ class AuctionController extends Controller
 
         // Retrieve the league name by ID
         $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+
+        
 
         // Check if a category_id is provided in the query parameters
         if ($request->isMethod('post') && $request->has('category_id')) {
@@ -51,6 +51,28 @@ class AuctionController extends Controller
         }   
 
         return view('admin.auction', compact('leagueName','players','leagueId','categoryId'));
+    }
+
+    public function auctionPlayer(){
+        // Retrieve the league name by ID
+        //$leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+
+        $league = League::select('id','league_name','auction_view')->where('status', 1)->first();
+        $league = $league != null ? $league->toArray() : array();       
+
+        $league_id = $league['id'];
+        $leagueName = $league['league_name'];
+        $player_id = $league['auction_view'];
+
+        if($player_id > 0){
+            $players = Player::with('category')->where('id', $playerId)->get();
+        }else{
+            $players = Player::with('category:id,category_name')->get();
+        }
+
+        // dd($players->toArray());
+
+        return view('admin.auction-user', compact('leagueName','players','league_id','player_id'));
     }
 
     public function setLeagueId(Request $requst, $id)
@@ -107,6 +129,8 @@ class AuctionController extends Controller
                 // $player_data = Player::get();
                 // $player_data = $player_data ? $player_data->toArray() : null;
                 // $unsoldplayer = array_column($player_data, 'players_id');
+
+                League::updateAuctionViewAmount($league_id, $player_id);
 
                 $team_id = SoldPlayer::where(['league_id' => $league_id, 'player_id' => $player_id])->value('team_id');                
                 return $this->getBiddingPage($request,$player_id,$session_id,$start_time,$end_time);

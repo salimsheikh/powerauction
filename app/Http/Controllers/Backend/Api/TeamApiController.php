@@ -363,7 +363,7 @@ class TeamApiController extends Controller
         $columns['remaining_points'] = __('Remaining Points');
         $columns['league_name'] = __('League');
         $columns['team_players'] = __('Players');
-        $columns['team_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
 
         return $columns;
     }
@@ -377,18 +377,17 @@ class TeamApiController extends Controller
         $actions['edit'] = $user->can('team-edit');
         $actions['delete'] = $user->can('team-delete');
         $actions['booster'] = $user->can('team-booster');
-        $actions['view-players'] = $user->can('team-view-players');
+        $actions['team-view-player'] = $user->can('team-view-player');
 
         // Exclude the actions column if no actions are allowed
-        if (!$actions['edit'] && !$actions['delete'] && $actions['booster']) {
-            unset($columns['team_actions']);
+        if (!$actions['edit'] && !$actions['delete'] && !$actions['booster']) {
+            unset($columns['actions']);
         }
 
-        if (!$actions['view-players']) {
+        if (!$actions['team-view-player']) {
             unset($columns['team_players']);
         }
         
-
         return [
             'columns' => $columns,
             'items' => $items,

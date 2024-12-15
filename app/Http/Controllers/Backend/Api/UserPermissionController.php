@@ -184,7 +184,7 @@ class UserPermissionController extends Controller
         $columns = [];
         $columns['sr'] = __('Sr.');
         $columns['name'] = __('Permission Name');
-        $columns['user_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
         return $columns;
     }
 
@@ -199,7 +199,7 @@ class UserPermissionController extends Controller
         
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['user_actions']);
+            unset($columns['action']);
         }
 
         return [

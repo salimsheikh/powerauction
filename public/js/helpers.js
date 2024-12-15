@@ -514,8 +514,6 @@ function renderTable(data) {
 
     const actions = data?.actions;
 
-    console.log(actions);
-
     const tbody = document.getElementById('table-body');
 
     if (totalItems > 0) {
@@ -550,26 +548,39 @@ function renderTableRows(rows, columns, page, actions) {
     const buttons = [];
     buttons['delete'] = "";
     buttons['edit'] = "";
+    buttons['view'] = "";
+    buttons['booster'] = "";
+    buttons['edit'] = "";
+    buttons['auction'] = "";
 
     let i = 0;
     rows.forEach(row => {
         id = row.id;
 
-        if (id <= 1 && rows.length <= 1) {
-            if(actions?.delete){
-                buttons['delete'] = `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;
-            }
-        } else {
-            if(actions?.delete){
-                buttons['delete'] = `<button class="btn delete-btn delete-button r" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`;
+        if(actions?.delete){
+            if (id <= 1 && rows.length <= 1) {            
+                    buttons['delete'] = `<button class="btn delete-btn delete-button" data-id="${id}" title="${lang.delete}" disabled>${lang.delete}</button>`;                
+            } else { 
+                buttons['delete'] = `<button class="btn delete-btn delete-button r" data-id="${id}" title="${lang.delete}">${lang.delete}</button>`; 
             }
         }
 
         if(actions?.edit){
             buttons['edit'] = `<button class="btn edit-btn edit-button" data-id="${id}" title="${lang.edit}">${cell_edit}</button>`;
         }
-        buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
-        buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 " data-popupid="popupBoosterModal" data-id="${id}" title="${lang.view}">${lang.booster}</button>`;
+
+        if(actions?.view){
+            buttons['view'] = `<button class="btn view-btn view-button hover:bg-purple-800 " data-id="${id}" title="${lang.view}">${lang.view}</button>`;
+        }
+
+        if(actions?.booster){
+            buttons['booster'] = `<button class="btn view-btn booster-button hover:bg-purple-800 " data-popupid="popupBoosterModal" data-id="${id}" title="${lang.booster}">${lang.booster}</button>`;
+        }
+
+        if(actions?.auction){
+            buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
+            buttons['auction'] = buttons['auction'].replace("#leagueid#", id);
+        }
 
         output += "<tr>";
         for (const [cn] of Object.entries(columns)) {
@@ -614,51 +625,19 @@ function renderTableRows(rows, columns, page, actions) {
                     break;
                 case "team_players":
                     let team_player_url = team_players.replace('#teamid#', id);
-                    cell_value = `<a href="${team_player_url}" class="btn view-team-button hover:bg-purple-800 material-btn material-symbols-outlined" title="${lang.view}">visibility</a>`;
-                    break;
-                case "league_actions":
-                    buttons['auction'] = `<a href="${set_league_id_url}" class="btn view-btn auction-button hover:bg-purple-800" title="${lang.auction}">${lang.auction}</a>`;
-                    cell_class += " actions";
-                    cell_value += "<div>";
-                    cell_value += buttons['auction'].replace("#leagueid#", id);
-                    cell_value += buttons['edit'];
-                    cell_value += buttons['delete'];
-                    cell_value += "</div>";
+                    cell_value = `<a href="${team_player_url}" class="btn view-btn view-team-button hover:bg-purple-800" title="${lang.view}">View</a>`;
                     break;
                 case "actions":
                     cell_class += " actions";
                     cell_value += "<div>";
-                    cell_value += buttons['edit'];
-                    cell_value += buttons['delete'];
-                    cell_value += "</div>";
-                    break;
-                case "view_actions":
-                    cell_class += " actions";
-                    cell_value += "<div>";
+                    cell_value += buttons['auction'];
+                    cell_value += buttons['booster'];
                     cell_value += buttons['view'];
                     cell_value += buttons['edit'];
                     cell_value += buttons['delete'];
-                    cell_value += "</div>";
-                    break;
-                case "team_actions":
-                    cell_class += " actions";
-                    cell_value += "<div>";
-                    cell_value += buttons['booster'];
-                    cell_value += buttons['edit'];
-                    cell_value += buttons['delete'];
-                    cell_value += "</div>";
-                    break;
-                case "user_actions":
-                    cell_class += " actions";
-                    cell_value += "<div>";                    
-                    cell_value += buttons['edit'];
-                    cell_value += buttons['delete'];
-                    cell_value += "</div>";
-                    break;
-                case "team_player_actions":
-                    cell_class += " actions";
-                    cell_value += "<div>";
-                    cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.remove}</button>`;
+                    if(actions?.remove_player){
+                        cell_value += `<button class="btn delete-btn delete-button r" data-id="${row.sold_player_id}" title="${lang.delete}">${lang.remove}</button>`;
+                    }
                     cell_value += "</div>";
                     break;
                 case "description":

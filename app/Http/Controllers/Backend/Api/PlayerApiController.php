@@ -331,7 +331,7 @@ class PlayerApiController extends Controller
         $columns['style_label'] = __('Style');
         $columns['age'] = __('Age');
         $columns['category_name'] = __('Category');        
-        $columns['view_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
 
         return $columns;
     }
@@ -352,7 +352,7 @@ class PlayerApiController extends Controller
 
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete'] && !$actions['view']) {
-            unset($columns['view_actions']);
+            unset($columns['actions']);
         }
 
         return [

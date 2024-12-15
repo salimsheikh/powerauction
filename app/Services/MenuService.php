@@ -7,18 +7,17 @@ use Illuminate\Support\Facades\Auth;
 
 class MenuService
 {
-    public function filterMenus(array $menus, array $headerRoutes, array $sideMenuRoutes): array
+    public function filterMenus(array $menus): array
     {
         $headerMenu = [];
         $sideMenu = [];
 
-        $i = 0;
         foreach ($menus as $menu) {
-            if (in_array($menu['route_name'], $headerRoutes) && $i++ < 7) {
+            if ($menu['position'] == 'header') {
                 $headerMenu[] = $menu;                
             }
 
-            if (in_array($menu['route_name'], $sideMenuRoutes)) {
+            if ($menu['position'] == 'side') {
                 $sideMenu[] = $menu;
             }
         }        

@@ -70,16 +70,7 @@
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container hscorll" id="tableContainer">
                             <table class="custom-table">
-                                <thead id="table-head">
-                                    <tr>
-                                        <th>{{ __('#ID') }}</th>
-                                        <th>{{ __('Category Name') }}</th>
-                                        <th>{{ __('Base Price') }}</th>
-                                        <th>{{ __('Color Code') }}</th>
-                                        <th>{{ __('Description') }}</th>
-                                        <th class="actions">{{ __('Actions') }}</th>
-                                    </tr>
-                                </thead>
+                                <thead id="table-head"></thead>
                                 <tbody id="table-body">
                                     <tr>
                                         <td colspan="6">

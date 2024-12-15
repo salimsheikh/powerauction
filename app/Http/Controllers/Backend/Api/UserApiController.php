@@ -242,7 +242,7 @@ class UserApiController extends Controller
         $columns['email'] = __('Email');
         $columns['user_roles'] = __('Roles');
         
-        $columns['user_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
         return $columns;
     }
 
@@ -255,9 +255,10 @@ class UserApiController extends Controller
         $actions['edit'] = $user->can('user-edit');
         $actions['delete'] = $user->can('user-delete');
 
+
         // Exclude the actions column if no actions are allowed
         if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['user_actions']);
+            unset($columns['actions']);
         }
 
         return [

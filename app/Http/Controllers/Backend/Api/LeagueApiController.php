@@ -177,7 +177,7 @@ class LeagueApiController extends Controller
         $columns['sr'] = __('Sr.');
         $columns['league_name'] = __('Name');
         $columns['description'] = __('Description');
-        $columns['league_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
 
         return $columns;
     }
@@ -189,11 +189,12 @@ class LeagueApiController extends Controller
         // Get permissions for the actions
         $actions = [];        
         $actions['edit'] = $user->can('league-edit');
-        $actions['delete'] = $user->can('league-delete');       
+        $actions['delete'] = $user->can('league-delete');
+        $actions['auction'] = $user->can('league-auction');
 
         // Exclude the actions column if no actions are allowed
-        if (!$actions['edit'] && !$actions['delete']) {
-            unset($columns['league_actions']);
+        if (!$actions['edit'] && !$actions['delete'] && !$actions['auction'] ) {
+            unset($columns['actions']);
         }
 
         return [

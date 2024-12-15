@@ -208,7 +208,7 @@ class UserRoleApiController extends Controller
         $columns = [];
         $columns['sr'] = __('Sr.');
         $columns['name'] = __('Role Name');
-        $columns['user_actions'] = __('Actions');
+        $columns['actions'] = __('Actions');
         return $columns;
     }
 

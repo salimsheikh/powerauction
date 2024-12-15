@@ -118,19 +118,7 @@
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                         <div class="table-container hscorll" id="tableContainer">
                             <table class="custom-table">
-                                <thead id="table-head">
-                                    <tr>
-                                        <th>{{ __('#ID') }}</th>
-                                        <th>{{ __('Unique Id') }}</th>
-                                        <th>{{ __('Profile') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        <th>{{ __('Profile Type') }}</th>
-                                        <th>{{ __('Style') }}</th>
-                                        <th>{{ __('Age') }}</th>
-                                        <th>{{ __('Category') }}</th>
-                                        <th class="view_actions">{{ __('Actions') }}</th>
-                                    </tr>
-                                </thead>
+                                <thead id="table-head"></thead>
                                 <tbody id="table-body">
                                     <tr>
                                         <td colspan="9">

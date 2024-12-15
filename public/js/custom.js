@@ -883,19 +883,13 @@ document.querySelectorAll('.selectAllPermission').forEach(button => {
         // If all checkboxes are checked, uncheck them
         if (allChecked) {
             checkboxes.forEach(checkbox => {
-                const parent = checkbox.parentElement;
-                if (parent && window.getComputedStyle(parent).display === 'block') {
-                    checkbox.checked = false;
-                }
+                checkbox.checked = false;
             });            
             button.textContent = lang.select_all;
         } else {
             // Otherwise, check all checkboxes
             checkboxes.forEach(checkbox => {
-                const parent = checkbox.parentElement;
-                if (parent && window.getComputedStyle(parent).display === 'block') {
-                    checkbox.checked = true;
-                }
+                checkbox.checked = true;
             });
             button.textContent = lang.unselect_all;
         }
