@@ -732,6 +732,33 @@ if (planAmountEle) {
     });
 }
 
+const bidAmount = document.getElementById("amount");
+if (bidAmount) {
+    // If the value is 0, clear it when focused
+    bidAmount.addEventListener("focus", function (event) {
+        event.preventDefault();
+        if (event.target.value === "0") {
+            event.target.value = "";
+        }
+    });
+
+    // If the input is empty, set it to 0
+    bidAmount.addEventListener("blur", function (event) {
+        event.preventDefault();
+        if (event.target.value === "") {
+            event.target.value = "0";
+        }
+    });
+
+    // Allow only numeric input (prevent non-numeric characters)
+    bidAmount.addEventListener("input", function (event) {
+        event.preventDefault();
+        const value = event.target.value;
+        event.target.value = value.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
+    });
+}
+
+
 const plan_type = document.getElementById("plan_type");
 if (plan_type) {
     plan_type.addEventListener("change", function (event) {
@@ -1017,21 +1044,23 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initial load
 fetchAndRender(current_page);
 
-/*
-document.getElementById('player_name').value = 'Salim Shaikh';
-document.getElementById('profile_type').value = 'men';
-document.getElementById('type').value = 'batsman';
-document.getElementById('style').value = 'right_hand_batsman';
-document.getElementById('dob').value = '1980-01-01';
+if(document.getElementById('player_name')){
+    const sampleName = getRandomSample();
+    document.getElementById('player_name').value = sampleName.name;
+    document.getElementById('profile_type').value = 'men';
+    document.getElementById('type').value = 'batsman';
+    document.getElementById('style').value = 'right_hand_batsman';
+    document.getElementById('dob').value = '1980-01-01';
 
-document.getElementById('category_id').value = '1';
-document.getElementById('nickname').value = 'batsman';
-document.getElementById('last_played_league').value = 'Last Played League';
-document.getElementById('address').value = 'Kurla';
+    document.getElementById('category_id').value = '1';
+    document.getElementById('nickname').value = 'batsman';
+    document.getElementById('last_played_league').value = 'Last Played League';
+    document.getElementById('address').value = 'Kurla';
 
-document.getElementById('city').value = 'Nehru Nagar';
-document.getElementById('email').value = 'salimsheikh@gmail.com';
-*/
+    document.getElementById('city').value = 'Nehru Nagar';
+    document.getElementById('email').value = sampleName.email;
+}
+
 /*
 if(document.getElementById('sponsor_name')){
     document.getElementById('sponsor_name').value = 'Salim Shaikh';

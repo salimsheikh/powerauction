@@ -60,7 +60,7 @@ class PlayerSeeder extends Seeder
                 'address' => 'Andheri',
                 'city' => 'Mumbai',
                 'status' => 'publish',
-                'order_id' => 8888,
+                'order_id' => null,
                 'created_by' => 1,
                 'updated_by' => 1,
                 'created_at' => now(),

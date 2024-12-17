@@ -138,12 +138,12 @@ class BiddingApiController extends Controller
             $enter_amount = $request->input('amount');
             $enter_amount = $enter_amount == "" ? 0 : intval($enter_amount); 
 
-            /*
+           
             $returnData['virtual_point'] = $virtual_point;
             $returnData['purchased_point'] = $purchased_point;
             $returnData['remaining_point'] = $remaining_point;
             $returnData['enter_amount'] = $enter_amount;
-            */
+           
 
             // Check if the remaining points are greater than or equal to the amount specified in the post request
             if ($remaining_point < (int)$enter_amount) {

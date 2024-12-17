@@ -21,7 +21,7 @@ class AdminController extends Controller
     public function clearCache(){
 
         // Or clear all cache
-        Artisan::call('cache:clear');
+        Artisan::call('optimize:clear');
 
         return back()->with('status', __('Cache Cleared'));
     }
@@ -51,6 +51,31 @@ class AdminController extends Controller
 
         return view('admin.team-players',$data);
     }
+
+    public function teamDetails(){
+        $data = [];
+
+        $team_id = 0;
+
+        $data['team_id'] = $team_id;
+
+        // $team = Team::select('team_name')->find($team_id);
+
+        $data['team_name'] = '';
+        
+        $data['player_ids'] = '';
+
+        Session::put('view_team_id',$team_id);
+
+        return view('admin.team-players',$data);
+    }
+
+    public function auctionRulesPage(){
+        $data = [];
+        $data['title'] = __('Auction Rules');
+        $data['pageData'] = \App\Models\Setting::getSetting('auction_rules','');   ;
+        return view('admin.page',$data);
+    }       
 
     public function categories(){
         return view('admin.categories');

@@ -39,4 +39,8 @@ class Team extends Model
     {
         return $this->league?->league_name; // Safe navigation to avoid null errors
     }
+
+    function soldPlayers(){
+        return $this->belongsTo(SoldPlayer::class, 'team_id');
+    }
 }

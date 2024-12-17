@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Backend\Api;
 use App\Http\Controllers\Controller;
-use App\Models\Team;
-use App\Models\User;
+use App\Models\{User,Team,SoldPlayer};
 
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\{Validator,Hash,Auth};
 use Illuminate\Auth\Events\Registered;
 
 use App\Services\ImageUploadService;
 use Illuminate\Support\Str;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\TeamRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,8 +41,8 @@ class TeamApiController extends Controller
                 'users.name as owner_name'
             )
             ->join('users', 'teams.owner_id', '=', 'users.id') // Join with users table
-            ->with('league'); // Eager load the League relationship if needed
-
+            ->with(['league']); // Eager load the League relationship if needed
+            //,'sold_players'
         // Apply search filters if a query exists
         if ($query) {
             $itemQuery->where(function ($queryBuilder) use ($query) {
@@ -71,8 +68,15 @@ class TeamApiController extends Controller
         // Paginate the results
         $items = $itemQuery->paginate($list_per_page);
 
-        foreach($items as $item){
-            $item->league_name = '';            
+        foreach($items as $key => $item){
+            $item->league_name = '';
+             $sold_price = SoldPlayer::where('team_id',$item->id)->sum('sold_price');
+            $items[$key]->remaining_points = $item->virtual_point - $sold_price;
+
+            //\Log::info(print_r($item->soldPlayers,true));
+
+            // $soldPrice = $item->soldPlayers->sum('sold_price');
+            // $item->remaining_points = $item->virtual_point - $soldPrice;
         }
 
         // Return the columns and items data in JSON format

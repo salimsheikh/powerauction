@@ -24,8 +24,7 @@
                         </ul>
                     </div>
                 @endif
-
-                
+                                
                 <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')                  
@@ -40,6 +39,12 @@
                         <x-input-label for="privacy_policy" :value="__('Privacy Policy')" />
                         <textarea name="settings[privacy_policy]" id="privacy_policy" rows="10" cols="80" class="w-full">{{ old('settings.privacy_policy', $privacy_policy) }}</textarea>
                         <x-input-error class="mt-2" :messages="$errors->get('settings.privacy_policy')" />
+                    </div>
+
+                    <div class="mt-5">
+                        <x-input-label for="auction_rules" :value="__('Auction Rules')" />
+                        <textarea name="settings[auction_rules]" id="auction_rules" rows="10" cols="80" class="w-full">{{ old('settings.auction_rules', $auction_rules) }}</textarea>
+                        <x-input-error class="mt-2" :messages="$errors->get('settings.auction_rules')" />
                     </div>
 
                     <div class="mt-5">
@@ -71,7 +76,7 @@
     
     <script>            
             tinymce.init({
-                selector: 'textarea#terms_condition, textarea#privacy_policy',
+                selector: 'textarea#terms_condition, textarea#privacy_policy, textarea#auction_rules',
                 // plugins: ' link image table',
                 plugins: 'code',
                 menubar: '',

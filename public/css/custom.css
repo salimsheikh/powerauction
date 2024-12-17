@@ -336,6 +336,8 @@ td.description{
 
 .custom-table td img.profile-image{
     border: 3px solid #e5e7eb;
+    width: 75px;
+    height: 75px;
 }
 
 .dark .custom-table td img.profile-image{
@@ -1221,6 +1223,12 @@ select.inputbox.invalid,
     border-radius: 4px 0 0 4px; /* Rounded left corners */
 }
 
+.dark .bidding-input-group .form-control {
+    border-color: #4b5563;
+    background-color: #374151;
+    color: white;
+}
+
 .bidding-input-group button {
     /* relative overflow-hidden px-6 py-3 bg-[#3b82f6] 
     hover:bg-[#06b6d4] text-white rounded-lg shadow-md f
@@ -1277,4 +1285,9 @@ select.inputbox.invalid,
     right: 10px; top: 50%; 
     transform: translateY(-50%);
     cursor: pointer;
+}
+
+.admin-page p{
+    margin-top: 15px;
+
 }

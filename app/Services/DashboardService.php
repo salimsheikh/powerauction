@@ -2,12 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Player;
-use App\Models\Team;
-use App\Models\League;
-use App\Models\SoldPlayer;
-use App\Models\Sponsor;
-use App\Models\UnsoldPlayer;
+use App\Models\{Player,Team,League,SoldPlayer,Sponsor,UnsoldPlayer};
 
 use Illuminate\Support\Facades\Cache;
 

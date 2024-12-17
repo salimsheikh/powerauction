@@ -51,7 +51,7 @@ class League extends Model
 
     public static function updateAuctionViewAmount(int $leagueId, int $playerId): bool
     {
-        $updated = self::where(['league_id' => $leagueId, 'status' => 1])
+        $updated = self::where(['id' => $leagueId, 'status' => 1])
                     ->update(['auction_view' => $playerId]);
 
         return $updated > 0; // Returns true if any row was updated

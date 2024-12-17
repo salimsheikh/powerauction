@@ -43,7 +43,7 @@
                             <input type="hidden" name="team_id" id="team_id" value="{{ $team_id }}">
                             
                             <div class="bidding-input-group">
-                                <input type="text" class="form-control" name="amount" id="amount" value="">
+                                <input type="text" class="form-control plan_amount" name="amount" id="amount" value="">
 
                                 <button type="submit" class="ripple-btn shadow-md focus:outline-none focus:normal-case ">
                                     {{ __('Start Bidding') }}

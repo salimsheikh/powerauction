@@ -20,8 +20,7 @@ class MenuService
             if ($menu['position'] == 'side') {
                 $sideMenu[] = $menu;
             }
-        }        
-
+        }
         return ['header_menu' => $headerMenu, 'dropdown_menu' => $sideMenu];
     }
 

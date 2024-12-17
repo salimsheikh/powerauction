@@ -15,47 +15,59 @@ class AuctionController extends Controller
 {
     public function index(Request $request)
     {
-        $admin = Auth::user()->hasRole('Administrator');
-
-        if(!$admin){
-            return $this->auctionPlayer();
+        // Check if the user is an admin
+        if (!Auth::user()->hasRole('Administrator')) {
+            return $this->auctionPlayer(); // Non-admin logic
         }
-              
-        $view = $admin ? 'admin.auction' : 'admin.auction-user';
 
         $leagueId = Session::get('league_id');
-
         $categoryId = Session::get('category_id');
 
-        if(empty($leagueId) || $leagueId <= 0){
+        if (empty($leagueId) || $leagueId <= 0) {
             return redirect()->route('leagues.index');
         }
 
-        // Retrieve the league name by ID
-        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+        $leagueName = $this->getLeagueName($leagueId);
 
-        
-
-        // Check if a category_id is provided in the query parameters
         if ($request->isMethod('post') && $request->has('category_id')) {
+            $this->updateCategory($leagueId, $request->category_id);
             Session::put('category_id', $request->category_id);
             $categoryId = $request->category_id;
         }
-        
-        if($categoryId > 0){
-            // Filter players by the selected category_id
-            $players = Player::with('category')->where('category_id', $categoryId)->get();
-        }else{
-            // If no category is selected, display all players
-            $players = Player::with('category')->get(); 
-        }   
 
-        return view('admin.auction', compact('leagueName','players','leagueId','categoryId'));
+        $players = Player::getPlayers($categoryId);     
+
+        return view('admin.auction', compact('leagueName', 'players', 'leagueId', 'categoryId'));
     }
 
+    private function getLeagueName($leagueId){
+        return DB::table('league')->where('id', $leagueId)->value('league_name');
+    }
+
+    private function getLeagueCategory($leagueId){
+
+        $prevCategory = League::where('id', $leagueId)->value('category');
+
+        $categories = $prevCategory ? json_decode($prevCategory, true) : [];
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $categories = [];
+        }
+
+        return $categories;
+    }
+
+    private function updateCategory($leagueId, $categoryId){
+
+        $prevCategory = $this->getLeagueCategory($leagueId);
+
+        // Merge and remove duplicates
+        $categories = array_unique(array_merge($categories, [$categoryId]));
+
+        League::where('id', $leagueId)->update(['category' => json_encode($categories)]);
+    }    
+
     public function auctionPlayer(){
-        // Retrieve the league name by ID
-        //$leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
 
         $league = League::select('id','league_name','auction_view')->where('status', 1)->first();
         $league = $league != null ? $league->toArray() : array();       
@@ -63,14 +75,9 @@ class AuctionController extends Controller
         $league_id = $league['id'];
         $leagueName = $league['league_name'];
         $player_id = $league['auction_view'];
+        $categoryId = 0;
 
-        if($player_id > 0){
-            $players = Player::with('category')->where('id', $playerId)->get();
-        }else{
-            $players = Player::with('category:id,category_name')->get();
-        }
-
-        // dd($players->toArray());
+        $players = Player::getPlayers($categoryId,$player_id,$league_id);       
 
         return view('admin.auction-user', compact('leagueName','players','league_id','player_id'));
     }
@@ -113,25 +120,11 @@ class AuctionController extends Controller
         $league_id = $session->league_id;
         $start_time = $session->start_time;
         $end_time = $session->end_time;
-        $status = $session->status;
-
-        // Enable query log
-        //DB::enableQueryLog();
-
-        //\Log::info("end_time: {$end_time}");
-        //\Log::info("current_time: {$current_time}");
+        $status = $session->status;       
             
         if($status == 'active'){
             if($end_time > $current_time){
-                $league = League::find($league_id); // Find the record by ID
-                $league->increment('auction_view'); // Increment the column by 1
-
-                // $player_data = Player::get();
-                // $player_data = $player_data ? $player_data->toArray() : null;
-                // $unsoldplayer = array_column($player_data, 'players_id');
-
                 League::updateAuctionViewAmount($league_id, $player_id);
-
                 $team_id = SoldPlayer::where(['league_id' => $league_id, 'player_id' => $player_id])->value('team_id');                
                 return $this->getBiddingPage($request,$player_id,$session_id,$start_time,$end_time);
             }else{
@@ -215,27 +208,16 @@ class AuctionController extends Controller
             return redirect()->route('leagues.index');
         }
 
-        // Retrieve the league name by ID
-        $leagueName = DB::table('league')->where('id', $leagueId)->value('league_name');
+        // Retrieve the league name by ID        
+        $leagueName = $this->getLeagueName($leagueId);
 
         // Check if a category_id is provided in the query parameters
         if ($request->isMethod('post') && $request->has('category_id')) {
             Session::put('category_id', $request->category_id);
             $categoryId = $request->category_id;
         }
-        
-        $players = Player::with('category');
-
-        if($categoryId > 0){
-            // Filter players by the selected category_id
-            $players->where('category_id', $categoryId);
-        }
-
-        if($player_id > 0){
-            $players->where('id', $player_id);
-        }
-        
-        $players = $players->get();
+      
+        $players = Player::getPlayers($categoryId,$player_id,$leagueId);
 
         $serverTime = now();
 

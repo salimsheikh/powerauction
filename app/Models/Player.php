@@ -118,5 +118,60 @@ class Player extends Model
     {
         return $this->hasOne(SoldPlayer::class, 'player_id', 'id');
     }
+
+    public static function getPlayers($categoryId = 0,$playerId = 0, $leagueId = 0){
+        
+        $playersQuery = Player::with([
+            'category:id,category_name,base_price',
+            'soldplayer:player_id,team_id',
+        ]);
+
+        if ($categoryId > 0) {
+            $playersQuery->where('category_id', $categoryId);
+        }
+
+        if($playerId > 0){
+            $playersQuery->where('id', $playerId);
+        }
+
+        return $playersQuery->get()->map(function ($player) use ($leagueId) {
+            return self::formatPlayer($player, $leagueId);
+        });
+    }
+
+    private static function formatPlayer($player, $leagueId){
+        $player->team_id = optional($player->soldplayer)->team_id ?? 0;
+        $player->sold_status = self::getPlayerSoldStatus($player->team_id, $player->category_id, $leagueId);
+        return $player;
+    }
+
+    public static function getPlayerSoldStatus($teamId = 0, $categoryId = 0, $leagueId = 0){
+        $sold_status = $teamId > 0 ? 'sold' : '';
+        if($sold_status == '' && $leagueId > 0){            
+            $category = self::getLeagueCategory($leagueId);
+            if (!empty($category_id) && !empty($category)) {
+                $count_arr = array_count_values($category);
+                $count_curr_category = $count_arr[$category_id];
+                if (in_array($category_id, $category) && $count_curr_category > 1) {
+                    $sold_status = 'unsold';
+                }
+            }
+        }
+
+        return $sold_status;
+    }
+
+    private static function getLeagueCategory($leagueId){
+
+        $prevCategory = League::where('id', $leagueId)->value('category');
+
+        $categories = $prevCategory ? json_decode($prevCategory, true) : [];
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $categories = [];
+        }
+
+        return $categories;
+    }
     
 }

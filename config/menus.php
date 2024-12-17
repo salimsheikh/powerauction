@@ -97,6 +97,22 @@
             'active_routes' => ['auction.index'],
             'permission' => 'auction-page-view',
             'position' => 'header'
-        ]
+        ],
+        [
+            'label' => 'Team Details',
+            'route_name' => 'team.page.details',
+            'active_routes' => ['team.page.details'],
+            'permission' => 'team-page-details',
+            'position' => 'header'
+        ],
+        [
+            'label' => 'Auction Rules',
+            'route_name' => 'auction.rules',
+            'active_routes' => ['auction.rules'],
+            'permission' => 'auction-rules',
+            'position' => 'header'
+        ],
+
+        
     ];
 ?>
