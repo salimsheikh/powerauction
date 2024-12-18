@@ -68,48 +68,6 @@ class Player extends Model
     public function getAgeAttribute(): int
     {
         return Carbon::parse($this->dob)->age; // Calculate age using Carbon
-    }    
-
-    // Define custom arrays for mapping
-    private static $types = [
-        "batsman" => 'Batsman',
-        "bowler" => 'Bowler',
-        "all-rounder" => 'All Rounder'
-    ];
-
-    private static $profileTypes = [
-        "men" => 'Men',
-        "women" => 'Women',
-        "senior-citizen" => 'Senior Citizen'
-    ];
-
-    private static $styles = [
-        "Left Hand Batsman" => 'Left Hand Batsman',
-        "Right Hand Batsman" => 'Right Hand Batsman',
-        "Left Hand Bowler" => 'Left Hand Bowler',
-        "Right Hand Bowler" => 'Right Hand Bowler',
-        "heft_hand_batsman" => 'Left Hand Batsman',
-        "right_hand_batsman" => 'Right Hand Batsman',
-        "left_hand_bowler" => 'Left Hand Bowler',
-        "right_hand_bowler" =>'Right Hand Bowler'
-    ];
-
-    // Accessor for type
-    public function getTypeLabelAttribute(): ?string
-    {
-        return self::$types[$this->type] ?? $this->type;
-    }
-
-    // Accessor for profile_type
-    public function getProfileTypeLabelAttribute(): ?string
-    {
-        return self::$profileTypes[$this->profile_type] ?? $this->profile_type;
-    }
-
-    // Accessor for profile_type
-    public function getStyleLabelAttribute(): ?string
-    {
-        return self::$styles[$this->style] ?? $this->style;
     }
 
     public function soldPlayer()
@@ -120,6 +78,33 @@ class Player extends Model
     public function soldPlayers()
     {
         return $this->hasMany(SoldPlayer::class);
+    }
+
+    public function playerStyle(){
+        return $this->belongsTo(PlayerStyle::class, 'style', 'style');
+    }
+
+    public function playerType(){
+        return $this->belongsTo(PlayerType::class, 'type', 'type');
+    }
+
+    public function playerProfile(){
+        return $this->belongsTo(PlayerProfileType::class, 'profile_type','profile_type');
+    }
+
+    // Accessor for player_style_name
+    public function getPlayerStyleNameAttribute(){
+        return $this->playerStyle->name;
+    }
+
+    // Accessor for player_type_name
+    public function getPlayerTypeNameAttribute(){
+        return $this->playerType->name;
+    } 
+    
+    // Accessor for player_profile_name
+    public function getPlayerProfileNameAttribute(){
+        return $this->playerProfile->name;
     }
 
     public static function getPlayers($categoryId = 0,$playerId = 0, $leagueId = 0){

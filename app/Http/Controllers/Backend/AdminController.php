@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\{Plan,Team,SoldPlayer};
+use App\Models\{Plan,Team,SoldPlayer,Player};
 use Illuminate\Support\Facades\{Session,Artisan};
 use Illuminate\Support\Facades\Auth;
 
@@ -55,11 +55,31 @@ class AdminController extends Controller
     public function teamDetails(){
         $data = [];
 
-        $teams = Team::with('players')->get();
+        $columns = [];
+        $columns['image'] = '';
+        $columns['uniq_id'] = __('Unique Id');        
+        $columns['player_nickname'] = __('Name');
+        $columns['category_name'] = __('Category'); 
+        $columns['base_points'] = __('Base Points');
+        $columns['purchase_points'] = __('Purchase Points');
 
-        dd($teams->toArray());
+        $data['columns'] = $columns;
+       
 
-        return view('admin.team-details');
+        $teams = Team::with(['players.playerStyle', 'players.playerType', 'players.playerProfile'])->get();
+        $data['teams'] = $teams->transform(function ($team) {
+            $team->players->transform(function ($player) {
+                $player->player_style_name = $player->player_style_name;
+                $player->player_type_name = $player->player_type_name;
+                $player->player_profile_name = $player->player_profile_name;        
+                return $player;
+            });
+            return $team;
+        });
+
+        // dd($data['teams']->toArray());
+        
+        return view('admin.team-details',$data);
     }
 
     public function auctionRulesPage(){

@@ -25,7 +25,7 @@ class TeamPlayerApiController extends Controller
         $query = $request->input('query', '');
 
         // Start the query builder for the Player model
-        $itemQuery = Player::with(['category']); // Eager load the Player relationship
+        $itemQuery = Player::with(['category','playerStyle','playerType','playerProfile']); // Eager load the Player relationship
 
         $itemQuery->select([
             'players.*',
@@ -60,15 +60,15 @@ class TeamPlayerApiController extends Controller
         // Paginate the results
         $items = $itemQuery->paginate($list_per_page);
 
-        foreach ($items as $item) {
-            // Modify attributes as needed
-            $item->category_name = ''; // Ensure this value is actually required
-            $item->age = '';
-            $item->player_nickname = '';
-            $item->profile_type_label = '';
-            $item->type_label = '';
-            $item->style_label = '';
-        }
+        $items->map(function($transaction){            
+            $transaction->player_nickname = $transaction->player_nickname;
+            $transaction->age = $transaction->age;
+            $transaction->player_profile_name = $transaction->player_profile_name;
+            $transaction->player_type_name = $transaction->player_type_name;
+            $transaction->player_style_name = $transaction->player_style_name;
+            $transaction->category_name = $transaction->category_name;
+            return $transaction;
+        });
 
         // Return the columns and items data in JSON format
         return response()->json($this->getActionPermissionsAndColumns($items));
@@ -144,9 +144,9 @@ class TeamPlayerApiController extends Controller
         $columns['uniq_id'] = __('Unique Id');
         $columns['image'] = __('Profile');
         $columns['player_nickname'] = __('Name');
-        $columns['profile_type_label'] = __('Profile Type');
-        $columns['type_label'] = __('Type');
-        $columns['style_label'] = __('Style');
+        $columns['player_profile_name'] = __('Profile Type');
+        $columns['player_type_name'] = __('Type');
+        $columns['player_style_name'] = __('Style');
         $columns['age'] = __('Age');
         $columns['category_name'] = __('Category');        
         $columns['actions'] = __('Actions');
