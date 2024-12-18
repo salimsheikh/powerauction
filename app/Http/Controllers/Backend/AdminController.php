@@ -67,7 +67,7 @@ class AdminController extends Controller
 
         Session::put('view_team_id',$team_id);
 
-        return view('admin.team-players',$data);
+        return view('admin.team-details');
     }
 
     public function auctionRulesPage(){

@@ -164,8 +164,6 @@ class UserApiController extends Controller
             // Add the updated_by field
             $data['updated_by'] = Auth::id();
     
-           
-    
             // Update the record
             $item->update($data);
          

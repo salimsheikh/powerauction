@@ -336,12 +336,13 @@ td.description{
 
 .custom-table td img.profile-image{
     border: 3px solid #e5e7eb;
+    max-width: none;
     width: 75px;
     height: 75px;
 }
 
 .dark .custom-table td img.profile-image{
-    border-color: white;
+    border-color: white;    
 }
 
 
@@ -1289,5 +1290,10 @@ select.inputbox.invalid,
 
 .admin-page p{
     margin-top: 15px;
+}
+
+.admin-page p.grid_notice{
+    margin-top: 0;
+    text-align: center;
 
 }

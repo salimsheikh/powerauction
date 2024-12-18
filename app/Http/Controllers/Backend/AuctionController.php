@@ -27,10 +27,10 @@ class AuctionController extends Controller
             return redirect()->route('leagues.index');
         }
 
-        $leagueName = $this->getLeagueName($leagueId);
+        $leagueName = League::getLeagueName($leagueId);
 
         if ($request->isMethod('post') && $request->has('category_id')) {
-            $this->updateCategory($leagueId, $request->category_id);
+            League::updateCategory($leagueId, $request->category_id);
             Session::put('category_id', $request->category_id);
             $categoryId = $request->category_id;
         }
@@ -38,34 +38,7 @@ class AuctionController extends Controller
         $players = Player::getPlayers($categoryId);     
 
         return view('admin.auction', compact('leagueName', 'players', 'leagueId', 'categoryId'));
-    }
-
-    private function getLeagueName($leagueId){
-        return DB::table('league')->where('id', $leagueId)->value('league_name');
-    }
-
-    private function getLeagueCategory($leagueId){
-
-        $prevCategory = League::where('id', $leagueId)->value('category');
-
-        $categories = $prevCategory ? json_decode($prevCategory, true) : [];
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $categories = [];
-        }
-
-        return $categories;
-    }
-
-    private function updateCategory($leagueId, $categoryId){
-
-        $prevCategory = $this->getLeagueCategory($leagueId);
-
-        // Merge and remove duplicates
-        $categories = array_unique(array_merge($categories, [$categoryId]));
-
-        League::where('id', $leagueId)->update(['category' => json_encode($categories)]);
-    }    
+    }     
 
     public function auctionPlayer(){
 
@@ -209,7 +182,7 @@ class AuctionController extends Controller
         }
 
         // Retrieve the league name by ID        
-        $leagueName = $this->getLeagueName($leagueId);
+        $leagueName = League::getLeagueName($leagueId);
 
         // Check if a category_id is provided in the query parameters
         if ($request->isMethod('post') && $request->has('category_id')) {
@@ -232,27 +205,25 @@ class AuctionController extends Controller
         return view('admin.bidding');
     }
 
-    private function getRemaingTime($start_time, $end_time){
-
-       
+    private function getRemaingTime($start_time, $end_time){       
 
         $start_time = trim($start_time); // Ensure clean input
         $end_time = trim($end_time);
     
         try {
             // Create Carbon instances using the correct format
-        $start = Carbon::createFromFormat('Y-m-d H:i:s', $start_time);
-        $end = Carbon::createFromFormat('Y-m-d H:i:s', $end_time);
+            $start = Carbon::createFromFormat('Y-m-d H:i:s', $start_time);
+            $end = Carbon::createFromFormat('Y-m-d H:i:s', $end_time);
 
-        // Calculate the absolute difference in seconds
-        $time_difference_in_seconds = abs($end->diffInSeconds($start));
+            // Calculate the absolute difference in seconds
+            $time_difference_in_seconds = abs($end->diffInSeconds($start));
 
-        // Convert seconds into minutes and seconds
-        $remaining_minutes = intdiv($time_difference_in_seconds, 60);
-        $remaining_seconds = $time_difference_in_seconds % 60;
+            // Convert seconds into minutes and seconds
+            $remaining_minutes = intdiv($time_difference_in_seconds, 60);
+            $remaining_seconds = $time_difference_in_seconds % 60;
 
-        // Return the result as "MM:SS"
-        return sprintf('%02d:%02d', $remaining_minutes, $remaining_seconds);
+            // Return the result as "MM:SS"
+            return sprintf('%02d:%02d', $remaining_minutes, $remaining_seconds);
         } catch (\Exception $e) {
             // Handle errors gracefully
             return "00:00"; // Default value on error

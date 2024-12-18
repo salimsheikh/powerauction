@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex header-menu"> 
                     @php $visibleCount = 0; @endphp                   
-                    @foreach (array_slice($header_menu, 0, 8) as $menu)
+                    @foreach ($header_menu as $menu)
                         @can($menu['permission'])
                             @if ($visibleCount < 7)
                                 <x-nav-link :href="route($menu['route_name'])" :active="request()->routeIs($menu['active_routes'])">

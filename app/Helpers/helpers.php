@@ -60,6 +60,9 @@ if (!function_exists('getJSLang')) {
             case "category":
                 $lang['not_found'] = __('Category not found.');
                 break;
+            case "team-player":
+                $lang['not_found'] = __('Player not found in team.');
+                break;
             case "player":
                 $lang['not_found'] = __('Player not found.');
                 break;

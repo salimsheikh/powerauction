@@ -64,5 +64,31 @@ class League extends Model
         return $leagueName;
     }
 
+    public static function updateCategory($leagueId, $categoryId){
+
+        $prevCategory = self::getLeagueCategory($leagueId);
+
+        // Merge and remove duplicates
+        $categories = array_unique(array_merge($categories, [$categoryId]));
+
+        League::where('id', $leagueId)->update(['category' => json_encode($categories)]);
+    }
+
+    public static function getLeagueCategory($leagueId){
+
+        $prevCategory = League::where('id', $leagueId)->value('category');
+
+        $categories = $prevCategory ? json_decode($prevCategory, true) : [];
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $categories = [];
+        }
+
+        return $categories;
+    }
+
+    public static function getLeagueName($leagueId){
+        return DB::table('league')->where('id', $leagueId)->value('league_name');
+    }  
     
 }

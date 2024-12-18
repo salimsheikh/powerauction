@@ -149,15 +149,14 @@ class Player extends Model
         $sold_status = $teamId > 0 ? 'sold' : '';
         if($sold_status == '' && $leagueId > 0){            
             $category = self::getLeagueCategory($leagueId);
-            if (!empty($category_id) && !empty($category)) {
+            if (!empty($categoryId) && !empty($category)) {
                 $count_arr = array_count_values($category);
-                $count_curr_category = $count_arr[$category_id];
-                if (in_array($category_id, $category) && $count_curr_category > 1) {
+                $count_curr_category = $count_arr[$categoryId];
+                if (in_array($categoryId, $category) && $count_curr_category > 1) {
                     $sold_status = 'unsold';
                 }
             }
         }
-
         return $sold_status;
     }
 

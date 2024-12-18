@@ -481,9 +481,11 @@ async function fetchAndRender(page = 1) {
 
     const columns = data.columns;
 
-    const items = data.items;    
+    const items = data.items;
 
-    renderTableHeader(columns);
+    const totalItems = data.items.total;   
+
+    renderTableHeader(columns,totalItems);
 
     renderTable(data);
 
@@ -499,8 +501,14 @@ async function fetchAndRender(page = 1) {
     }
 }
 
-function renderTableHeader(columns) {
-    document.getElementById('table-head').innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
+function renderTableHeader(columns, totalItems) {
+    const tableHeader = document.getElementById('table-head');
+    if(totalItems > 0){
+        //tableHeader.style.display = 'table-block';
+        tableHeader.innerHTML = `<tr>${Object.entries(columns).map(([key, value,]) => `<th class="${key}">${value}</th>`).join('')}</tr>`;
+    }else{
+        //tableHeader.style.display = 'none';
+    }
 }
 
 // Render table rows
@@ -523,7 +531,7 @@ function renderTable(data) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="${colspan}">
-                    <p class="text-center text-gray-800 dark:text-white">${lang.not_found}</p>
+                    <p class="grid_notice not_found_items text-center text-gray-800 dark:text-white mt-0">${lang.not_found}</p>
                 </td>
             </tr>
         `;
@@ -598,18 +606,18 @@ function renderTableRows(rows, columns, page, actions) {
                 case "image":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/players/thumbs/${cell_value}" class="profile-image rounded-full shadow-md">`;
                         }
                     }
                     break;
                 case "sponsor_logo":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/sponsors/thumbs/${cell_value}" class="profile-image rounded-full shadow-md">`;
                         }
                     }
                     break;
@@ -617,9 +625,9 @@ function renderTableRows(rows, columns, page, actions) {
                 case "team_log":
                     if (cell_value) {
                         if (cell_value.includes('http')) {
-                            cell_value = `<img src="${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${cell_value}" class="profile-image rounded-full shadow-md">`;
                         } else {
-                            cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="profile-image w-15 rounded-full shadow-md">`;
+                            cell_value = `<img src="${image_url}/teams/thumbs/${cell_value}" class="profile-image rounded-full shadow-md">`;
                         }
                     }
                     break;
@@ -769,7 +777,7 @@ function getRandomSample() {
     const firstNames = ["John", "Jane", "Chris", "Katie", "Michael", "Sarah", "David", "Emily", "Robert", "Laura"];
     const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Martinez", "Lopez"];
     const domains = ["example.com", "testmail.com", "sample.org", "mailinator.com", "fakemail.net"];
-    const teamNames = ["Team Alpha", "Team Beta", "Team Gamma", "Team Delta", "Team Omega"];
+    const teamNames = ["Team Alpha", "Team Beta", "Team Gamma", "Team Delta", "Team Omega","Team Phoenix","Team Titan","Team Orion","Team Nova","Team Zenith","Team Aces","Team Mavericks","Team Blaze","Team Inferno","Team Storm","Team Horizon","Team Vortex","Team Eclipse","Team Thunder","Team Avalanche","Team Falcon","Team Comet","Team Voyager","Team Shadow","Team Polaris","Team Legends","Team Crusaders","Team Guardians","Team Rangers","Team Strikers","Team Valkyrie","Team Warriors","Team Titans","Team Pioneers","Team Synergy","Team Ambassadors","Team Innovators","Team Champions","Team Patriots","Team Spartans","Team Gladiators","Team Trailblazers","Team Visionaries","Team Dominators","Team Conquerors"];
 
     // Generate random first name, last name, email
     const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];

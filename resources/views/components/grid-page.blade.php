@@ -37,7 +37,7 @@
                             <tbody id="table-body">
                                 <tr>
                                     <td colspan="6">
-                                        <p class="text-center text-gray-800 dark:text-white">{{__('Please wait! loading table.')}}</p>
+                                        <p class="grid_notice found_items text-center text-gray-800 dark:text-white">{{__('Please wait! loading table.')}}</p>
                                     </td>
                                 </tr>
                             </tbody>

@@ -3,7 +3,9 @@
     <div class="image-container-wrap">
         <div class="image-container">
             <img src="{{ url('/storage') ."/players/". $player->image }}" alt="{{ $player->player_name  }}" class="max-h-64" />
-            <div class="badge star">{{ __('Sold') }}</div>        
+            @if ($player->sold_status)
+                <div class="badge {{ $player->sold_status }}">{{ $player->sold_status }}</div>    
+            @endif
         </div>
     </div>
     <div class="flex items-center">
@@ -26,3 +28,7 @@
         </div>
     </div>
 </div>
+
+{{-- I have Team model and Player Model
+One cotent the multiple Player
+Team and Player --}}

@@ -72,11 +72,6 @@ class TeamApiController extends Controller
             $item->league_name = '';
              $sold_price = SoldPlayer::where('team_id',$item->id)->sum('sold_price');
             $items[$key]->remaining_points = $item->virtual_point - $sold_price;
-
-            //\Log::info(print_r($item->soldPlayers,true));
-
-            // $soldPrice = $item->soldPlayers->sum('sold_price');
-            // $item->remaining_points = $item->virtual_point - $soldPrice;
         }
 
         // Return the columns and items data in JSON format

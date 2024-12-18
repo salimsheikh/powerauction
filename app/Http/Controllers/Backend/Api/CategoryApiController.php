@@ -124,14 +124,12 @@ class CategoryApiController extends Controller
 
             $color_code = $request->color_code == "#000001" ? NULL :  $request->color_code;
 
-            $data = $request->all();
-
-            $userId = Auth::id();
+            $data = $request->all();          
 
             $data['color_code'] = $color_code;
 
             // Update modified_by field
-            $data['updated_by'] = $userId;
+            $data['updated_by'] = Auth::id();
 
             $category = Category::find($id);
 
