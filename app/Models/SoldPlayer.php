@@ -20,5 +20,15 @@ class SoldPlayer extends Model
         'league_id',
         'category_id',
         'sold_price'
-    ];  
+    ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function player()
+    {
+        return $this->belongsTo(Player::class);
+    }
 }

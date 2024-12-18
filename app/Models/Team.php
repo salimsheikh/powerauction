@@ -43,4 +43,9 @@ class Team extends Model
     function soldPlayers(){
         return $this->belongsTo(SoldPlayer::class, 'team_id');
     }
+
+    public function players()
+    {
+        return $this->hasManyThrough(Player::class, SoldPlayer::class, 'team_id', 'id', 'id', 'player_id');
+    }
 }

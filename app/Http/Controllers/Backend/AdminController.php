@@ -55,17 +55,9 @@ class AdminController extends Controller
     public function teamDetails(){
         $data = [];
 
-        $team_id = 0;
+        $teams = Team::with('players')->get();
 
-        $data['team_id'] = $team_id;
-
-        // $team = Team::select('team_name')->find($team_id);
-
-        $data['team_name'] = '';
-        
-        $data['player_ids'] = '';
-
-        Session::put('view_team_id',$team_id);
+        dd($teams->toArray());
 
         return view('admin.team-details');
     }
@@ -108,7 +100,5 @@ class AdminController extends Controller
 
     public function permissions(){
         return view('admin.user-permissions');
-    }
-
-    
+    }    
 }

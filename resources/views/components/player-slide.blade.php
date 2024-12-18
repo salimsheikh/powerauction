@@ -30,5 +30,7 @@
 </div>
 
 {{-- I have Team model and Player Model
-One cotent the multiple Player
-Team and Player --}}
+One team cotent the multiple Players
+Team and Player are relation made in SoldPlayer model
+now we need loop teams, each team players
+Create query for laravel --}}

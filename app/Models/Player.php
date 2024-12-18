@@ -68,9 +68,7 @@ class Player extends Model
     public function getAgeAttribute(): int
     {
         return Carbon::parse($this->dob)->age; // Calculate age using Carbon
-    }
-
-    
+    }    
 
     // Define custom arrays for mapping
     private static $types = [
@@ -117,6 +115,11 @@ class Player extends Model
     public function soldPlayer()
     {
         return $this->hasOne(SoldPlayer::class, 'player_id', 'id');
+    }
+
+    public function soldPlayers()
+    {
+        return $this->hasMany(SoldPlayer::class);
     }
 
     public static function getPlayers($categoryId = 0,$playerId = 0, $leagueId = 0){
