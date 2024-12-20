@@ -11,6 +11,8 @@ class TransactionController extends Controller
 {
     public function index(Request $request, $team_id)
     {
+        \Log::info($team_id);
+        
         $data = $this->getList($team_id);
         
         return response()->json([
@@ -21,14 +23,14 @@ class TransactionController extends Controller
     }
 
     function getList($team_id){
-        $items = Transaction::with('plan:name,id') // Load only the name and id from the plan table
+        $items = Transaction::with('plan:id,name') // Load only the name and id from the plan table
         ->where('team_id', $team_id) // Replace $teamId with the desired team ID
-        ->select('id', 'amount', 'created_at', 'plan_id', 'team_id')
+        ->select('id', 'amount', 'created_at', 'plan_id')
         ->latest('created_at')
         ->get()
         ->map(function ($transaction) {
             return [
-                'name' => $transaction->plan->name,
+                'name' => $transaction->plan?->name,
                 'amount' => $transaction->amount,
                 'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
             ];

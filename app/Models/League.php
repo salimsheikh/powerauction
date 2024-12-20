@@ -54,6 +54,8 @@ class League extends Model
         $updated = self::where(['id' => $leagueId, 'status' => 1])
                     ->update(['auction_view' => $playerId]);
 
+        updateSetting('cache_flag',true);
+
         return $updated > 0; // Returns true if any row was updated
     }
 

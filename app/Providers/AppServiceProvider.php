@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     protected function catchFlagObserver(){
+        
         $models = [
             \App\Models\Player::class,
             \App\Models\SoldPlayer::class,
@@ -66,7 +67,8 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Category::class,
             \App\Models\League::class,
             \App\Models\UnsoldPlayer::class,
-            \App\Models\Sponsor::class,            
+            \App\Models\Sponsor::class,
+            \App\Models\League::class,
         ];
     
         foreach ($models as $model) {

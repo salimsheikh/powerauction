@@ -30,16 +30,16 @@ class Transaction extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function team()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsTo(Team::class,'team_id');
     }
 
     public function plan()
     {
-        return $this->belongsTo(Plan::class,'team_id');
+        return $this->belongsTo(Plan::class,'plan_id');
     }
 }

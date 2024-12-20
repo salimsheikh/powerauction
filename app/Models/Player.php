@@ -139,7 +139,7 @@ class Player extends Model
             $category = self::getLeagueCategory($leagueId);
             if (!empty($categoryId) && !empty($category)) {
                 $count_arr = array_count_values($category);
-                $count_curr_category = $count_arr[$categoryId];
+                $count_curr_category = isset($count_arr[$categoryId]) ? $count_arr[$categoryId] : 0;
                 if (in_array($categoryId, $category) && $count_curr_category > 1) {
                     $sold_status = 'unsold';
                 }

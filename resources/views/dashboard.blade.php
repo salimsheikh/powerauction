@@ -18,7 +18,7 @@
                     </style>                    
 
                     <div class="mt-4">
-                        <div class="flex flex-wrap -mx-6">
+                        <div class="flex flex-wrap  -mx-6">
                             <x-dashboard-card title="{{ __('Current League Name') }}"
                                 value="{{ html_entity_decode($data['current_league_name']) }}" icon="sports_soccer"
                                 iconBgColor="bg-indigo-600" wrapperClass="sm:w-1/2 xl:w-1/2" />
@@ -41,12 +41,16 @@
                             <x-dashboard-card title="{{ __('Total No. of Unsold Players') }}"
                                 value="{{ $data['unsold_players'] }}" icon="highlight_off" iconBgColor="bg-blue-600"
                                 wrapperClass="sm:w-1/2 xl:w-1/3" />
+                            
+
+                            
+
                             </div>
                         </div>
     
                         <div class="mt-4">
                             <div class="flex justify-center items-center -mx-6">
-                            <x-dashboard-card title="{{ __('Total No. of Sponsors') }}"
+                                <x-dashboard-card title="{{ __('Total No. of Sponsors') }}"
                                 value="{{ $data['total_sponsors'] }}" icon="handshake" iconBgColor="bg-teal-500"
                                 wrapperClass="sm:w-1/2 xl:w-1/3" />
                         </div>

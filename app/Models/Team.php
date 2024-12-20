@@ -92,6 +92,7 @@ class Team extends Model
     }
 
     public static function getTeams($query){
+
         // Start the query builder for the Team model
         $itemQuery = self::query()
             ->select(

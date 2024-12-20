@@ -1048,6 +1048,10 @@ class SimpleSlider {
         this.nextButton = document.getElementById(nextButtonId);
         this.playerInput = document.getElementById(playerInputId);
 
+        if(!this.prevButton){
+            return false;
+        }
+
         this.currentIndex = 0;
         this.totalSlides = this.sliderItems.length;
 

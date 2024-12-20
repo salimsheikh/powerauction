@@ -1044,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Initial load
 fetchAndRender(current_page);
 
-/*
+
 if(document.getElementById('player_name')){
     const sampleName = getRandomSample();
     document.getElementById('player_name').value = sampleName.name;
@@ -1061,7 +1061,7 @@ if(document.getElementById('player_name')){
     document.getElementById('city').value = 'Nehru Nagar';
     document.getElementById('email').value = sampleName.email;
 }
-*/
+
 /*
 if(document.getElementById('sponsor_name')){
     document.getElementById('sponsor_name').value = 'Salim Shaikh';
@@ -1070,7 +1070,7 @@ if(document.getElementById('sponsor_name')){
     document.getElementById('sponsor_type').value = 'gold';
 }
 */
-
+/*
 if(document.getElementById('team_name')){
     const sampleName = getRandomSample();
     document.getElementById('team_name').value = sampleName.team;
@@ -1080,3 +1080,4 @@ if(document.getElementById('team_name')){
     document.getElementById('owner_phone').value = sampleName.mobile;
     document.getElementById('owner_password').value = '123';
 }
+*/

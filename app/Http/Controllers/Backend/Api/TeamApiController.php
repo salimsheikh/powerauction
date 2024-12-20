@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\{User,Team,SoldPlayer};
 
 
-use Illuminate\Support\Facades\{Validator,Hash,Auth};
+use Illuminate\Support\Facades\{Validator,Hash,Auth,Cache};
 use Illuminate\Auth\Events\Registered;
 
 use App\Services\ImageUploadService;
@@ -27,20 +27,38 @@ class TeamApiController extends Controller
 
     public function index(Request $request)
     {
-        // Get the search query from the request
-        $query = $request->input('query', '');
-
-        $page = $request->input('page', '');
         
-        try {
-            $items = Team::getTeams($query);
-        } catch (\Throwable $th) {
-            //throw $th;
+        
+        try {            
+            $items = $this->fetchTeamData($request);
+
+        } catch (\Throwable $e) {
+            \Log::error('Error retrieving team details', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             $items = [];
-        }               
+        }            
 
         // Return the columns and items data in JSON format
         return response()->json($this->getActionPermissionsAndColumns($items));
+    }
+
+    private function fetchTeamData($request){
+
+        // Get the search query from the request
+        $query = $request->input('query', '');
+
+        $page = $request->input('page', '1');
+
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.team_data_duration', 720));
+
+        $cacheKey = sprintf('team_page_%s_query_%s', $page, $query);        
+
+        return Cache::remember($cacheKey, $cacheDuration, function () use ($query) {
+            return Team::getTeams($query);
+        });
     }
 
     public function store(TeamRequest $request){        
@@ -74,9 +92,7 @@ class TeamApiController extends Controller
         $formData['owner_id'] = $user->id;
         
         $formData['status'] = $request->input('status', 'publish');
-        $formData['created_by'] = Auth::id();
-
-    
+        $formData['created_by'] = Auth::id();   
 
         try{
 
@@ -353,6 +369,7 @@ class TeamApiController extends Controller
         }
         
         return [
+            'status' => 'success',
             'columns' => $columns,
             'items' => $items,
             'actions' => $actions

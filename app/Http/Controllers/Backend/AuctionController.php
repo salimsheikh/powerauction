@@ -20,6 +20,8 @@ class AuctionController extends Controller
             return $this->auctionPlayer(); // Non-admin logic
         }
 
+       
+
         $leagueId = Session::get('league_id');
         $categoryId = Session::get('category_id');
 
@@ -27,32 +29,56 @@ class AuctionController extends Controller
             return redirect()->route('leagues.index');
         }
 
-        $leagueName = League::getLeagueName($leagueId);
+        $category_id = $request->query('category_id',0);
 
-        if ($request->isMethod('post') && $request->has('category_id')) {
-            League::updateCategory($leagueId, $request->category_id);
-            Session::put('category_id', $request->category_id);
-            $categoryId = $request->category_id;
-        }
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.auction_league_duration', 720));
 
-        $players = Player::getPlayers($categoryId);     
+        $cacheKey = sprintf('auction_league_%s_category_id_%s',$leagueId, $category_id);
 
-        return view('admin.auction', compact('leagueName', 'players', 'leagueId', 'categoryId'));
+        $data = Cache::remember($cacheKey,$cacheDuration, function() use ($leagueId, $request,$categoryId) {
+        
+            $data = [];
+
+            $data['leagueName'] = League::getLeagueName($leagueId);
+
+            if ($request->isMethod('post') && $request->has('category_id')) {
+                League::updateCategory($leagueId, $request->category_id);
+                Session::put('category_id', $request->category_id);
+                $categoryId = $request->category_id;
+            }
+
+            $data['players'] = Player::getPlayers($categoryId); 
+            $data['leagueId'] = $leagueId;
+            $data['categoryId'] = $categoryId;
+
+            return $data;
+
+        });
+
+        return view('admin.auction', $data);
     }     
 
     public function auctionPlayer(){
 
-        $league = League::select('id','league_name','auction_view')->where('status', 1)->first();
-        $league = $league != null ? $league->toArray() : array();       
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.auction_player_duration', 720));
 
-        $league_id = $league['id'];
-        $leagueName = $league['league_name'];
-        $player_id = $league['auction_view'];
-        $categoryId = 0;
+        $data = Cache::remember('auction_player_user',$cacheDuration, function(){
+            $league = League::select('id','league_name','auction_view')->where('status', 1)->first();
+            $league = $league != null ? $league->toArray() : array();          
 
-        $players = Player::getPlayers($categoryId,$player_id,$league_id);       
+            $data = [];
+            $data['league_id'] = $league['id'];
+            $data['leagueName'] = $league['league_name'];
+            $data['player_id'] = $league['auction_view'];
+            $data['categoryId'] = 0;            
+            $data['players'] = Player::getPlayers($data['categoryId'],$data['player_id'],$data['league_id']);
+            
+            return $data;
+        });
 
-        return view('admin.auction-user', compact('leagueName','players','league_id','player_id'));
+        return view('admin.auction-user', $data);
     }
 
     public function setLeagueId(Request $requst, $id)
@@ -68,10 +94,8 @@ class AuctionController extends Controller
         // Step 3: Update specific row's status to 1
         // Replace '1' with your specific condition
         DB::table('league')->where('id', $id)->update(['status' => 1]);
-
-        // Dispatch event to clear specific cache
-        // event(new CacheClearEvent('dashboard_data'));
-        Cache::forget('dashboard_data');
+        
+        updateSetting('cache_flag',true);
 
         // Redirect to the route named 'auction.index'
         return redirect()->route('auction.index');
@@ -97,7 +121,7 @@ class AuctionController extends Controller
             
         if($status == 'active'){
             if($end_time > $current_time){
-                League::updateAuctionViewAmount($league_id, $player_id);
+                League::updateAuctionViewAmount($league_id, $player_id);                
                 $team_id = SoldPlayer::where(['league_id' => $league_id, 'player_id' => $player_id])->value('team_id');                
                 return $this->getBiddingPage($request,$player_id,$session_id,$start_time,$end_time);
             }else{
@@ -136,7 +160,6 @@ class AuctionController extends Controller
                         $response = ['status' => 'error', 'message' => 'Cancelled'];
                     }
                 } else {
-
                     // Get bid session and player data
                     $bid_session = BidSession::where('id',$session_id)->first();                   
                     $bid_session = $bid_session ? $bid_session->toArray() : null;
