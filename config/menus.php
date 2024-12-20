@@ -55,21 +55,7 @@
             'active_routes' => ['profile.edit'],
             'permission' => 'profile-page-view',
             'position' => 'side'
-        ],
-        [
-            'label' => 'Settings',
-            'route_name' => 'settings.index',
-            'active_routes' => ['settings.index'],
-            'permission' => 'setting-page-view',
-            'position' => 'side'
-        ],
-        [
-            'label' => 'Clear Cache',
-            'route_name' => 'clear-cache',
-            'active_routes' => ['clear-cache'],
-            'permission' => 'clear-cache-page-view',
-            'position' => 'side'
-        ],
+        ],        
         [
             'label' => 'Users',
             'route_name' => 'users',
@@ -99,18 +85,46 @@
             'position' => 'header'
         ],
         [
-            'label' => 'Team Details',
-            'route_name' => 'team.page.details',
-            'active_routes' => ['team.page.details'],
-            'permission' => 'team-page-details',
-            'position' => 'header'
-        ],
-        [
             'label' => 'Auction Rules',
             'route_name' => 'auction.rules',
             'active_routes' => ['auction.rules'],
-            'permission' => 'auction-rules',
+            'permission' => 'auction-rules-page-view',
             'position' => 'header'
+        ],
+        [
+            'label' => 'Team Details',
+            'route_name' => 'team.page.details',
+            'active_routes' => ['team.page.details'],
+            'permission' => 'team-details-page-view',
+            'position' => 'header'
+        ],        
+        [
+            'label' => 'Settings',
+            'route_name' => 'settings.index',
+            'active_routes' => ['settings.index'],
+            'permission' => 'setting-page-view',
+            'position' => 'side'
+        ],
+        [
+            'label' => 'Clear Cache',
+            'route_name' => 'clear-cache',
+            'active_routes' => ['clear-cache'],
+            'permission' => 'clear-cache-page-view',
+            'position' => 'side'
+        ],       
+        [
+            'label' => 'Terms & Condition',
+            'route_name' => 'terms.condition',
+            'active_routes' => ['terms.condition'],
+            'permission' => 'terms-condition-page-view',
+            'position' => 'side'
+        ],
+        [
+            'label' => 'Privacy Policy',
+            'route_name' => 'privacy.policy',
+            'active_routes' => ['privacy.policy'],
+            'permission' => 'privacy-policy-page-view',
+            'position' => 'side'
         ],
 
         

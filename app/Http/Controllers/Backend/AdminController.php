@@ -17,7 +17,6 @@ class AdminController extends Controller
         // $this->middleware('permission:permission-page-view');
     }
 
-
     public function clearCache(){
 
         // Or clear all cache
@@ -35,42 +34,60 @@ class AdminController extends Controller
 
     public function teamPlayers(Request $request, $team_id){
 
-        $data = [];
-
-        $data['team_id'] = $team_id;
-
-        $team = Team::select('team_name')->find($team_id);
-
-        $data['team_name'] = $team->team_name;
-        
-        $data['player_ids'] = SoldPlayer::where('team_id', $team_id)->pluck('player_id')->toArray();            
-
         Session::put('view_team_id',$team_id);
 
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.sold_player_team_data_duration', 720));
+
+        // Attempt to retrieve cached data or query the database
+        $data = Cache::remember("sold_player_team_{$team_id}", $cacheDuration, function () use ($team_id){
+
+            $data = [];
+
+            $data['team_id'] = $team_id;
+
+            $team = Team::select('team_name')->find($team_id);
+
+            $data['team_name'] = $team->team_name;
+            
+            $data['player_ids'] = SoldPlayer::where('team_id', $team_id)->pluck('player_id')->toArray();
+
+            return $data;
+        });
+        
         return view('admin.team-players',$data);
     }
 
     public function teamDetails(){
         $data = [];
 
-        $columns = [];
-        $columns['image_thumb'] = '';
-        $columns['uniq_id'] = __('Unique Id');        
-        $columns['player_name'] = __('Name');
-        $columns['category_name'] = __('Category'); 
-        $columns['base_price'] = __('Base Points');
-        $columns['sold_price'] = __('Purchase Points');
-
-        $data['columns'] = $columns;
-
-        $data['teams'] = Cache::remember("team_with_player", now()->addHours(12), function (){
-            $value = Team::getTeamsWithPlayers();
-            return $value !== null ? $value : $default;
-        });
-
-        // $data['teams'] = Team::getTeamsWithPlayers();
+        // Define columns for the view        
+        $data['columns'] = [
+            'image_thumb' => '',
+            'uniq_id' => __('Unique Id'),
+            'player_name' => __('Name'),
+            'category_name' => __('Category'),
+            'base_price' => __('Base Points'),
+            'sold_price' => __('Purchase Points'),
+        ];
         
-        return view('admin.team-details',$data);
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.team_data_duration', 720));
+
+        try {
+            // Attempt to retrieve cached data or query the database
+            $data['teams'] = Cache::remember("team_with_player", $cacheDuration, function () {
+                return Team::getTeamsWithPlayers() ?? [];
+            });
+            
+        } catch (\Exception $e) {
+            // Log the error and provide a fallback
+            \Log::error('Error retrieving team details: '.$e->getMessage());
+            $data['teams'] = []; // Fallback to an empty array
+        }
+
+        // Return the view with the prepared data
+        return view('admin.team-details', $data);
 
     }
 
@@ -79,7 +96,21 @@ class AdminController extends Controller
         $data['title'] = __('Auction Rules');
         $data['pageData'] = setting('auction_rules');
         return view('admin.page',$data);
-    }       
+    }
+
+    public function termConditionPage(){
+        $data = [];
+        $data['title'] = __('Term & Condition');
+        $data['pageData'] = setting('terms_condition');
+        return view('admin.page',$data);
+    }
+
+    public function privacyPolicyPage(){
+        $data = [];
+        $data['title'] = __('Privacy Policy');
+        $data['pageData'] = setting('privacy_policy');
+        return view('admin.page',$data);
+    }
 
     public function categories(){
         return view('admin.categories');
@@ -98,8 +129,18 @@ class AdminController extends Controller
     }
 
     public function teams(){
-        $plans = Plan::select('id','amount')->where('status', 'publish')->orderBy('order', 'ASC')->get();
-        return view('admin.teams',compact('plans'));
+        
+        $data = [];
+
+        // Dynamic cache duration from config or default to 12 hours
+        $cacheDuration = now()->addMinutes(config('cache.suport_data_duration', 720));
+
+        // Attempt to retrieve cached data or query the database
+        $data['plans'] = Cache::remember("plans", $cacheDuration, function () {
+            return Plan::select('id','amount')->where('status', 'publish')->orderBy('order', 'ASC')->get();
+        });
+       
+        return view('admin.teams',$data);
     }
 
     public function users(){           

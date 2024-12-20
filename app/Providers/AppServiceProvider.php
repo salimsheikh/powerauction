@@ -36,25 +36,8 @@ class AppServiceProvider extends ServiceProvider
 
         //$this->configureRateLimiting();
 
-        $menus = config('menus'); // Or fetch from the database
-        $menuService = app(MenuService::class);
-        $filteredMenus = $menuService->filterMenus($menus);
-        
-        // $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
-        // $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
-    
-        View::share($filteredMenus);        
-
-        $models = [
-            \App\Models\Player::class,
-            \App\Models\SoldPlayer::class,
-            \App\Models\Team::class,
-            \App\Models\Category::class,
-        ];
-    
-        foreach ($models as $model) {
-            $model::observe(CacheFlagObserver::class);
-        }
+        $this->shareMenuView();
+        $this->catchFlagObserver();
     }
 
     protected function configureRateLimiting()
@@ -72,9 +55,33 @@ class AppServiceProvider extends ServiceProvider
             Event::listen(Login::class, LogUserLogin::class);
         } catch (\Throwable $th) {
             return response()->json(['error' => 'Login event failed.'], 429);
+        }        
+    }
+
+    protected function catchFlagObserver(){
+        $models = [
+            \App\Models\Player::class,
+            \App\Models\SoldPlayer::class,
+            \App\Models\Team::class,
+            \App\Models\Category::class,
+            \App\Models\League::class,
+            \App\Models\UnsoldPlayer::class,
+            \App\Models\Sponsor::class,            
+        ];
+    
+        foreach ($models as $model) {
+            $model::observe(CacheFlagObserver::class);
         }
+    }
 
-
+    protected function shareMenuView(){
+        $menus = config('menus'); // Or fetch from the database
+        $menuService = app(MenuService::class);
+        $filteredMenus = $menuService->filterMenus($menus);
         
+        // $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
+        // $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
+    
+        View::share($filteredMenus);   
     }
 }

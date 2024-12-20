@@ -34,7 +34,7 @@
                                 value="{{ $data['total_players'] }}" icon="person" iconBgColor="bg-pink-600"
                                 wrapperClass="sm:w-1/2 xl:w-1/3" />
 
-                            <x-dashboard-card title="{{ __('Total No. of old Players') }}"
+                            <x-dashboard-card title="{{ __('Total No. of Sold Players') }}"
                                 value="{{ $data['sold_players'] }}" icon="shopping_cart" iconBgColor="bg-yellow-500"
                                 wrapperClass="sm:w-1/2 xl:w-1/3" />
 

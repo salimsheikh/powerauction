@@ -90,5 +90,51 @@ class Team extends Model
             ];
         });
     }
+
+    public static function getTeams($query){
+        // Start the query builder for the Team model
+        $itemQuery = self::query()
+            ->select(
+                'teams.*',
+                'users.email as owner_email',
+                'users.phone as owner_phone',
+                'users.name as owner_name'
+            )
+            ->join('users', 'teams.owner_id', '=', 'users.id') // Join with users table
+            ->with(['league:id,league_name','soldPlayers:team_id,sold_price']); // Eager load the League relationship if needed
+            //,'sold_players'
+        // Apply search filters if a query exists
+        if ($query) {
+            $itemQuery->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('team_name', 'like', '%' . $query . '%')
+                    ->orWhereHas('league', function ($leagueQuery) use ($query) {
+                        $leagueQuery->where('league_name', 'like', '%' . $query . '%');
+                    })
+                    ->orWhere(function ($userQuery) use ($query) {
+                        // Since users table is joined, directly filter on its columns
+                        $userQuery->where('users.name', 'like', '%' . $query . '%')
+                            ->orWhere('users.email', 'like', '%' . $query . '%')
+                            ->orWhere('users.phone', 'like', '%' . $query . '%');
+                    });
+            });
+        }
+
+        // Filter by status and sort by creation date
+        $itemQuery->where('teams.status', 'publish')->orderBy('teams.team_name', 'asc');
+
+        $list_per_page = intval(setting('list_per_page', 10));
+
+        // Paginate the results
+        $items = $itemQuery->paginate($list_per_page);        
+
+        $items->map(function($item){
+            $item->league_name = $item?->league?->league_name;
+            $sold_price = $item->soldPlayers->firstWhere('team_id', $item->id)?->sold_price ?? 0;            
+            $item->remaining_points = $item->virtual_point - $sold_price;
+            return $item;
+        });
+
+        return $items;
+    }
         
 }

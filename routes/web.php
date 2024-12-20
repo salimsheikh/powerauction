@@ -45,7 +45,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get("/teams",[AdminController::class, 'teams'])->name('teams.index')->middleware('permission:team-page-view');
     
     Route::get("/team/players/{id}",[AdminController::class, 'teamPlayers'])->name('team.players.index')->middleware('permission:team-page-view');
-    Route::get("/team/details",[AdminController::class, 'teamDetails'])->name('team.page.details')->middleware('permission:team-page-details');
+    Route::get("/team/details",[AdminController::class, 'teamDetails'])->name('team.page.details')->middleware('permission:team-details-page-view');
 
     Route::get("/leagues",[AdminController::class, 'league'])->name('leagues.index')->middleware('permission:league-page-view');
     Route::get("/sponsors",[AdminController::class, 'sponsors'])->name('sponsors.index')->middleware('permission:sponsor-page-view');
@@ -55,11 +55,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get("/permissions",[AdminController::class, 'permissions'])->name('permissions')->middleware('permission:user-permission-page-view');
 
     
-    Route::get("/auction/rules",[AdminController::class, 'auctionRulesPage'])->name('auction.rules')->middleware('permission:auction-rules');
+    Route::get("/auction/rules",[AdminController::class, 'auctionRulesPage'])->name('auction.rules')->middleware('permission:auction-rules-page-view');
+    Route::get("/terms-condition",[AdminController::class, 'termConditionPage'])->name('terms.condition')->middleware('permission:terms-condition-page-view');
+    Route::get("/privacy-policy",[AdminController::class, 'privacyPolicyPage'])->name('privacy.policy')->middleware('permission:privacy-policy-page-view');
 
-    
-
-    // admin.user-permissions.index
     
     // Handling both GET and POST requests on the same route
     Route::match(['get', 'post'], "/auction", [AuctionController::class, 'index'])->name('auction.index')->middleware('permission:auction-page-view');
