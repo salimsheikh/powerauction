@@ -82,9 +82,7 @@ class UserRoleApiController extends Controller
             $permission = Permission::get();
             $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id",$id)
                 ->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')
-                ->all();
-
-               // \Log::info(\json_encode($rolePermissions));
+                ->all();           
 
             if ($item) {
                 return response()->json([
@@ -114,10 +112,7 @@ class UserRoleApiController extends Controller
     }
 
     public function update(UserRoleRequest $request, $id)
-    {
-
-       //info($id);
-        //\Log::info("update user");
+    {   
 
         $res = $this->get_response(); 
         
@@ -125,9 +120,7 @@ class UserRoleApiController extends Controller
 
         try {          
 
-            $data = $request->all();
-
-            //\Log::info(print_r($data,true));
+            $data = $request->all();         
 
             $item = Role::find($id);
 

@@ -5,8 +5,6 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\CheckAdminExists;
 use App\Http\Middleware\VerifyToken;
-use App\Http\Middleware\RoleMiddleware;
-//use App\Http\Middleware\CustomThrottleHandler;
 use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -19,15 +17,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(CheckAdminExists::class);
         $middleware->append(VerifyToken::class);
-        // $middleware->append(RoleMiddleware::class);
+
+        $middleware->append(\App\Http\Middleware\ClearCacheMiddleware::class);
 
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-           // 'permission2' => \App\Http\Middleware\CustomPermissionMiddleware::class,
         ]);
-        //$middleware->append(CustomThrottleHandler::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, $request) {

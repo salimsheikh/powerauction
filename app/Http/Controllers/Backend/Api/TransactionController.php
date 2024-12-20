@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Backend\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Transaction;
-use App\Models\Team;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Models\{Transaction,Team};
+use Illuminate\Support\Facades\{Auth,Validator};
 
 class TransactionController extends Controller
 {

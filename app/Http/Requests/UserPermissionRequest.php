@@ -26,13 +26,10 @@ class UserPermissionRequest extends FormRequest
     public function rules(): array
     {
         $rules = [            
-            'name' => 'required|string|max:100|unique:permissions,name',
-            
+            'name' => 'required|string|max:100|unique:permissions,name',            
         ];
 
-        $update_id = $this->input('update_id', 0);        
-
-        //\Log::info($update_id);
+        $update_id = $this->input('update_id', 0); 
 
         if ($this->isMethod('post')) {
             // Rules for creating a role

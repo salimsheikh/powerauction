@@ -58,8 +58,7 @@ class ProfileController extends Controller
 
         try {
             $user->delete();
-        } catch (\Throwable $th) {
-            //\Log::error('User delete error: ' . $th->getMessage());
+        } catch (\Throwable $th) {            
             return redirect()->route('profile.edit')->with('error', $th->getMessage());
         }
 

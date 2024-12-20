@@ -954,5 +954,166 @@ if (typeof player_ids !== 'undefined') {
     disableSelectedPlayers(player_ids, 'player_id')
 }
 
+class AutoSlider {
+    constructor({
+        sliderId,
+        slideDotsClass,
+        toggleButtonId,
+        interval = 3000,
+        buttonLabelPause = 'Pause',
+        buttonLabelPlay = 'Play',
+    }) {
+        this.autoCurrentSlide = 0;
+        this.autoSlides = document.getElementById(sliderId);
+        this.autoTotalSlides = this.autoSlides.children.length;
+        this.slideDots = document.querySelectorAll(`.${slideDotsClass}`);
+        this.isPlaying = true;
+        this.interval = interval;
+
+        this.slider = document.getElementById(sliderId);
+        this.toggleButton = document.getElementById(toggleButtonId);
+
+        this.buttonLabelPause = buttonLabelPause;
+        this.buttonLabelPlay = buttonLabelPlay;
+
+        // Initialize
+        this.init();
+    }
+
+    updateDots() {
+        this.slideDots.forEach((slideDot, index) => {
+            slideDot.classList.toggle('bg-gray-900', index === this.autoCurrentSlide);
+            slideDot.classList.toggle('bg-gray-500', index !== this.autoCurrentSlide);
+        });
+    }
+
+    showNextSlide() {
+        this.autoCurrentSlide = (this.autoCurrentSlide + 1) % this.autoTotalSlides;
+        this.autoSlides.style.transform = `translateX(-${this.autoCurrentSlide * 100}%)`;
+        this.updateDots();
+    }
+
+    startAutoPlay() {
+        this.slideInterval = setInterval(() => this.showNextSlide(), this.interval);
+    }
+
+    stopAutoPlay() {
+        clearInterval(this.slideInterval);
+    }
+
+    togglePlayPause() {
+        if (this.isPlaying) {
+            this.stopAutoPlay();
+            this.toggleButton.innerText = this.buttonLabelPlay;
+        } else {
+            this.startAutoPlay();
+            this.toggleButton.innerText = this.buttonLabelPause;
+        }
+        this.isPlaying = !this.isPlaying;
+    }
+
+    init() {
+        // Initialize slideDots
+        this.updateDots();
+
+        // Start autoplay
+        this.startAutoPlay();
+
+        // Pause on hover
+        this.slider.addEventListener('mouseenter', () => this.stopAutoPlay());
+        this.slider.addEventListener('mouseleave', () => {
+            if (this.isPlaying) this.startAutoPlay();
+        });
+
+        // Play/Pause toggle
+        this.toggleButton.addEventListener('click', () => this.togglePlayPause());
+
+        // Dot navigation
+        this.slideDots.forEach(slideDot => {
+            slideDot.addEventListener('click', () => {
+                this.autoCurrentSlide = parseInt(slideDot.dataset.index);
+                this.autoSlides.style.transform =
+                `translateX(-${this.autoCurrentSlide * 100}%)`;
+                this.updateDots();
+            });
+        });
+    }
+}
+
+class SimpleSlider {
+    constructor({ sliderTrackClass, sliderItemClass, prevButtonId, nextButtonId, playerInputId }) {
+        this.sliderTrack = document.querySelector(`.${sliderTrackClass}`);
+        this.sliderItems = document.querySelectorAll(`.${sliderItemClass}`);
+        this.prevButton = document.getElementById(prevButtonId);
+        this.nextButton = document.getElementById(nextButtonId);
+        this.playerInput = document.getElementById(playerInputId);
+
+        this.currentIndex = 0;
+        this.totalSlides = this.sliderItems.length;
+
+        // Initialize slider
+        this.init();
+    }
+
+    updateSliderPosition() {
+        const offset = -this.currentIndex * 100; // 100% per slide
+        this.sliderTrack.style.transform = `translateX(${offset}%)`;
+
+        // Update the data-id value in the input field
+        const currentSlide = this.sliderItems[this.currentIndex];
+        const dataId = currentSlide.getAttribute("data-id");
+        if (this.playerInput) {
+            this.playerInput.value = dataId;
+        }
+
+        // Show/Hide navigation buttons based on the current index
+        this.prevButton.style.display = this.currentIndex === 0 ? "none" : "flex";
+        this.nextButton.style.display = this.currentIndex === this.totalSlides - 1 ? "none" : "flex";
+    }
+
+    init() {
+        // Initialize slider position
+        this.updateSliderPosition();
+
+        // Add event listeners for navigation buttons
+        this.prevButton.addEventListener("click", () => {
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+                this.updateSliderPosition();
+            }
+        });
+
+        this.nextButton.addEventListener("click", () => {
+            if (this.currentIndex < this.totalSlides - 1) {
+                this.currentIndex++;
+                this.updateSliderPosition();
+            }
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if(document.getElementById('autoSlides')){
+        const slider = new AutoSlider({
+            sliderId: 'autoSlides',
+            slideDotsClass: 'slideDot',
+            toggleButtonId: 'slider-toggle',
+            interval: 3000,
+            buttonLabelPause: 'Pause',
+            buttonLabelPlay: 'Play',
+        });
+    }
+
+    if(document.querySelector('.slider-track')){
+        const slider = new SimpleSlider({
+            sliderTrackClass: "slider-track",
+            sliderItemClass: "slider-item",
+            prevButtonId: "prev",
+            nextButtonId: "next",
+            playerInputId: "player_id"
+        });
+    }
+});
+
 
 //logConsole('Test message', { key: 'value' }, [1, 2, 3]);

@@ -3,22 +3,17 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{Schema,RateLimiter,View,Event,Auth};
 
 use Illuminate\Auth\Events\Login;
 
-
-use App\Listeners\ClearCacheListener;
-use App\Listeners\LogUserLogin;
+use App\Listeners\{ClearCacheListener,LogUserLogin};
 
 use App\Events\CacheClearEvent;
 
-use App\Services\SettingsService;
-use App\Services\MenuService;
+use App\Services\{SettingsService,MenuService};
+
+use App\Observers\CacheFlagObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,10 +36,6 @@ class AppServiceProvider extends ServiceProvider
 
         //$this->configureRateLimiting();
 
-        //\Log::info('Auth Check:', ['check' => auth()->check()]);
-        //\Log::info('User:', ['user' => auth()->user()]);
-                
-
         $menus = config('menus'); // Or fetch from the database
         $menuService = app(MenuService::class);
         $filteredMenus = $menuService->filterMenus($menus);
@@ -52,7 +43,18 @@ class AppServiceProvider extends ServiceProvider
         // $headerMenu = $menuService->filterMenu($filteredMenus['header_menu']);
         // $sideMenu = $menuService->filterMenu($filteredMenus['dropdown_menu']);
     
-        View::share($filteredMenus);
+        View::share($filteredMenus);        
+
+        $models = [
+            \App\Models\Player::class,
+            \App\Models\SoldPlayer::class,
+            \App\Models\Team::class,
+            \App\Models\Category::class,
+        ];
+    
+        foreach ($models as $model) {
+            $model::observe(CacheFlagObserver::class);
+        }
     }
 
     protected function configureRateLimiting()

@@ -31,8 +31,7 @@ class MenuService
                 // Check permission using Spatie
                 //$permissionCheck = auth()->user()->can($item['permission']);
 
-                //$userId = Auth::id();
-                //\Log::info("userId: " . $userId);
+                //$userId = Auth::id();                
                 // auth()->user()->can($item['permission']);
 
                 //user()->can('edit articles');

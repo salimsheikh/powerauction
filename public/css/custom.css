@@ -198,6 +198,12 @@ body::-webkit-scrollbar-track {
     color: var(--text-color);
 }
 
+.custom-table thead th.text-right {
+    text-align: right;
+}
+
+
+
 .custom-table thead th.actions,
 .custom-table thead th.view_actions,
 .custom-table thead th.team_actions,
@@ -345,6 +351,12 @@ td.description{
     border-color: white;    
 }
 
+.team-players .custom-table,
+.team-players .custom-table thead th,
+.team-players .custom-table tbody td{
+    background-color: transparent;
+    --tw-bg-opacity: 1;
+}
 
 
 /* Styling for the search box container */

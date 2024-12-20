@@ -41,8 +41,6 @@ class UserRoleRequest extends FormRequest
 
         $update_id = $this->input('update_id', 0);
 
-        //\Log::info($update_id);
-
         if ($this->isMethod('post')) {
             // Rules for creating a role
             if($update_id > 0){

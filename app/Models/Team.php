@@ -41,13 +41,54 @@ class Team extends Model
     }
 
     function soldPlayers(){
-        return $this->belongsTo(SoldPlayer::class, 'team_id');
+        //return $this->belongsTo(SoldPlayer::class, 'team_id');
+        return $this->hasMany(SoldPlayer::class, 'team_id');
     }
 
     
     public function players()
     {
         return $this->hasManyThrough(Player::class, SoldPlayer::class, 'team_id', 'id', 'id', 'player_id');
+    }
+
+    public static function getTeamsWithPlayers()
+    {
+        $playerWith = [
+            'soldPlayers:id,team_id,player_id,sold_price',
+            'players.category:id,category_name,base_price',
+        ];       
+        
+        $teams = self::with($playerWith)->get();
+        
+        return $teams->map(function ($team) {
+            $soldPlayers = $team->soldPlayers;
+            $points_spent = $team->soldPlayers->sum('sold_price');
+            $points_remaining = $team->virtual_point - $points_spent;
+            $exceeded_by = max(0, $points_spent - $team->virtual_point);
+            return [
+                'team_name' => $team->team_name,
+                'team_logo' => $team->team_logo,
+                'virtual_point' => $team->virtual_point,
+                'points_spent' => $points_spent,
+                'points_remaining' => $points_remaining,
+                'exceeded_by' => $exceeded_by,
+                'players' => $team->players->map(function ($player) use ($soldPlayers) {
+                    $sold_price = $soldPlayers->firstWhere('player_id', $player->id)?->sold_price ?? 0;
+        
+                    return [
+                        'id' => $player->id,
+                        'player_id' => $player->id,
+                        'uniq_id' => $player->uniq_id,
+                        'player_name' => $player->player_name,
+                        //'image' => $player->image,
+                        'image_thumb' => $player->image_thumb,                        
+                        'category_name' => $player->category->category_name ?? null,
+                        'base_price' => $player->category->base_price ?? null,
+                        'sold_price' => $sold_price,
+                    ];
+                }),
+            ];
+        });
     }
         
 }

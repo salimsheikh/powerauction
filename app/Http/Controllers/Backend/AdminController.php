@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{Plan,Team,SoldPlayer,Player};
 use Illuminate\Support\Facades\{Session,Artisan};
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{Auth,Cache};
 
 use App\Services\DashboardService;
 
@@ -27,9 +27,7 @@ class AdminController extends Controller
     }
 
     public function dashboard(DashboardService $dashboardService){
-        $userId = Auth::id();
-        //\Log::info("userId: " . $userId);
-        
+        $userId = Auth::id();        
         $data = array();
         $data = $dashboardService->getDashboardData();
         return view('dashboard',compact('data'));
@@ -56,36 +54,30 @@ class AdminController extends Controller
         $data = [];
 
         $columns = [];
-        $columns['image'] = '';
+        $columns['image_thumb'] = '';
         $columns['uniq_id'] = __('Unique Id');        
-        $columns['player_nickname'] = __('Name');
+        $columns['player_name'] = __('Name');
         $columns['category_name'] = __('Category'); 
-        $columns['base_points'] = __('Base Points');
-        $columns['purchase_points'] = __('Purchase Points');
+        $columns['base_price'] = __('Base Points');
+        $columns['sold_price'] = __('Purchase Points');
 
         $data['columns'] = $columns;
-       
 
-        $teams = Team::with(['players.playerStyle', 'players.playerType', 'players.playerProfile'])->get();
-        $data['teams'] = $teams->transform(function ($team) {
-            $team->players->transform(function ($player) {
-                $player->player_style_name = $player->player_style_name;
-                $player->player_type_name = $player->player_type_name;
-                $player->player_profile_name = $player->player_profile_name;        
-                return $player;
-            });
-            return $team;
+        $data['teams'] = Cache::remember("team_with_player", now()->addHours(12), function (){
+            $value = Team::getTeamsWithPlayers();
+            return $value !== null ? $value : $default;
         });
 
-        // dd($data['teams']->toArray());
+        // $data['teams'] = Team::getTeamsWithPlayers();
         
         return view('admin.team-details',$data);
+
     }
 
     public function auctionRulesPage(){
         $data = [];
         $data['title'] = __('Auction Rules');
-        $data['pageData'] = \App\Models\Setting::getSetting('auction_rules','');   ;
+        $data['pageData'] = setting('auction_rules');
         return view('admin.page',$data);
     }       
 

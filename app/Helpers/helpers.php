@@ -93,7 +93,6 @@ if(!function_exists('print_rd')){
     }    
 }
 
-
 if (!function_exists('setting')) {
     /**
      * Get a setting value.
@@ -108,7 +107,19 @@ if (!function_exists('setting')) {
     }
 }
 
-
+if (!function_exists('updateSetting')) {
+    /**
+     * Get a setting value.
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function updateSetting($key, $default = null)
+    {
+        return app(App\Services\SettingsService::class)->updateSetting($key, $default);
+    }
+}
 
 function hasRole($role)
 {

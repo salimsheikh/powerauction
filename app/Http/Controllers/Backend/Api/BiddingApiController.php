@@ -112,14 +112,10 @@ class BiddingApiController extends Controller
 
     function bid(Request $request){
 
-        //\Log::info("Start bid 1");
-
         $team_id = $request->input('team_id');
         $session_id = $request->input('session_id');
         $returnData  = [];
         if($team_id > 0){
-
-            //\Log::info("Start bid 2");
 
             $team_point = Team::select('virtual_point')->where('id', $team_id)->first();
             $team_point = $team_point ? $team_point->toArray() : 0;
@@ -207,9 +203,8 @@ class BiddingApiController extends Controller
                 $response = ['success' => false, 'status' => 'error', 'message' => __('Cancelled 4'),'errors'=>[__('Cancelled 4')],'returnData' => $returnData];
                 return response()->json($response,409);
             }            
-        }       
-
-        //\Log::info("Start bid 3");
+        }
+        
         return response()->json([
             'success' => false,
             'status' => 'error',
@@ -219,9 +214,7 @@ class BiddingApiController extends Controller
 
     function bidWin(Request $request, $session_id){
 
-        $session = BidSession::select('start_time','end_time','status')->find($session_id);
-
-        //\Log::info(print_r(json_encode($session),true));
+        $session = BidSession::select('start_time','end_time','status')->find($session_id);        
 
         $current_time = now();
         $start_time = $session->start_time;
@@ -238,13 +231,10 @@ class BiddingApiController extends Controller
                 'serverTime' => now(),
                 'message' => __('Please wait!'),           
             ],409);
-        }
-
-        //\Log::info(print_r($session_id,true));
+        }        
 
         $bid_data = Bid::where('id',$session_id)->orderBy('amount','DESC')->get()->toArray();
-        //\Log::info(print_r($bid_data,true));
-
+        
         if (!empty($bid_data)) {
             $team_id = $bid_data['team_id'];
             $amount = $bid_data['amount'];
@@ -261,13 +251,10 @@ class BiddingApiController extends Controller
 
             // Prepare data for inserting into soldplayers table
             $data = ['players_id' => $player_id, 'category_id' => $category_id, 'team_id' => $team_id, 'league_id' => $league_id, 'sold_price' => $amount];
-            // Insert data into soldplayers table and check if successful
+            // Insert data into soldplayers table and check if successful            
 
-            //\Log::info(print_r($data,true));
-
-             $result = SoldPlayer::create($data);
-
-             //\Log::info("*********022****");
+            $result = SoldPlayer::create($data);
+             
             if ($result) {
                 // Update bid_sessions status to 'closed'
                 BiSession::where('id',$session_id)->update(['status'=>'closed']);                
@@ -301,25 +288,11 @@ class BiddingApiController extends Controller
             $category_id = Player::where('id',$player_id)->value('category_id');
 
             $data = ['player_id' => $player_id, 'category_id' => $category_id];
-            /*
-            \Log::info(print_r($bid_session,true));
-            \Log::info(json_encode($bid_session));
-            \Log::info("player_id: " . print_r($player_id,true));
-            \Log::info("category_id: " . print_r($category_id,true));
-            \Log::info("data: " . print_r($data,true));
-            */
-
-            //\Log::info(print_r($data,true));
-
-           
-
-         
-
+            
             $result = UnsoldPlayer::create($data);
-
-            //\Log::info("*********023****");
+       
             if ($result) {
-                //\Log::info("*********025****");
+                
                 // Update bid_sessions status to 'closed'
                 BidSession::where('id',$session_id)->update(['status'=>'closed']);                
                 // Update bids table to set is_winner for the highest bid
@@ -331,8 +304,7 @@ class BiddingApiController extends Controller
                     'bidding_url' => route('bidding.index'),
                     'message' => __('Successfully added the bid!'),           
                 ],200);
-            } else {
-                //\Log::info("*********024****");
+            } else {               
                 // Prepare error response if insertion failed                
                 return response()->json([
                     'success' => false,

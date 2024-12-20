@@ -109,9 +109,7 @@ class AuctionController extends Controller
 
                     // Get bid session and player data
                     $bid_session = BidSession::where('id',$session_id)->first();                   
-                    $bid_session = $bid_session ? $bid_session->toArray() : null;
-
-                    //\Log::info(print_r($bid_session,true));
+                    $bid_session = $bid_session ? $bid_session->toArray() : null;                    
 
                     $player_id = $bid_session != null ? $bid_session['player_id'] : 0;                    
 

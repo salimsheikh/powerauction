@@ -32,8 +32,6 @@ class LogUserLogin
 
         $owner_team_id = $team_id > 0 ? $team_id : null;
         
-        Session::put('owner_team_id', $owner_team_id);
-
-        //\Log::info("Owner team id: " . $owner_team_id);        
+        Session::put('owner_team_id', $owner_team_id); 
     }
 }
